@@ -17,7 +17,7 @@ const LOGO_MARK_PATH = "/assets/logo-mark.svg";
 const LOGO_PATH = "/assets/logo.png";
 const OG_IMAGE_PATH = "/assets/og-image.png";
 const ADSENSE_CLIENT = "ca-pub-2494233247909241";
-const GOOGLE_ANALYTICS_ID = "";
+const GOOGLE_ANALYTICS_ID = "G-BY1BF23TD7";
 
 const GENERATED_DIRS = [
   "groomers",
