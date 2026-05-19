@@ -515,27 +515,39 @@ h3 {
 
 .ad-slot {
   width: 100%;
-  min-height: 90px;
-  border: 1px dashed #c5d4cc;
+  min-height: 120px;
+  border: 1px solid rgba(7, 59, 42, 0.1);
   border-radius: var(--radius);
-  background: repeating-linear-gradient(135deg, #fbfdfc 0, #fbfdfc 10px, #f1f7f3 10px, #f1f7f3 20px);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  color: #77867f;
+  background: #fff;
+  display: block;
+  overflow: hidden;
   text-align: center;
-  font-size: 0.88rem;
   margin: 20px 0;
 }
 
-.ad-slot small {
+.ad-slot .adsbygoogle {
   display: block;
-  font-size: 0.75rem;
-  color: #8a9791;
+  min-height: 120px;
+}
+
+.ad-in-content {
+  margin: 24px 0;
 }
 
 .ad-sidebar {
   min-height: 250px;
+}
+
+.ad-sidebar .adsbygoogle {
+  min-height: 250px;
+}
+
+.ad-leaderboard {
+  min-height: 90px;
+}
+
+.ad-leaderboard .adsbygoogle {
+  min-height: 90px;
 }
 
 .listing-stack {
@@ -1143,6 +1155,16 @@ h3 {
 
   .footer-grid {
     grid-template-columns: 1fr;
+  }
+
+  .ad-slot,
+  .ad-slot .adsbygoogle {
+    min-height: 100px;
+  }
+
+  .ad-sidebar,
+  .ad-sidebar .adsbygoogle {
+    min-height: 250px;
   }
 }
 

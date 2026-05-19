@@ -18,6 +18,11 @@ const LOGO_PATH = "/assets/logo.png";
 const OG_IMAGE_PATH = "/assets/og-image.png";
 const ADSENSE_CLIENT = "ca-pub-2494233247909241";
 const GOOGLE_ANALYTICS_ID = "G-BY1BF23TD7";
+const AD_SLOTS = Object.freeze({
+  inContent: "8427489237",
+  sidebar: "4819416718",
+  leaderboard: "9035205346",
+});
 
 const GENERATED_DIRS = [
   "groomers",
@@ -36,6 +41,18 @@ const GENERATED_DIRS = [
 ];
 
 const ROOT_FILES = ["index.html", "404.html", "robots.txt", "sitemap.xml", "ads.txt", "CNAME", ".nojekyll"];
+
+function adUnit(slotName, options = {}) {
+  const slot = AD_SLOTS[slotName];
+  if (!ADSENSE_CLIENT || !slot) return "";
+  const classes = ["ad-slot"];
+  if (options.sidebar) classes.push("ad-sidebar");
+  if (options.leaderboard) classes.push("ad-leaderboard");
+  if (options.inContent) classes.push("ad-in-content");
+  const format = options.format || "auto";
+  const fullWidth = options.fullWidthResponsive === false ? "false" : "true";
+  return `<div class="${classes.join(" ")}" aria-label="Advertisement"><ins class="adsbygoogle" style="display:block" data-ad-client="${ADSENSE_CLIENT}" data-ad-slot="${slot}" data-ad-format="${format}" data-full-width-responsive="${fullWidth}"></ins><script>(adsbygoogle = window.adsbygoogle || []).push({});</script></div>`;
+}
 
 const provinceMap = new Map([
   ["alberta", ["Alberta", "AB"]],
@@ -518,7 +535,7 @@ function writeHomePage(context) {
             (province) => province.name,
             (province) => `${province.count.toLocaleString()}`,
           )}
-          <div class="ad-slot ad-sidebar" aria-label="Advertisement"><div>Ad space<small>300 x 250</small></div></div>
+          ${adUnit("sidebar", { sidebar: true, format: "rectangle" })}
           <h2>Popular Cities</h2>
           ${linkList(
             topCities.slice(0, 9),
@@ -539,7 +556,7 @@ function writeHomePage(context) {
             </div>
             <p data-nearest-city class="muted" style="margin-top:14px"></p>
           </div>
-          <div class="ad-slot" aria-label="Advertisement"><div>Ad space<small>Responsive leaderboard</small></div></div>
+          ${adUnit("leaderboard", { leaderboard: true, format: "horizontal" })}
           <div class="section-head">
             <div>
               <h2>Top dog groomer listings</h2>
@@ -689,7 +706,7 @@ function writeProvincePages(context) {
               <div><h2>Top ${esc(province.name)} dog groomer listings</h2><p>Profiles are sorted by rating strength, review volume, contact completeness, and listing quality.</p></div>
             </div>
             <div class="listing-stack">${province.topListings.map((item) => listingCard(item)).join("")}</div>
-            <div class="ad-slot" aria-label="Advertisement"><div>Ad space<small>Responsive in-content unit</small></div></div>
+            ${adUnit("inContent", { inContent: true })}
             <h2>Cities in ${esc(province.name)}</h2>
             <div class="grid-3">${topCities
               .map(
@@ -699,7 +716,7 @@ function writeProvincePages(context) {
               .join("")}</div>
           </main>
           <aside class="side-panel">
-            <div class="ad-slot ad-sidebar" aria-label="Advertisement"><div>Ad space<small>300 x 250</small></div></div>
+            ${adUnit("sidebar", { sidebar: true, format: "rectangle" })}
             <div class="info-card"><h2>Province snapshot</h2><p>${province.count.toLocaleString()} listings</p><p>${province.cities.length.toLocaleString()} city pages</p><p>${province.listings.filter((item) => item.phone).length.toLocaleString()} with phone numbers</p></div>
           </aside>
         </div>
@@ -740,7 +757,7 @@ function writeCityPages(context) {
               <strong>${city.count.toLocaleString()} groomers found</strong>
               <div class="tag-cloud">${services.map((service) => `<a class="tag" href="${service.url}">${esc(service.short)}</a>`).join("")}</div>
             </div>
-            <div class="ad-slot" aria-label="Advertisement"><div>Ad space<small>Responsive mobile-friendly unit</small></div></div>
+            ${adUnit("inContent", { inContent: true })}
             <div class="listing-stack">${listings.map((item) => listingCard(item)).join("")}</div>
             <section class="section">
               <h2>Choosing a groomer in ${esc(city.city)}</h2>
@@ -753,7 +770,7 @@ function writeCityPages(context) {
             </section>
           </main>
           <aside class="side-panel">
-            <div class="ad-slot ad-sidebar" aria-label="Advertisement"><div>Ad space<small>300 x 250</small></div></div>
+            ${adUnit("sidebar", { sidebar: true, format: "rectangle" })}
             <div class="info-card">
               <h2>Nearby city pages</h2>
               ${linkList(
@@ -855,7 +872,7 @@ function writeListingPages(context) {
             </section>
           </main>
           <aside class="side-panel">
-            <div class="ad-slot ad-sidebar" aria-label="Advertisement"><div>Ad space<small>300 x 250</small></div></div>
+            ${adUnit("sidebar", { sidebar: true, format: "rectangle" })}
             <div class="info-card">
               <h2>Local directory</h2>
               <p>Compare more dog groomers in ${esc(listing.city)}, ${esc(listing.provinceCode)}.</p>
@@ -919,7 +936,7 @@ function writeServicePages(context) {
             <div class="listing-stack">${top.map((item) => listingCard(item)).join("")}</div>
           </main>
           <aside class="side-panel">
-            <div class="ad-slot ad-sidebar" aria-label="Advertisement"><div>Ad space<small>300 x 250</small></div></div>
+            ${adUnit("sidebar", { sidebar: true, format: "rectangle" })}
             <div class="info-card">
               <h2>Top provinces</h2>
               ${linkList(
@@ -983,7 +1000,7 @@ function writeKeywordPages(context) {
           </section>
         </main>
         <aside class="side-panel">
-          <div class="ad-slot ad-sidebar" aria-label="Advertisement"><div>Ad space<small>300 x 250</small></div></div>
+          ${adUnit("sidebar", { sidebar: true, format: "rectangle" })}
           <div class="info-card"><h2>Dog grooming checklist</h2><p>Before booking, confirm bath, brush, haircut, nail trim, de-shedding, de-matting, puppy groom, appointment length, and breed-specific experience.</p></div>
           <div class="info-card"><h2>Browse all cities</h2><p>Use the complete city index for crawlable local dog grooming pages across Canada.</p><a class="btn btn-light" href="/cities/">All city pages</a></div>
         </aside>
@@ -1049,7 +1066,7 @@ function nearMeBody(context) {
           </section>
         </main>
         <aside class="side-panel">
-          <div class="ad-slot ad-sidebar" aria-label="Advertisement"><div>Ad space<small>300 x 250</small></div></div>
+          ${adUnit("sidebar", { sidebar: true, format: "rectangle" })}
           <div class="info-card">
             <h2>Browse by province</h2>
             ${linkList(
