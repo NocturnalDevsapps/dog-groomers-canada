@@ -16,6 +16,8 @@ const THEME_COLOR = "#073b2a";
 const LOGO_MARK_PATH = "/assets/logo-mark.svg";
 const LOGO_PATH = "/assets/logo.png";
 const OG_IMAGE_PATH = "/assets/og-image.png";
+const ADSENSE_CLIENT = "ca-pub-2494233247909241";
+const GOOGLE_ANALYTICS_ID = "";
 
 const GENERATED_DIRS = [
   "groomers",
@@ -33,7 +35,7 @@ const GENERATED_DIRS = [
   "sitemap",
 ];
 
-const ROOT_FILES = ["index.html", "404.html", "robots.txt", "sitemap.xml", "CNAME", ".nojekyll"];
+const ROOT_FILES = ["index.html", "404.html", "robots.txt", "sitemap.xml", "ads.txt", "CNAME", ".nojekyll"];
 
 const provinceMap = new Map([
   ["alberta", ["Alberta", "AB"]],
@@ -1206,6 +1208,7 @@ function writeSitemap(context) {
 
 function writeRobotsAndDomain() {
   fs.writeFileSync(path.join(ROOT, "robots.txt"), `User-agent: *\nAllow: /\nSitemap: ${SITE_URL}/sitemap.xml\n`);
+  fs.writeFileSync(path.join(ROOT, "ads.txt"), "google.com, pub-2494233247909241, DIRECT, f08c47fec0942fa0\n");
   fs.writeFileSync(path.join(ROOT, "CNAME"), "doggroomerscanada.ca\n");
   fs.writeFileSync(path.join(ROOT, ".nojekyll"), "");
 }
@@ -1234,6 +1237,7 @@ function pageHtml(route, title, description, body, schema = [], options = {}) {
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="dgc-base-path" content="">
   <meta name="theme-color" content="${THEME_COLOR}">
+  ${googleIntegrationHead()}
   <title>${esc(title)}</title>
   <meta name="description" content="${escAttr(meta)}">
   <link rel="canonical" href="${escAttr(canonical)}">
@@ -1896,6 +1900,24 @@ function siteManifest() {
     null,
     2,
   )}\n`;
+}
+
+function googleIntegrationHead() {
+  const scripts = [];
+  if (ADSENSE_CLIENT) {
+    scripts.push(`<meta name="google-adsense-account" content="${ADSENSE_CLIENT}">`);
+    scripts.push(`<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=${ADSENSE_CLIENT}" crossorigin="anonymous"></script>`);
+  }
+  if (GOOGLE_ANALYTICS_ID) {
+    scripts.push(`<script async src="https://www.googletagmanager.com/gtag/js?id=${GOOGLE_ANALYTICS_ID}"></script>`);
+    scripts.push(`<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag("js", new Date());
+  gtag("config", "${GOOGLE_ANALYTICS_ID}");
+</script>`);
+  }
+  return scripts.join("\n  ");
 }
 
 function dogLogo() {
