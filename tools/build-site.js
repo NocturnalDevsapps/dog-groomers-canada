@@ -11,6 +11,11 @@ const CSV_FILE =
   process.argv[2] ||
   path.join(ROOT, "Apify Google Maps Scraper jJzJjRpnTviQKBwns - dog grooming only.csv");
 const NOW = new Date().toISOString().slice(0, 10);
+const BRAND_NAME = "Dog Groomers Canada";
+const THEME_COLOR = "#073b2a";
+const LOGO_MARK_PATH = "/assets/logo-mark.svg";
+const LOGO_PATH = "/assets/logo.png";
+const OG_IMAGE_PATH = "/assets/og-image.png";
 
 const GENERATED_DIRS = [
   "groomers",
@@ -452,6 +457,8 @@ function groupServices(listings) {
 }
 
 function writeStaticAssets(context) {
+  fs.mkdirSync(path.join(ROOT, "assets"), { recursive: true });
+
   fs.writeFileSync(
     path.join(ROOT, "assets", "search-index.json"),
     JSON.stringify({
@@ -488,10 +495,11 @@ function writeStaticAssets(context) {
     }),
   );
 
-  fs.writeFileSync(
-    path.join(ROOT, "assets", "favicon.svg"),
-    `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64"><rect width="64" height="64" rx="8" fill="#073b2a"/><path fill="#fff" d="M22 18c-5 0-9 3-11 7.5L7 35c-.6 1.5.4 3 2 3h4v12h8v-7h20v7h8V35l6-4c1.4-.9 1.6-2.8.4-4L49 20.6c-.7-.7-1.6-1-2.6-1H39L35 14h-8l-5 4Z"/></svg>`,
-  );
+  fs.writeFileSync(path.join(ROOT, "assets", "favicon.svg"), logoMarkSvg());
+  fs.writeFileSync(path.join(ROOT, "assets", "logo-mark.svg"), logoMarkSvg());
+  fs.writeFileSync(path.join(ROOT, "assets", "logo.svg"), logoWordmarkSvg());
+  fs.writeFileSync(path.join(ROOT, "assets", "og-image.svg"), ogImageSvg(context.stats));
+  fs.writeFileSync(path.join(ROOT, "assets", "site.webmanifest"), siteManifest());
 }
 
 function writeHomePage(context) {
@@ -1225,17 +1233,29 @@ function pageHtml(route, title, description, body, schema = [], options = {}) {
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="dgc-base-path" content="">
+  <meta name="theme-color" content="${THEME_COLOR}">
   <title>${esc(title)}</title>
   <meta name="description" content="${escAttr(meta)}">
   <link rel="canonical" href="${escAttr(canonical)}">
   <meta name="robots" content="index,follow,max-image-preview:large">
   <meta property="og:type" content="website">
-  <meta property="og:site_name" content="Dog Groomers Canada">
+  <meta property="og:locale" content="en_CA">
+  <meta property="og:site_name" content="${BRAND_NAME}">
   <meta property="og:title" content="${escAttr(title)}">
   <meta property="og:description" content="${escAttr(meta)}">
   <meta property="og:url" content="${escAttr(canonical)}">
-  <meta name="twitter:card" content="summary">
+  <meta property="og:image" content="${SITE_URL}${OG_IMAGE_PATH}">
+  <meta property="og:image:secure_url" content="${SITE_URL}${OG_IMAGE_PATH}">
+  <meta property="og:image:type" content="image/png">
+  <meta property="og:image:width" content="1200">
+  <meta property="og:image:height" content="630">
+  <meta property="og:image:alt" content="${BRAND_NAME}: find dog grooming near me across Canada">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:image" content="${SITE_URL}${OG_IMAGE_PATH}">
+  <meta name="twitter:image:alt" content="${BRAND_NAME}: find dog grooming near me across Canada">
   <link rel="icon" href="/assets/favicon.svg" type="image/svg+xml">
+  <link rel="apple-touch-icon" href="/assets/apple-touch-icon.png">
+  <link rel="manifest" href="/assets/site.webmanifest">
   <link rel="preload" href="/assets/site.css" as="style">
   <link rel="stylesheet" href="/assets/site.css">
   ${schemaItems.map((item) => `<script type="application/ld+json">${safeJson(item)}</script>`).join("\n  ")}
@@ -1261,7 +1281,7 @@ function header(route) {
   ];
   return `<header class="site-header">
     <div class="header-inner">
-      <a class="brand" href="/" aria-label="Dog Groomers Canada home">${dogLogo()}<span>Dog Groomers Canada <span class="maple">◆</span></span></a>
+      <a class="brand" href="/" aria-label="${BRAND_NAME} home"><img class="brand-mark" src="${LOGO_MARK_PATH}" width="40" height="40" alt="" decoding="async"><span class="brand-name">${BRAND_NAME} <span class="maple">◆</span></span></a>
       <button class="nav-toggle" type="button" aria-label="Open menu" aria-expanded="false"><span></span></button>
       <nav class="site-nav" aria-label="Primary navigation">
         ${nav.map(([url, label]) => `<a href="${url}"${route === url ? ' aria-current="page"' : ""}>${label}</a>`).join("")}
@@ -1460,9 +1480,15 @@ function organizationSchema() {
   return {
     "@context": "https://schema.org",
     "@type": "Organization",
-    name: "Dog Groomers Canada",
+    name: BRAND_NAME,
     url: SITE_URL,
-    logo: `${SITE_URL}/assets/favicon.svg`,
+    logo: {
+      "@type": "ImageObject",
+      url: `${SITE_URL}${LOGO_PATH}`,
+      width: 760,
+      height: 180,
+    },
+    image: `${SITE_URL}${OG_IMAGE_PATH}`,
   };
 }
 
@@ -1789,6 +1815,87 @@ function esc(value) {
 
 function escAttr(value) {
   return esc(value).replace(/`/g, "&#096;");
+}
+
+function logoMarkSvg() {
+  return `<svg xmlns="http://www.w3.org/2000/svg" width="256" height="256" viewBox="0 0 256 256" role="img" aria-labelledby="title desc">
+  <title id="title">Dog Groomers Canada logo mark</title>
+  <desc id="desc">A cream dog grooming silhouette on a deep green square with a red maple leaf accent.</desc>
+  <rect width="256" height="256" rx="46" fill="#073b2a"/>
+  <path fill="#f8f4ec" d="M71 144c-8.8 0-14.7-9-11.2-17.1l11-25.4C78 84.8 94.5 74 112.8 74h30.5c8.7 0 17 4.1 22.3 11l10.1 13.2h16.2c5.5 0 10.8 2.2 14.7 6.1l16.9 16.9c5 5 4.1 13.3-1.8 17.2L201 152v39.2c0 5.4-4.4 9.8-9.8 9.8h-18.4c-5.4 0-9.8-4.4-9.8-9.8V171H98v20.2c0 5.4-4.4 9.8-9.8 9.8H69.8c-5.4 0-9.8-4.4-9.8-9.8V144h11Z"/>
+  <path fill="#073b2a" d="M116 105.8a10.8 10.8 0 1 1-21.6 0 10.8 10.8 0 0 1 21.6 0Zm84.5 18.4a7.6 7.6 0 1 1-15.2 0 7.6 7.6 0 0 1 15.2 0Z"/>
+  <path fill="#d94f45" d="m144 118 8.8-9.9 4.7 12.4 13.2-2.7-6.9 11.4 10.5 8.2-13.2 1.3.6 13.3-10.1-8.7-9.6 9.1.1-13.4-13.3-1 10.2-8.5-7.3-11.2 13.3 2.3Z"/>
+  <path fill="#c79a3b" d="M84 158h94v8H84z"/>
+</svg>
+`;
+}
+
+function logoWordmarkSvg() {
+  return `<svg xmlns="http://www.w3.org/2000/svg" width="760" height="180" viewBox="0 0 760 180" role="img" aria-labelledby="title desc">
+  <title id="title">Dog Groomers Canada</title>
+  <desc id="desc">Dog Groomers Canada wordmark with a dog grooming mark and maple leaf accent.</desc>
+  <rect width="760" height="180" rx="24" fill="#f8f4ec"/>
+  <g transform="translate(30 30) scale(.47)">
+    <rect width="256" height="256" rx="46" fill="#073b2a"/>
+    <path fill="#f8f4ec" d="M71 144c-8.8 0-14.7-9-11.2-17.1l11-25.4C78 84.8 94.5 74 112.8 74h30.5c8.7 0 17 4.1 22.3 11l10.1 13.2h16.2c5.5 0 10.8 2.2 14.7 6.1l16.9 16.9c5 5 4.1 13.3-1.8 17.2L201 152v39.2c0 5.4-4.4 9.8-9.8 9.8h-18.4c-5.4 0-9.8-4.4-9.8-9.8V171H98v20.2c0 5.4-4.4 9.8-9.8 9.8H69.8c-5.4 0-9.8-4.4-9.8-9.8V144h11Z"/>
+    <path fill="#073b2a" d="M116 105.8a10.8 10.8 0 1 1-21.6 0 10.8 10.8 0 0 1 21.6 0Zm84.5 18.4a7.6 7.6 0 1 1-15.2 0 7.6 7.6 0 0 1 15.2 0Z"/>
+    <path fill="#d94f45" d="m144 118 8.8-9.9 4.7 12.4 13.2-2.7-6.9 11.4 10.5 8.2-13.2 1.3.6 13.3-10.1-8.7-9.6 9.1.1-13.4-13.3-1 10.2-8.5-7.3-11.2 13.3 2.3Z"/>
+    <path fill="#c79a3b" d="M84 158h94v8H84z"/>
+  </g>
+  <text x="175" y="82" fill="#073b2a" font-family="Inter, Arial, sans-serif" font-size="44" font-weight="800" letter-spacing="0">Dog Groomers</text>
+  <text x="175" y="128" fill="#073b2a" font-family="Inter, Arial, sans-serif" font-size="44" font-weight="800" letter-spacing="0">Canada</text>
+  <text x="178" y="154" fill="#50635b" font-family="Inter, Arial, sans-serif" font-size="18" font-weight="600" letter-spacing="0">Local dog grooming directory</text>
+</svg>
+`;
+}
+
+function ogImageSvg(stats) {
+  const listingCount = Number(stats?.listings || 0).toLocaleString("en-CA");
+  return `<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="630" viewBox="0 0 1200 630" role="img" aria-labelledby="title desc">
+  <title id="title">Dog Groomers Canada</title>
+  <desc id="desc">Social sharing image for Dog Groomers Canada, a dog grooming near me directory.</desc>
+  <rect width="1200" height="630" fill="#073b2a"/>
+  <circle cx="980" cy="74" r="210" fill="#0e5a42" opacity=".72"/>
+  <circle cx="1016" cy="560" r="220" fill="#c79a3b" opacity=".18"/>
+  <g transform="translate(92 112)">
+    <rect width="164" height="164" rx="34" fill="#f8f4ec"/>
+    <g transform="translate(18 18) scale(.5)">
+      <rect width="256" height="256" rx="46" fill="#073b2a"/>
+      <path fill="#f8f4ec" d="M71 144c-8.8 0-14.7-9-11.2-17.1l11-25.4C78 84.8 94.5 74 112.8 74h30.5c8.7 0 17 4.1 22.3 11l10.1 13.2h16.2c5.5 0 10.8 2.2 14.7 6.1l16.9 16.9c5 5 4.1 13.3-1.8 17.2L201 152v39.2c0 5.4-4.4 9.8-9.8 9.8h-18.4c-5.4 0-9.8-4.4-9.8-9.8V171H98v20.2c0 5.4-4.4 9.8-9.8 9.8H69.8c-5.4 0-9.8-4.4-9.8-9.8V144h11Z"/>
+      <path fill="#073b2a" d="M116 105.8a10.8 10.8 0 1 1-21.6 0 10.8 10.8 0 0 1 21.6 0Zm84.5 18.4a7.6 7.6 0 1 1-15.2 0 7.6 7.6 0 0 1 15.2 0Z"/>
+      <path fill="#d94f45" d="m144 118 8.8-9.9 4.7 12.4 13.2-2.7-6.9 11.4 10.5 8.2-13.2 1.3.6 13.3-10.1-8.7-9.6 9.1.1-13.4-13.3-1 10.2-8.5-7.3-11.2 13.3 2.3Z"/>
+      <path fill="#c79a3b" d="M84 158h94v8H84z"/>
+    </g>
+  </g>
+  <text x="92" y="352" fill="#f8f4ec" font-family="Inter, Arial, sans-serif" font-size="78" font-weight="800" letter-spacing="0">Dog Groomers Canada</text>
+  <text x="96" y="420" fill="#e7d6ad" font-family="Inter, Arial, sans-serif" font-size="34" font-weight="700" letter-spacing="0">Find dog grooming near me across Canada</text>
+  <text x="98" y="492" fill="#f8f4ec" font-family="Inter, Arial, sans-serif" font-size="28" font-weight="600" letter-spacing="0">${listingCount} local listings | city pages | ratings | services | maps</text>
+  <path fill="#d94f45" d="m1012 286 23-26 13 32 35-7-18 31 28 21-35 4 2 35-27-23-25 24v-35l-35-3 27-22-20-30 35 6Z"/>
+</svg>
+`;
+}
+
+function siteManifest() {
+  return `${JSON.stringify(
+    {
+      name: BRAND_NAME,
+      short_name: "DGC",
+      description: "Find dog grooming near me across Canada.",
+      start_url: "/",
+      display: "standalone",
+      background_color: "#f8f4ec",
+      theme_color: THEME_COLOR,
+      icons: [
+        {
+          src: "/assets/apple-touch-icon.png",
+          sizes: "512x512",
+          type: "image/png",
+        },
+      ],
+    },
+    null,
+    2,
+  )}\n`;
 }
 
 function dogLogo() {

@@ -121,10 +121,24 @@ button {
   white-space: nowrap;
 }
 
+.brand-mark,
 .brand svg {
-  width: 34px;
-  height: 34px;
+  width: 40px;
+  height: 40px;
+  flex: 0 0 auto;
+}
+
+.brand-mark {
+  border-radius: 8px;
+  box-shadow: 0 8px 22px rgba(7, 59, 42, 0.14);
+}
+
+.brand svg {
   color: var(--green);
+}
+
+.brand-name {
+  line-height: 1;
 }
 
 .maple {
@@ -1074,9 +1088,10 @@ h3 {
     font-size: 0.98rem;
   }
 
+  .brand-mark,
   .brand svg {
-    width: 29px;
-    height: 29px;
+    width: 32px;
+    height: 32px;
   }
 
   .listing-card,

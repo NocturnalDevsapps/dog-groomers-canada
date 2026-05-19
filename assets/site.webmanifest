@@ -1,0 +1,16 @@
+{
+  "name": "Dog Groomers Canada",
+  "short_name": "DGC",
+  "description": "Find dog grooming near me across Canada.",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#f8f4ec",
+  "theme_color": "#073b2a",
+  "icons": [
+    {
+      "src": "/assets/apple-touch-icon.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ]
+}
