@@ -1,6 +1,10 @@
 # Dog Groomers Canada
 
-Static, GitHub Pages-ready dog grooming directory for `doggroomerscanada.ca`.
+Static, GitHub Pages-ready dog grooming directory for [Dog Groomers Canada](https://doggroomerscanada.ca/).
+
+## Live site
+
+[Dog Groomers Canada](https://doggroomerscanada.ca/) helps people find dog groomers by province, city, and nearby search intent across Canada.
 
 ## What gets generated
 
