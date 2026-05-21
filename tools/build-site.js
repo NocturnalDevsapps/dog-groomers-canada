@@ -1231,7 +1231,7 @@ function writeRobotsAndDomain() {
 }
 
 function writePage(context, route, title, description, body, schema, options = {}) {
-  const html = pageHtml(route, title, description, body, schema, options);
+  const html = cleanGeneratedHtml(pageHtml(route, title, description, body, schema, options));
   const target = route === "/" ? path.join(ROOT, "index.html") : path.join(ROOT, trimSlashes(route), "index.html");
   fs.mkdirSync(path.dirname(target), { recursive: true });
   fs.writeFileSync(target, html);
@@ -1239,7 +1239,11 @@ function writePage(context, route, title, description, body, schema, options = {
 }
 
 function writeStandaloneFile(file, html) {
-  fs.writeFileSync(path.join(ROOT, file), html);
+  fs.writeFileSync(path.join(ROOT, file), cleanGeneratedHtml(html));
+}
+
+function cleanGeneratedHtml(html) {
+  return html.replace(/[ \t]+$/gm, "");
 }
 
 function pageHtml(route, title, description, body, schema = [], options = {}) {
@@ -1341,6 +1345,11 @@ function searchForm() {
 }
 
 function listingCard(item, compact = false) {
+  const actions = [];
+  if (item.phone) actions.push(`<a class="plain-action" href="tel:${escAttr(item.phoneRaw || item.phone)}">${phoneIcon()} ${esc(item.phone)}</a>`);
+  if (item.website) actions.push(`<a class="plain-action" href="${escAttr(item.website)}" target="_blank" rel="nofollow noopener">${globeIcon()} Website</a>`);
+  actions.push(`<a class="btn btn-primary" href="${item.url}">View Profile</a>`);
+
   return `<article class="listing-card${compact ? " compact" : ""}">
     <a class="listing-image" href="${item.url}">${item.image ? `<img src="${escAttr(item.image)}" alt="${escAttr(item.title)} dog grooming listing photo" loading="lazy" referrerpolicy="no-referrer">` : dogFallback()}</a>
     <div class="listing-body">
@@ -1353,9 +1362,7 @@ function listingCard(item, compact = false) {
       compact
         ? ""
         : `<div class="card-actions">
-          ${item.phone ? `<a class="plain-action" href="tel:${escAttr(item.phoneRaw || item.phone)}">${phoneIcon()} ${esc(item.phone)}</a>` : ""}
-          ${item.website ? `<a class="plain-action" href="${escAttr(item.website)}" target="_blank" rel="nofollow noopener">${globeIcon()} Website</a>` : ""}
-          <a class="btn btn-primary" href="${item.url}">View Profile</a>
+          ${actions.join("\n          ")}
         </div>`
     }
   </article>`;
@@ -1730,7 +1737,9 @@ function normalizeKey(value) {
 }
 
 function numberOrNull(value) {
-  const number = Number(String(value || "").replace(/,/g, ""));
+  const cleaned = String(value || "").replace(/,/g, "").trim();
+  if (!cleaned) return null;
+  const number = Number(cleaned);
   return Number.isFinite(number) ? number : null;
 }
 
