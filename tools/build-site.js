@@ -13,16 +13,19 @@ const CSV_FILE =
 const NOW = new Date().toISOString().slice(0, 10);
 const BRAND_NAME = "Dog Groomers Canada";
 const THEME_COLOR = "#073b2a";
+const CONTACT_EMAIL = "hello@doggroomerscanada.ca";
 const LOGO_MARK_PATH = "/assets/logo-mark.svg";
-const LOGO_PATH = "/assets/logo.png";
-const OG_IMAGE_PATH = "/assets/og-image.png";
+const LOGO_PATH = "/assets/logo.svg";
+const OG_IMAGE_PATH = "/assets/og-image.svg";
 const ADSENSE_CLIENT = "ca-pub-2494233247909241";
 const GOOGLE_ANALYTICS_ID = "G-BY1BF23TD7";
+const DISPLAY_AD_UNITS = false;
 const AD_SLOTS = Object.freeze({
   inContent: "8427489237",
   sidebar: "4819416718",
   leaderboard: "9035205346",
 });
+const ADSENSE_SCRIPT_ROUTES = new Set(["/", "/about/", "/contact/", "/privacy/", "/terms/", "/editorial-policy/", "/dog-grooming/", "/dog-grooming-near-me/"]);
 
 const GENERATED_DIRS = [
   "groomers",
@@ -33,8 +36,11 @@ const GENERATED_DIRS = [
   "near-me",
   "dog-grooming",
   "dog-grooming-near-me",
+  "about",
+  "contact",
   "add-your-business",
   "for-businesses",
+  "editorial-policy",
   "privacy",
   "terms",
   "sitemap",
@@ -43,6 +49,7 @@ const GENERATED_DIRS = [
 const ROOT_FILES = ["index.html", "404.html", "robots.txt", "sitemap.xml", "ads.txt", "CNAME", ".nojekyll"];
 
 function adUnit(slotName, options = {}) {
+  if (!DISPLAY_AD_UNITS) return "";
   const slot = AD_SLOTS[slotName];
   if (!ADSENSE_CLIENT || !slot) return "";
   const classes = ["ad-slot"];
@@ -245,12 +252,19 @@ function loadListings(file) {
     const photos = unique([image, ...getRange(get, "imageUrls/", 0, 4), ...getNestedImages(get)]).filter(Boolean).slice(0, 8);
     const hours = getHours(get);
     const services = getServices(get);
-    const description = firstPresent([
-      clean(get("generatedDescription")),
-      clean(get("websiteEnrichedDescription")),
-      clean(get("description")),
-      buildFallbackDescription(title, city, province.name, rating, reviews),
-    ]);
+    const description = buildListingDescription({
+      title,
+      city,
+      province: province.name,
+      provinceCode: province.code,
+      category,
+      rating,
+      reviews,
+      services,
+      phone,
+      website: clean(get("website")),
+      hours,
+    });
     const idSeed =
       clean(get("cid")) ||
       clean(get("fid")) ||
@@ -506,7 +520,7 @@ function writeStaticAssets(context) {
         reviews: listing.reviews,
         lat: listing.lat,
         lng: listing.lng,
-        image: listing.image,
+        image: "",
         services: listing.services,
         url: listing.url,
         cityUrl: listing.cityUrl,
@@ -568,6 +582,7 @@ function writeHomePage(context) {
         </div>
       </div>
     </section>
+    ${directoryMethodSection(context)}
     <section class="section">
       <div class="wrap">
         <div class="section-head">
@@ -690,6 +705,12 @@ function writeCityIndex(context) {
 function writeProvincePages(context) {
   for (const province of context.provinces) {
     const topCities = province.cities.slice(0, 30);
+    const withPhones = province.listings.filter((item) => item.phone).length;
+    const withWebsites = province.listings.filter((item) => item.website).length;
+    const serviceNames = cityServices(province.listings, context.services)
+      .slice(0, 5)
+      .map((service) => service.short)
+      .join(", ");
     const body = `
       <section class="page-intro">
         <div class="wrap">
@@ -705,6 +726,15 @@ function writeProvincePages(context) {
             <div class="section-head">
               <div><h2>Top ${esc(province.name)} dog groomer listings</h2><p>Profiles are sorted by rating strength, review volume, contact completeness, and listing quality.</p></div>
             </div>
+            <section class="section">
+              <h2>Using this ${esc(province.name)} directory</h2>
+              <p>Start with the city links below if you need a local shortlist, or compare the strongest province-wide listings when you are flexible on location. Confirm current services, pricing, and appointment availability directly with each business.</p>
+              <div class="grid-3">
+                <div class="info-card"><h3>Contact coverage</h3><p>${withPhones.toLocaleString()} listings include phone numbers and ${withWebsites.toLocaleString()} include website links for deeper service research.</p></div>
+                <div class="info-card"><h3>Service signals</h3><p>${serviceNames ? `Common service signals include ${esc(serviceNames)}.` : "Service details vary by listing."} Ask each groomer what is included before booking.</p></div>
+                <div class="info-card"><h3>Local browsing</h3><p>Browse ${province.cities.length.toLocaleString()} city pages to compare groomers by location, ratings, hours, and nearby alternatives.</p></div>
+              </div>
+            </section>
             <div class="listing-stack">${province.topListings.map((item) => listingCard(item)).join("")}</div>
             ${adUnit("inContent", { inContent: true })}
             <h2>Cities in ${esc(province.name)}</h2>
@@ -746,7 +776,7 @@ function writeCityPages(context) {
             { label: city.city },
           ])}
           <h1 class="city-title">Dog Grooming in ${esc(city.city)}, ${esc(city.provinceCode)}</h1>
-          <p class="lead">Compare ${city.count.toLocaleString()} dog grooming businesses in ${esc(city.city)}, ${esc(city.province)}. Find dog groomers near you with ratings, contact details, websites, services, photos, hours, and profile pages before booking.</p>
+          <p class="lead">Compare ${city.count.toLocaleString()} dog grooming businesses in ${esc(city.city)}, ${esc(city.province)}. Find dog groomers near you with ratings, contact details, websites, services, hours, maps, and profile pages before booking.</p>
           ${searchPanel("compact")}
         </div>
       </section>
@@ -757,6 +787,7 @@ function writeCityPages(context) {
               <strong>${city.count.toLocaleString()} groomers found</strong>
               <div class="tag-cloud">${services.map((service) => `<a class="tag" href="${service.url}">${esc(service.short)}</a>`).join("")}</div>
             </div>
+            ${cityQualitySection(city, services, nearby)}
             ${adUnit("inContent", { inContent: true })}
             <div class="listing-stack">${listings.map((item) => listingCard(item)).join("")}</div>
             <section class="section">
@@ -809,11 +840,7 @@ function writeListingPages(context) {
     const city = cityMap.get(`${listing.provinceSlug}/${listing.citySlug}`);
     const province = context.provinces.find((item) => item.slug === listing.provinceSlug);
     const related = relatedListings(listing, context.listings).slice(0, 6);
-    const photos = listing.photos.length
-      ? `<section class="section"><h2>Photos</h2><div class="photo-grid">${listing.photos
-          .map((photo) => `<a href="${escAttr(photo)}" target="_blank" rel="noopener nofollow"><img src="${escAttr(photo)}" alt="${escAttr(listing.title)} photo" loading="lazy" referrerpolicy="no-referrer"></a>`)
-          .join("")}</div></section>`
-      : "";
+    const photos = "";
     const hours = listing.hours.length
       ? `<section class="section"><h2>Hours listed</h2><ul class="hours-list">${listing.hours
           .map((item) => `<li><strong>${esc(item.day)}</strong><span>${esc(item.hours)}</span></li>`)
@@ -848,7 +875,7 @@ function writeListingPages(context) {
               <div class="meta-line">${ratingLine(listing)}<span>${esc(listing.city)}, ${esc(listing.provinceCode)}</span></div>
               <div class="tag-cloud" style="margin-top:18px">${listing.phone ? `<a class="btn btn-dark" href="tel:${escAttr(listing.phoneRaw || listing.phone)}">Call ${esc(listing.phone)}</a>` : ""}${listing.website ? `<a class="btn btn-primary" href="${escAttr(listing.website)}" target="_blank" rel="nofollow noopener">Visit Website</a>` : ""}${listing.mapsUrl ? `<a class="btn btn-light" href="${escAttr(listing.mapsUrl)}" target="_blank" rel="nofollow noopener">Open Map</a>` : ""}</div>
             </div>
-            <div class="profile-photo">${listing.image ? `<img src="${escAttr(listing.image)}" alt="${escAttr(listing.title)} listing photo" loading="eager" referrerpolicy="no-referrer">` : dogFallback()}</div>
+            <div class="profile-photo">${dogFallback()}</div>
           </div>
         </div>
       </section>
@@ -864,6 +891,7 @@ function writeListingPages(context) {
               ${services}
               <p class="muted" style="margin-top:14px">Service information is summarized from available listing data and may not be complete. Confirm current services and prices directly with the groomer.</p>
             </section>
+            ${listingGuidanceSection(listing)}
             ${hours}
             ${photos}
             <section class="section">
@@ -933,6 +961,7 @@ function writeServicePages(context) {
       <section class="section">
         <div class="wrap content-layout">
           <main>
+            ${serviceGuidanceSection(service)}
             <div class="listing-stack">${top.map((item) => listingCard(item)).join("")}</div>
           </main>
           <aside class="side-panel">
@@ -965,7 +994,7 @@ function writeKeywordPages(context) {
       <div class="wrap">
         ${breadcrumbs([{ label: "Home", url: "/" }, { label: "Dog Grooming" }])}
         <h1 class="city-title">Dog Grooming in Canada</h1>
-        <p class="lead">Find dog grooming businesses across Canada and compare local dog groomers by city, province, service, rating, phone number, website, hours, photos, and profile details.</p>
+        <p class="lead">Find dog grooming businesses across Canada and compare local dog groomers by city, province, service, rating, phone number, website, hours, maps, and profile details.</p>
         ${searchPanel("compact")}
       </div>
     </section>
@@ -1011,7 +1040,7 @@ function writeKeywordPages(context) {
     context,
     "/dog-grooming/",
     "Dog Grooming in Canada | Find Dog Groomers Near You",
-    "Dog grooming in Canada: compare local dog groomers near you by city, service, rating, phone, website, hours, photos, maps, and profiles.",
+    "Dog grooming in Canada: compare local dog groomers near you by city, service, rating, phone, website, hours, maps, and profiles.",
     groomingBody,
     [
       breadcrumbSchema([{ label: "Home", url: "/" }, { label: "Dog Grooming", url: "/dog-grooming/" }]),
@@ -1098,6 +1127,61 @@ function writeUtilityPages(context) {
 
   writePage(context, "/near-me/", "Dog Grooming Near Me | Dog Groomers Canada", nearMeMetaDescription(), nearMeBody(context), breadcrumbSchema([{ label: "Home", url: "/" }, { label: "Dog Grooming Near Me", url: "/dog-grooming-near-me/" }]), { bodyAttrs: 'data-page="near-me"', canonicalRoute: "/dog-grooming-near-me/", noSitemap: true });
 
+  const aboutBody = simpleContentPage(
+    "About Dog Groomers Canada",
+    "Dog Groomers Canada helps pet owners compare local grooming options without needing to jump between dozens of business pages, map results, and service notes.",
+    `<div class="grid-3">
+      <div class="info-card"><h2>What we publish</h2><p>We organize dog grooming businesses by province, city, service signals, contact details, rating strength, and nearby alternatives. The goal is to make local comparison easier before a visitor calls or books.</p></div>
+      <div class="info-card"><h2>How to use it</h2><p>Start with a city or service page, shortlist a few businesses, then confirm current services, prices, hours, appointment availability, and coat-specific experience directly with the groomer.</p></div>
+      <div class="info-card"><h2>What we do not do</h2><p>We do not endorse, certify, or guarantee any groomer. Listings are informational and can change, so direct confirmation is always part of the booking process.</p></div>
+    </div>
+    <section class="section">
+      <h2>Why the directory exists</h2>
+      <p>Dog grooming searches are often local, urgent, and detail-heavy: owners need to know who serves their city, which businesses list phone numbers or websites, what services are mentioned, and what questions to ask before booking. Dog Groomers Canada brings those comparison points together in one static, crawlable directory.</p>
+      <p>Every profile is intended to be a practical starting point rather than a final recommendation. We add original guidance around coat type, de-matting, puppy grooming, mobile grooming, senior dogs, and appointment logistics so visitors can make more confident calls.</p>
+      <p><a class="link-arrow" href="/editorial-policy/">Read the editorial policy -></a></p>
+    </section>`,
+  );
+  writePage(context, "/about/", "About Dog Groomers Canada", "About Dog Groomers Canada, a Canadian dog grooming directory with city, service, profile, correction, and booking guidance.", aboutBody, [
+    breadcrumbSchema([{ label: "Home", url: "/" }, { label: "About", url: "/about/" }]),
+    organizationSchema(),
+  ]);
+
+  const contactBody = simpleContentPage(
+    "Contact Dog Groomers Canada",
+    "Send corrections, listing updates, removal requests, and general questions about Dog Groomers Canada.",
+    `<div class="grid-3">
+      <div class="info-card"><h2>Listing corrections</h2><p>Email the business name, city, current page URL, and the details that should be corrected.</p><p><a class="btn btn-primary" href="mailto:${CONTACT_EMAIL}?subject=Dog%20Groomers%20Canada%20listing%20correction">Email corrections</a></p></div>
+      <div class="info-card"><h2>Add a business</h2><p>Send the business name, website, phone number, address, service notes, and preferred city page.</p><p><a class="btn btn-light" href="/add-your-business/">Add or update listing</a></p></div>
+      <div class="info-card"><h2>General contact</h2><p>For privacy, advertising, partnership, or site questions, contact the directory owner by email.</p><p><a href="mailto:${CONTACT_EMAIL}">${CONTACT_EMAIL}</a></p></div>
+    </div>
+    <section class="section">
+      <h2>Helpful details to include</h2>
+      <p>For the fastest correction, include a source URL such as the business website, a page URL from this directory, and the exact field that changed: phone number, website, address, opening hours, services, business name, or city placement.</p>
+    </section>`,
+  );
+  writePage(context, "/contact/", "Contact Dog Groomers Canada", "Contact Dog Groomers Canada for listing updates, corrections, removals, privacy, advertising, and general directory questions.", contactBody, breadcrumbSchema([{ label: "Home", url: "/" }, { label: "Contact", url: "/contact/" }]));
+
+  const editorialBody = simpleContentPage(
+    "Editorial Policy",
+    "Dog Groomers Canada is built to help people compare grooming options with clear navigation, source transparency, and original booking guidance.",
+    `<div class="grid-3">
+      <div class="info-card"><h2>Directory data</h2><p>Profiles use business listing facts such as name, city, address, phone, website, rating, hours, service signals, and map links when available. We do not publish customer review text.</p></div>
+      <div class="info-card"><h2>Original guidance</h2><p>City, service, and profile pages add practical comparison notes so visitors know what to confirm before booking a grooming appointment.</p></div>
+      <div class="info-card"><h2>Corrections</h2><p>Businesses and visitors can request updates, removals, or corrections by email. Changed details are reviewed before the static site is regenerated.</p></div>
+    </div>
+    <section class="section">
+      <h2>Advertising and independence</h2>
+      <p>Listings are not endorsements and are not ranked because a business paid for placement. Advertising may appear on the site after review approval, but ads do not change directory facts, city pages, service pages, or correction handling.</p>
+      <p>To avoid misleading visitors during review, display ad placements are disabled until the site is approved and ready to serve ads.</p>
+    </section>
+    <section class="section">
+      <h2>Images and copyrighted material</h2>
+      <p>Business profiles use a site-owned illustrated placeholder instead of republishing third-party business photos. This keeps the directory focused on factual comparison details and avoids relying on images the directory does not own.</p>
+    </section>`,
+  );
+  writePage(context, "/editorial-policy/", "Editorial Policy | Dog Groomers Canada", "Editorial policy for Dog Groomers Canada, including listing data, corrections, advertising independence, and business profile image handling.", editorialBody, breadcrumbSchema([{ label: "Home", url: "/" }, { label: "Editorial Policy", url: "/editorial-policy/" }]));
+
   const addBody = simpleContentPage(
     "Add Your Dog Grooming Business",
     "Want to update or add a listing? Send the business name, website, phone number, address, services, and the city page where it should appear.",
@@ -1114,7 +1198,7 @@ function writeUtilityPages(context) {
         event.preventDefault();
         var data = new FormData(event.currentTarget);
         var body = "Business: " + (data.get("business") || "") + "\\nLocation: " + (data.get("location") || "") + "\\nDetails: " + (data.get("details") || "");
-        window.location.href = "mailto:hello@doggroomerscanada.ca?subject=Dog%20Groomers%20Canada%20listing%20update&body=" + encodeURIComponent(body);
+        window.location.href = "mailto:${CONTACT_EMAIL}?subject=Dog%20Groomers%20Canada%20listing%20update&body=" + encodeURIComponent(body);
       });
     </script>`,
   );
@@ -1140,8 +1224,25 @@ function writeUtilityPages(context) {
     "Privacy policy for Dog Groomers Canada, including browser-based dog grooming near me location features, advertising, and analytics notes.",
     simpleContentPage(
       "Privacy Policy",
-      "Dog Groomers Canada is built as a static website. Location features run in your browser after you choose to use them; your precise location is not sent to a directory server by this static site.",
-      `<div class="info-card"><h2>Advertising and analytics</h2><p>If advertising or analytics tools are added, they may use cookies or similar technologies according to their own policies. Update this page before enabling any third-party tracking.</p></div>`,
+      "Dog Groomers Canada is a static directory. We use limited browser features to help visitors search, compare, and find nearby dog grooming pages.",
+      `<div class="grid-3">
+        <div class="info-card"><h2>Location tools</h2><p>The near-me feature asks for your browser location only after you press the location button. The coordinates are used in your browser to sort nearby listings and may be saved in local storage for convenience.</p></div>
+        <div class="info-card"><h2>Analytics</h2><p>We use Google Analytics to understand aggregate site usage, such as page visits and search/navigation patterns. Analytics helps improve city pages, service pages, and search results.</p></div>
+        <div class="info-card"><h2>Contact by email</h2><p>If you email a correction or listing request, we receive the information you choose to send, such as your email address, business details, and requested updates.</p></div>
+      </div>
+      <section class="section">
+        <h2>Advertising cookies</h2>
+        <p>Dog Groomers Canada uses Google AdSense account verification and may show Google ads after the site is approved. Third-party vendors, including Google, use cookies to serve ads based on a user's prior visits to this website or other websites. Google's use of advertising cookies enables it and its partners to serve ads based on visits to this site and other sites on the Internet.</p>
+        <p>Visitors can opt out of personalized advertising in <a href="https://www.google.com/settings/ads" rel="nofollow noopener" target="_blank">Google Ads Settings</a>. Visitors can also learn about opting out of some third-party vendors' personalized advertising at <a href="https://www.aboutads.info/" rel="nofollow noopener" target="_blank">aboutads.info</a>.</p>
+      </section>
+      <section class="section">
+        <h2>Directory information</h2>
+        <p>Business profile pages include public listing facts such as business name, city, contact details, services, ratings, hours, websites, and map links when available. We do not publish customer review text. Businesses can request updates or corrections by contacting <a href="mailto:${CONTACT_EMAIL}">${CONTACT_EMAIL}</a>.</p>
+      </section>
+      <section class="section">
+        <h2>Data choices</h2>
+        <p>You can clear saved location data by clearing this site's browser storage. You can block or delete cookies in your browser settings, though some site features, analytics, or advertising controls may work differently.</p>
+      </section>`,
     ),
     breadcrumbSchema([{ label: "Home", url: "/" }, { label: "Privacy", url: "/privacy/" }]),
   );
@@ -1154,7 +1255,19 @@ function writeUtilityPages(context) {
     simpleContentPage(
       "Terms of Use",
       "Directory information can change. Dog Groomers Canada provides listing information to help users compare options, but visitors should confirm services, prices, hours, and availability directly with each business before booking.",
-      `<div class="info-card"><h2>No endorsement</h2><p>Listings, ratings, and links do not constitute a guarantee or endorsement. Grooming decisions should be based on direct communication with the business and your dog's needs.</p></div>`,
+      `<div class="grid-3">
+        <div class="info-card"><h2>No endorsement</h2><p>Listings, ratings, and links do not constitute a guarantee, certification, recommendation, or endorsement. Grooming decisions should be based on direct communication with the business and your dog's needs.</p></div>
+        <div class="info-card"><h2>Confirm before booking</h2><p>Prices, hours, websites, services, appointment availability, and business status can change. Confirm current details directly with the groomer before visiting or booking.</p></div>
+        <div class="info-card"><h2>Corrections</h2><p>Businesses may request updates, removals, or corrections by email. Include the page URL and the details that should change.</p></div>
+      </div>
+      <section class="section">
+        <h2>Using profile information</h2>
+        <p>Dog Groomers Canada is an informational directory. Profile pages are designed for comparison and may include public business facts such as phone numbers, websites, address details, map links, hours, ratings, and services when available. Do not rely on directory information as the only source for appointment, safety, medical, pricing, or business-status decisions.</p>
+      </section>
+      <section class="section">
+        <h2>Advertising</h2>
+        <p>Advertising may appear after the site is approved for ad serving. Ads do not indicate that Dog Groomers Canada endorses the advertiser or any listed business.</p>
+      </section>`,
     ),
     breadcrumbSchema([{ label: "Home", url: "/" }, { label: "Terms", url: "/terms/" }]),
   );
@@ -1202,6 +1315,10 @@ function writeSitemap(context) {
             { url: "/dog-grooming-near-me/", name: "Dog Grooming Near Me", count: "" },
             { url: "/cities/", name: "All Cities", count: context.cities.length },
             { url: "/search/", name: "Search", count: "" },
+            { url: "/about/", name: "About", count: "" },
+            { url: "/contact/", name: "Contact", count: "" },
+            { url: "/editorial-policy/", name: "Editorial Policy", count: "" },
+            { url: "/privacy/", name: "Privacy Policy", count: "" },
           ],
           (item) => item.url,
           (item) => item.name,
@@ -1258,7 +1375,7 @@ function pageHtml(route, title, description, body, schema = [], options = {}) {
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="dgc-base-path" content="">
   <meta name="theme-color" content="${THEME_COLOR}">
-  ${googleIntegrationHead()}
+  ${googleIntegrationHead(routePath)}
   <title>${esc(title)}</title>
   <meta name="description" content="${escAttr(meta)}">
   <link rel="canonical" href="${escAttr(canonical)}">
@@ -1271,7 +1388,7 @@ function pageHtml(route, title, description, body, schema = [], options = {}) {
   <meta property="og:url" content="${escAttr(canonical)}">
   <meta property="og:image" content="${SITE_URL}${OG_IMAGE_PATH}">
   <meta property="og:image:secure_url" content="${SITE_URL}${OG_IMAGE_PATH}">
-  <meta property="og:image:type" content="image/png">
+  <meta property="og:image:type" content="image/svg+xml">
   <meta property="og:image:width" content="1200">
   <meta property="og:image:height" content="630">
   <meta property="og:image:alt" content="${BRAND_NAME}: find dog grooming near me across Canada">
@@ -1279,7 +1396,6 @@ function pageHtml(route, title, description, body, schema = [], options = {}) {
   <meta name="twitter:image" content="${SITE_URL}${OG_IMAGE_PATH}">
   <meta name="twitter:image:alt" content="${BRAND_NAME}: find dog grooming near me across Canada">
   <link rel="icon" href="/assets/favicon.svg" type="image/svg+xml">
-  <link rel="apple-touch-icon" href="/assets/apple-touch-icon.png">
   <link rel="manifest" href="/assets/site.webmanifest">
   <link rel="preload" href="/assets/site.css" as="style">
   <link rel="stylesheet" href="/assets/site.css">
@@ -1303,6 +1419,7 @@ function header(route) {
     ["/cities/", "Cities"],
     ["/dog-grooming-near-me/", "Near Me"],
     ["/add-your-business/", "Add Your Business"],
+    ["/about/", "About"],
   ];
   return `<header class="site-header">
     <div class="header-inner">
@@ -1325,7 +1442,7 @@ function footer() {
       </div>
       <div><h3>Browse</h3><a href="/dog-grooming/">Dog Grooming</a><a href="/dog-grooming-near-me/">Dog Grooming Near Me</a><a href="/provinces/">Provinces</a><a href="/cities/">Cities</a><a href="/services/">Services</a></div>
       <div><h3>Businesses</h3><a href="/add-your-business/">Add Your Business</a><a href="/for-businesses/">For Businesses</a><a href="/search/">Search Directory</a></div>
-      <div><h3>Company</h3><a href="/privacy/">Privacy Policy</a><a href="/terms/">Terms of Use</a><a href="/sitemap/">HTML Sitemap</a></div>
+      <div><h3>Company</h3><a href="/about/">About</a><a href="/contact/">Contact</a><a href="/editorial-policy/">Editorial Policy</a><a href="/privacy/">Privacy Policy</a><a href="/terms/">Terms of Use</a><a href="/sitemap/">HTML Sitemap</a></div>
       <div><h3>SEO</h3><a href="/sitemap.xml">XML Sitemap</a><a href="/robots.txt">Robots.txt</a><a href="/">doggroomerscanada.ca</a></div>
     </div>
   </footer>`;
@@ -1351,7 +1468,7 @@ function listingCard(item, compact = false) {
   actions.push(`<a class="btn btn-primary" href="${item.url}">View Profile</a>`);
 
   return `<article class="listing-card${compact ? " compact" : ""}">
-    <a class="listing-image" href="${item.url}">${item.image ? `<img src="${escAttr(item.image)}" alt="${escAttr(item.title)} dog grooming listing photo" loading="lazy" referrerpolicy="no-referrer">` : dogFallback()}</a>
+    <a class="listing-image" href="${item.url}">${dogFallback()}</a>
     <div class="listing-body">
       <h3><a class="listing-title" href="${item.url}">${esc(item.title)}</a></h3>
       <div class="meta-line">${ratingLine(item)}<span>${esc(item.city)}, ${esc(item.provinceCode)}</span></div>
@@ -1390,6 +1507,153 @@ function breadcrumbs(items) {
 
 function simpleContentPage(title, lead, extra) {
   return `<section class="page-intro"><div class="wrap">${breadcrumbs([{ label: "Home", url: "/" }, { label: title }])}<h1 class="city-title">${esc(title)}</h1><p class="lead">${esc(lead)}</p></div></section><section class="section"><div class="wrap">${extra}</div></section>`;
+}
+
+function directoryMethodSection(context) {
+  return `<section class="section">
+      <div class="wrap">
+        <div class="section-head">
+          <div>
+            <h2>How Dog Groomers Canada adds value</h2>
+            <p>The directory turns scattered public business information into crawlable city, service, and profile pages with practical booking checks for pet owners.</p>
+          </div>
+          <a class="link-arrow" href="/editorial-policy/">Editorial policy -></a>
+        </div>
+        <div class="grid-3">
+          <div class="info-card"><h3>Organized for decisions</h3><p>Listings are grouped by province, city, service signals, contact availability, rating strength, and nearby alternatives so visitors can compare options quickly.</p></div>
+          <div class="info-card"><h3>Practical owner guidance</h3><p>City, service, and profile pages include original reminders about coat type, appointment fit, de-matting, puppy handling, senior dogs, cancellation policies, and price confirmation.</p></div>
+          <div class="info-card"><h3>Corrections welcome</h3><p>Because business details change, every page links to update and contact options. Groomers can request corrections for names, websites, phone numbers, hours, services, and city placement.</p></div>
+        </div>
+        <p class="muted" style="margin-top:16px">Current directory snapshot: ${context.stats.listings.toLocaleString()} listings, ${context.stats.cities.toLocaleString()} city pages, ${context.stats.withPhones.toLocaleString()} listings with phone numbers, and ${context.stats.withWebsites.toLocaleString()} listings with websites.</p>
+      </div>
+    </section>`;
+}
+
+function cityQualitySection(city, services, nearby) {
+  const withPhones = city.listings.filter((item) => item.phone).length;
+  const withWebsites = city.listings.filter((item) => item.website).length;
+  const withHours = city.listings.filter((item) => item.hours.length).length;
+  const serviceText = services.length ? services.slice(0, 5).map((service) => service.short).join(", ") : "bath, brush, haircut, nail trim, and coat-care";
+  const nearbyText = nearby.length ? nearby.slice(0, 3).map((item) => `${item.city}, ${item.provinceCode}`).join("; ") : `${city.province} cities nearby`;
+  return `<section class="section">
+      <h2>What to compare in ${esc(city.city)}</h2>
+      <p>Use this local page as a shortlist, then confirm the details that matter for your dog before booking. The strongest matches usually combine clear contact details, recent customer signals, relevant coat-care experience, and realistic appointment availability.</p>
+      <div class="grid-3">
+        <div class="info-card"><h3>Contact coverage</h3><p>${withPhones.toLocaleString()} of ${city.count.toLocaleString()} listings include a phone number, and ${withWebsites.toLocaleString()} include a website link for deeper service details.</p></div>
+        <div class="info-card"><h3>Service signals</h3><p>Common signals on this page include ${esc(serviceText)}. Ask the groomer what is included, what costs extra, and whether your dog's coat needs a consultation.</p></div>
+        <div class="info-card"><h3>Hours and nearby options</h3><p>${withHours.toLocaleString()} listings include hours in the source data. Nearby pages to compare include ${esc(nearbyText)}.</p></div>
+      </div>
+    </section>`;
+}
+
+function listingGuidanceSection(listing) {
+  const serviceText = listing.services.length ? listing.services.slice(0, 5).join(", ") : "bath, haircut, nail trim, de-shedding, de-matting, and puppy grooming";
+  return `<section class="section">
+      <h2>Before you contact ${esc(listing.title)}</h2>
+      <p>This profile is a starting point for comparing ${esc(listing.city)} grooming options. Confirm current availability, exact services, pricing, vaccination requirements, appointment length, and whether the groomer has recent experience with your dog's coat and temperament.</p>
+      <div class="grid-3">
+        <div class="info-card"><h3>Services to confirm</h3><p>Ask whether ${esc(serviceText)} are currently offered and whether breed-specific trims, senior dogs, anxious dogs, or heavy matting require a consultation.</p></div>
+        <div class="info-card"><h3>Booking details</h3><p>Check drop-off timing, pickup windows, cancellation policy, quote ranges, payment methods, and whether the business is accepting new clients.</p></div>
+        <div class="info-card"><h3>Listing accuracy</h3><p>Directory details can change. Use the phone, website, and map links above when available, and send corrections if a detail is outdated.</p></div>
+      </div>
+    </section>`;
+}
+
+function serviceGuidanceSection(service) {
+  const advice = serviceAdvice(service.slug);
+  return `<section class="section">
+      <h2>How to compare ${esc(service.name.toLowerCase())}</h2>
+      <p>${esc(advice.intro)}</p>
+      <div class="grid-3">${advice.cards
+        .map((card) => `<div class="info-card"><h3>${esc(card.title)}</h3><p>${esc(card.body)}</p></div>`)
+        .join("")}</div>
+    </section>`;
+}
+
+function serviceAdvice(slug) {
+  const common = {
+    intro: "Use the service listings as a shortlist, then call the business to confirm what is included, how pricing works, and whether your dog's coat or temperament needs extra time.",
+    cards: [
+      { title: "Package scope", body: "Ask what is included, what is an add-on, and whether the groomer recommends a full groom, tidy-up, or maintenance visit." },
+      { title: "Dog fit", body: "Mention coat type, age, size, temperament, health notes, and past grooming issues before booking." },
+      { title: "Practical details", body: "Confirm appointment length, arrival instructions, cancellation policy, current pricing, and pickup timing." },
+    ],
+  };
+  const bySlug = {
+    "dog-haircuts": {
+      intro: "Haircut and styling quality depends on coat type, matting, breed expectations, and how much length you want to keep.",
+      cards: [
+        { title: "Bring reference notes", body: "Describe the trim you want, areas to keep longer, sanitary trim needs, and whether breed-standard styling matters." },
+        { title: "Discuss coat condition", body: "Mats, double coats, and pelted areas can change what is possible without discomfort." },
+        { title: "Ask about finish work", body: "Confirm face, feet, tail, ears, nail trim, bath, blow dry, and any hand-scissoring add-ons." },
+      ],
+    },
+    "nail-trimming": {
+      intro: "Nail appointments are quick, but they still depend on the dog's comfort level, nail length, and whether grinding is available.",
+      cards: [
+        { title: "Trim or grind", body: "Ask whether the business clips, grinds, or offers both, especially for thick or dark nails." },
+        { title: "Handling needs", body: "Mention fear, sensitivity, past quicking, senior mobility, or whether two handlers may be needed." },
+        { title: "Walk-in rules", body: "Confirm whether nail trims need an appointment, proof of vaccination, or a bundled grooming package." },
+      ],
+    },
+    "puppy-grooming": {
+      intro: "Puppy grooming is about building comfort as much as getting clean, so short, gentle appointments matter.",
+      cards: [
+        { title: "First-groom plan", body: "Ask whether the appointment focuses on bath, brush, nails, face tidy, and positive handling instead of a long full groom." },
+        { title: "Vaccination timing", body: "Confirm age requirements, vaccine expectations, and whether the puppy should visit before the adult coat changes." },
+        { title: "At-home prep", body: "Ask what brushing, paw handling, and sound exposure will make future visits easier." },
+      ],
+    },
+    "bath-and-brush": {
+      intro: "Bath and brush visits can maintain skin and coat health between full grooms when the package matches the dog's coat.",
+      cards: [
+        { title: "Coat-specific shampoo", body: "Ask about sensitive skin, shedding, odor, allergies, and whether conditioner or medicated products are appropriate." },
+        { title: "Drying method", body: "Confirm how the dog will be dried, especially for anxious dogs, seniors, puppies, or heavy-coated breeds." },
+        { title: "Maintenance schedule", body: "Ask how often your dog should return based on shedding, lifestyle, coat length, and brushing at home." },
+      ],
+    },
+    deshedding: {
+      intro: "De-shedding works best when the groomer understands undercoat, skin sensitivity, and seasonal coat changes.",
+      cards: [
+        { title: "Undercoat approach", body: "Ask what tools are used and whether the groomer avoids coat damage on double-coated breeds." },
+        { title: "Realistic results", body: "Confirm that de-shedding reduces loose coat but does not stop natural shedding." },
+        { title: "Home care", body: "Ask what brushing tools and schedule can maintain the result between visits." },
+      ],
+    },
+    "mobile-dog-grooming": {
+      intro: "Mobile grooming is convenient, but availability, parking, water, power, dog size, and service area can affect fit.",
+      cards: [
+        { title: "Service radius", body: "Confirm that your address is inside the groomer's route and ask about travel fees." },
+        { title: "Setup needs", body: "Ask about driveway access, parking space, power or water requirements, and weather limitations." },
+        { title: "Dog comfort", body: "Mobile grooming can suit anxious dogs, but confirm noise level, crate use, and owner presence rules." },
+      ],
+    },
+    "teeth-cleaning": {
+      intro: "Non-veterinary teeth brushing or cosmetic cleaning is not a substitute for veterinary dental care.",
+      cards: [
+        { title: "Scope of service", body: "Ask whether the service is brushing, breath care, cosmetic cleaning, or a referral to a veterinarian." },
+        { title: "Health concerns", body: "If gums bleed, teeth are loose, or pain is present, contact a veterinarian before grooming add-ons." },
+        { title: "Maintenance", body: "Confirm how often brushing is recommended and what at-home products are safe for dogs." },
+      ],
+    },
+    dematting: {
+      intro: "De-matting can be uncomfortable if a coat is tight, so safety and comfort should lead the decision.",
+      cards: [
+        { title: "Comfort first", body: "Ask when shaving is safer than brushing out mats and whether severe matting requires multiple visits." },
+        { title: "Skin checks", body: "Mats can hide irritation or sores, so confirm how the groomer handles sensitive areas." },
+        { title: "Prevention plan", body: "Ask what brush, comb, and schedule will prevent the same matting from returning." },
+      ],
+    },
+    "cat-grooming": {
+      intro: "Cat grooming needs different handling, timing, and safety expectations than dog grooming.",
+      cards: [
+        { title: "Cat experience", body: "Ask how often the groomer works with cats and whether they handle senior or nervous cats." },
+        { title: "Safety limits", body: "Confirm matting, sedation, vaccination, carrier, and temperament requirements before booking." },
+        { title: "Service scope", body: "Clarify whether the visit includes brushing, sanitary trims, nail trims, lion cuts, or bath services." },
+      ],
+    },
+  };
+  return bySlug[slug] || common;
 }
 
 function detailRow(label, value) {
@@ -1517,6 +1781,13 @@ function organizationSchema() {
       height: 180,
     },
     image: `${SITE_URL}${OG_IMAGE_PATH}`,
+    contactPoint: {
+      "@type": "ContactPoint",
+      email: CONTACT_EMAIL,
+      contactType: "customer support",
+      areaServed: "CA",
+      availableLanguage: ["English"],
+    },
   };
 }
 
@@ -1556,7 +1827,6 @@ function localBusinessSchema(listing) {
     url: absoluteUrl(listing.url),
     description: listing.description,
     telephone: listing.phone || undefined,
-    image: listing.photos.length ? listing.photos : undefined,
     address: {
       "@type": "PostalAddress",
       streetAddress: listing.street || listing.address,
@@ -1668,9 +1938,22 @@ function getRange(get, prefix, from, to) {
   return values.filter(Boolean);
 }
 
-function buildFallbackDescription(title, city, province, rating, reviews) {
-  const ratingText = rating ? ` with a ${rating.toFixed(1)} star rating${reviews ? ` from ${reviews.toLocaleString()} reviews` : ""}` : "";
-  return `${title} is a dog grooming business in ${city}, ${province}${ratingText}. Confirm services, pricing, hours, and availability directly before booking.`;
+function buildListingDescription(listing) {
+  const category = listing.category && /groom|pet|dog|cat/i.test(listing.category) ? listing.category.toLowerCase() : "dog grooming business";
+  const pieces = [`${listing.title} is listed as a ${category} in ${listing.city}, ${listing.province}`];
+  if (listing.rating) {
+    pieces.push(`It has a listed ${listing.rating.toFixed(1)} star rating${listing.reviews ? ` from ${listing.reviews.toLocaleString()} reviews` : ""}`);
+  }
+  if (listing.services.length) {
+    pieces.push(`Service signals include ${listing.services.slice(0, 4).join(", ")}`);
+  }
+  const contactSignals = [];
+  if (listing.phone) contactSignals.push("phone");
+  if (listing.website) contactSignals.push("website");
+  if (listing.hours.length) contactSignals.push("listed hours");
+  if (contactSignals.length) pieces.push(`The directory includes ${joinWithAnd(contactSignals)} for follow-up`);
+  pieces.push("Confirm current services, prices, availability, and coat-specific needs directly before booking");
+  return `${pieces.join(". ")}.`;
 }
 
 function qualityScore(listing) {
@@ -1680,7 +1963,6 @@ function qualityScore(listing) {
     Math.min(listing.reviews, 500) / 12 +
     (listing.phone ? 8 : 0) +
     (listing.website ? 8 : 0) +
-    (listing.image ? 5 : 0) +
     (listing.services.length ? 4 : 0) -
     (listing.temporarilyClosed ? 25 : 0)
   );
@@ -1758,6 +2040,12 @@ function firstPresent(values) {
 
 function unique(values) {
   return [...new Set(values.filter(Boolean))];
+}
+
+function joinWithAnd(values) {
+  if (values.length <= 1) return values[0] || "";
+  if (values.length === 2) return `${values[0]} and ${values[1]}`;
+  return `${values.slice(0, -1).join(", ")}, and ${values[values.length - 1]}`;
 }
 
 function uniqueBy(items, fn) {
@@ -1917,9 +2205,9 @@ function siteManifest() {
       theme_color: THEME_COLOR,
       icons: [
         {
-          src: "/assets/apple-touch-icon.png",
-          sizes: "512x512",
-          type: "image/png",
+          src: LOGO_MARK_PATH,
+          sizes: "any",
+          type: "image/svg+xml",
         },
       ],
     },
@@ -1928,10 +2216,12 @@ function siteManifest() {
   )}\n`;
 }
 
-function googleIntegrationHead() {
+function googleIntegrationHead(route) {
   const scripts = [];
   if (ADSENSE_CLIENT) {
     scripts.push(`<meta name="google-adsense-account" content="${ADSENSE_CLIENT}">`);
+  }
+  if (ADSENSE_CLIENT && ADSENSE_SCRIPT_ROUTES.has(route)) {
     scripts.push(`<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=${ADSENSE_CLIENT}" crossorigin="anonymous"></script>`);
   }
   if (GOOGLE_ANALYTICS_ID) {

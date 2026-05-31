@@ -8,9 +8,9 @@
   "theme_color": "#073b2a",
   "icons": [
     {
-      "src": "/assets/apple-touch-icon.png",
-      "sizes": "512x512",
-      "type": "image/png"
+      "src": "/assets/logo-mark.svg",
+      "sizes": "any",
+      "type": "image/svg+xml"
     }
   ]
 }

@@ -113,9 +113,6 @@
   }
 
   function imageMarkup(item) {
-    if (item.image) {
-      return `<img src="${escapeAttr(item.image)}" alt="${escapeAttr(item.title)} dog grooming listing photo" loading="lazy" referrerpolicy="no-referrer">`;
-    }
     return `<span class="fallback" aria-hidden="true">${dogIcon()}</span>`;
   }
 

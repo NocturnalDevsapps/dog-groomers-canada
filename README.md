@@ -8,14 +8,19 @@ Static, GitHub Pages-ready dog grooming directory for [Dog Groomers Canada](http
 
 ## What gets generated
 
-- Homepage with search, province browsing, top cities, ad slots, and helpful grooming guidance
+- Homepage with search, province browsing, top cities, editorial guidance, and clear directory value notes
 - Province pages
 - City pages
 - Individual dog groomer profile pages
 - Service pages
+- About, contact, editorial policy, privacy, and terms pages
 - Exact-intent keyword pages for `/dog-grooming/` and `/dog-grooming-near-me/`
 - Search and near-me pages enhanced with JavaScript
 - `sitemap.xml`, HTML sitemap, `robots.txt`, `CNAME`, `.nojekyll`, and `404.html`
+
+## AdSense review posture
+
+The AdSense account meta tag remains in the site head, and `ads.txt` is generated at the domain root. Display ad slots are disabled in `tools/build-site.js` while the site is under review, and the AdSense script is limited to core trust/content pages so generated directory pages do not show empty ad surfaces before approval.
 
 ## Rebuild from the CSV
 

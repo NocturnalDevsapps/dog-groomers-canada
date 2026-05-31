@@ -852,6 +852,19 @@ h3 {
   object-fit: cover;
 }
 
+.profile-photo .fallback {
+  min-height: 280px;
+  display: grid;
+  place-items: center;
+  color: var(--green);
+  background: linear-gradient(145deg, #eaf4ee, #fff6f3);
+}
+
+.profile-photo svg {
+  width: 92px;
+  height: 92px;
+}
+
 .detail-list {
   display: grid;
   gap: 12px;
