@@ -520,7 +520,7 @@ function writeStaticAssets(context) {
         reviews: listing.reviews,
         lat: listing.lat,
         lng: listing.lng,
-        image: "",
+        image: listing.image,
         services: listing.services,
         url: listing.url,
         cityUrl: listing.cityUrl,
@@ -840,7 +840,11 @@ function writeListingPages(context) {
     const city = cityMap.get(`${listing.provinceSlug}/${listing.citySlug}`);
     const province = context.provinces.find((item) => item.slug === listing.provinceSlug);
     const related = relatedListings(listing, context.listings).slice(0, 6);
-    const photos = "";
+    const photos = listing.photos.length
+      ? `<section class="section"><h2>Photos</h2><div class="photo-grid">${listing.photos
+          .map((photo) => `<a href="${escAttr(photo)}" target="_blank" rel="noopener nofollow"><img src="${escAttr(photo)}" alt="${escAttr(listing.title)} photo" loading="lazy" referrerpolicy="no-referrer"></a>`)
+          .join("")}</div></section>`
+      : "";
     const hours = listing.hours.length
       ? `<section class="section"><h2>Hours listed</h2><ul class="hours-list">${listing.hours
           .map((item) => `<li><strong>${esc(item.day)}</strong><span>${esc(item.hours)}</span></li>`)
@@ -875,7 +879,7 @@ function writeListingPages(context) {
               <div class="meta-line">${ratingLine(listing)}<span>${esc(listing.city)}, ${esc(listing.provinceCode)}</span></div>
               <div class="tag-cloud" style="margin-top:18px">${listing.phone ? `<a class="btn btn-dark" href="tel:${escAttr(listing.phoneRaw || listing.phone)}">Call ${esc(listing.phone)}</a>` : ""}${listing.website ? `<a class="btn btn-primary" href="${escAttr(listing.website)}" target="_blank" rel="nofollow noopener">Visit Website</a>` : ""}${listing.mapsUrl ? `<a class="btn btn-light" href="${escAttr(listing.mapsUrl)}" target="_blank" rel="nofollow noopener">Open Map</a>` : ""}</div>
             </div>
-            <div class="profile-photo">${dogFallback()}</div>
+            <div class="profile-photo">${listing.image ? `<img src="${escAttr(listing.image)}" alt="${escAttr(listing.title)} listing photo" loading="eager" referrerpolicy="no-referrer">` : dogFallback()}</div>
           </div>
         </div>
       </section>
@@ -1468,7 +1472,7 @@ function listingCard(item, compact = false) {
   actions.push(`<a class="btn btn-primary" href="${item.url}">View Profile</a>`);
 
   return `<article class="listing-card${compact ? " compact" : ""}">
-    <a class="listing-image" href="${item.url}">${dogFallback()}</a>
+    <a class="listing-image" href="${item.url}">${item.image ? `<img src="${escAttr(item.image)}" alt="${escAttr(item.title)} dog grooming listing photo" loading="lazy" referrerpolicy="no-referrer">` : dogFallback()}</a>
     <div class="listing-body">
       <h3><a class="listing-title" href="${item.url}">${esc(item.title)}</a></h3>
       <div class="meta-line">${ratingLine(item)}<span>${esc(item.city)}, ${esc(item.provinceCode)}</span></div>
@@ -1827,6 +1831,7 @@ function localBusinessSchema(listing) {
     url: absoluteUrl(listing.url),
     description: listing.description,
     telephone: listing.phone || undefined,
+    image: listing.photos.length ? listing.photos : undefined,
     address: {
       "@type": "PostalAddress",
       streetAddress: listing.street || listing.address,
