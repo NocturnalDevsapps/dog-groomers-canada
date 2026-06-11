@@ -309,6 +309,307 @@
       .catch(() => {});
   }
 
+  function initCostEstimatorTool() {
+    const form = $("[data-cost-estimator-tool]");
+    const result = $("[data-cost-estimator-result]");
+    if (!form || !result) return;
+
+    const ranges = {
+      full: { small: [75, 130], medium: [95, 170], large: [130, 230], giant: [180, 320] },
+      bath: { small: [45, 85], medium: [60, 110], large: [80, 150], giant: [110, 220] },
+      nails: { small: [15, 35], medium: [15, 35], large: [20, 40], giant: [25, 45] },
+      deshed: { small: [70, 135], medium: [90, 175], large: [125, 240], giant: [175, 330] },
+      mobile: { small: [110, 190], medium: [135, 235], large: [175, 310], giant: [235, 390] },
+    };
+
+    function estimate() {
+      const size = fieldValue(form, "size") || "medium";
+      const service = fieldValue(form, "service") || "full";
+      const coat = fieldValue(form, "coat");
+      const condition = fieldValue(form, "condition");
+      const extras = fieldValue(form, "extras");
+      const area = fieldValue(form, "area");
+      const base = (ranges[service] || ranges.full)[size] || ranges.full.medium;
+      let low = base[0];
+      let high = base[1];
+      const notes = [];
+
+      if (coat === "curly" || coat === "drop") {
+        low += 15;
+        high += 45;
+        notes.push("Curly, wool, and long drop coats often need more brushing, clipping, and finish time.");
+      } else if (coat === "double") {
+        low += 10;
+        high += service === "bath" || service === "deshed" ? 65 : 40;
+        notes.push("Double coats can need extra drying and undercoat removal, especially during seasonal coat blow.");
+      } else if (coat === "wire") {
+        high += 25;
+        notes.push("Wire or mixed coats can vary by technique, coat density, and finish expectations.");
+      }
+
+      if (condition === "long") {
+        low += 10;
+        high += 35;
+        notes.push("An overdue coat usually takes longer to bathe, dry, brush, and finish.");
+      } else if (condition === "tangled") {
+        low += 20;
+        high += 70;
+        notes.push("Tangles can add brushing, clipping, or consultation time.");
+      } else if (condition === "matted") {
+        low += 35;
+        high += 120;
+        notes.push("Matted or packed coat may require de-matting fees, a shorter shave, or a comfort-first assessment.");
+      }
+
+      if (extras === "basic") {
+        low += 10;
+        high += 30;
+        notes.push("Nail grinding, teeth brushing, or small add-ons are often priced separately.");
+      } else if (extras === "skin") {
+        low += 10;
+        high += 35;
+        notes.push("Special shampoo, conditioner, skunk, flea, or sensitive-skin products can change the quote.");
+      } else if (extras === "time") {
+        low += 25;
+        high += 90;
+        notes.push("Extra handling, express service, or de-matting can add time-based fees.");
+      }
+
+      if (area === "mobile" && service !== "mobile") {
+        low += 25;
+        high += 85;
+        notes.push("Mobile grooming can include travel fees, service-area minimums, parking limits, or route availability.");
+      } else if (area === "remote") {
+        low += 15;
+        high += 75;
+        notes.push("Remote routes or limited local appointment supply can affect travel cost and availability.");
+      }
+
+      low = Math.max(15, Math.round(low / 5) * 5);
+      high = Math.max(low + 15, Math.round(high / 5) * 5);
+      result.innerHTML = `<h2>Estimated planning range: $${low}-$${high} CAD</h2>
+        <p>Use this range to prepare a quote request. The groomer should confirm the final price after hearing the dog's details or seeing the coat.</p>
+        <ul class="check-list">${notes.slice(0, 5).map((note) => `<li>${escapeHtml(note)}</li>`).join("")}</ul>
+        <p class="muted">Ask what is included in the package, what add-ons cost extra, and what could change after check-in.</p>`;
+    }
+
+    form.addEventListener("submit", (event) => {
+      event.preventDefault();
+      estimate();
+    });
+    form.addEventListener("change", estimate);
+  }
+
+  function initFrequencyTool() {
+    const form = $("[data-frequency-tool]");
+    const result = $("[data-frequency-result]");
+    if (!form || !result) return;
+
+    function estimate() {
+      const coat = fieldValue(form, "coat");
+      const length = fieldValue(form, "length");
+      const brushing = fieldValue(form, "brushing");
+      const lifestyle = fieldValue(form, "lifestyle");
+      const matting = fieldValue(form, "matting");
+      const season = fieldValue(form, "season");
+      let weeks = 10;
+      const notes = [];
+
+      if (coat === "curly" || coat === "drop") {
+        weeks -= 3;
+        notes.push("Curly and drop coats usually need closer appointment spacing because tangles can form near the skin.");
+      } else if (coat === "double") {
+        weeks -= 1;
+        notes.push("Double coats often need seasonal bath, blowout, and undercoat removal.");
+      } else if (coat === "short") {
+        weeks += 2;
+        notes.push("Short coats may go longer between full appointments, but nails, paws, ears, and skin still need routine checks.");
+      }
+
+      if (length === "long") weeks -= 2;
+      if (length === "medium") weeks -= 1;
+      if (brushing === "rare") {
+        weeks -= 2;
+        notes.push("Rare brushing raises matting risk. A shorter trim or earlier maintenance visit may be more comfortable.");
+      } else if (brushing === "daily") {
+        weeks += 1;
+        notes.push("Consistent brushing can help maintain a longer interval if the coat stays combable.");
+      }
+      if (lifestyle === "wet") weeks -= 2;
+      if (lifestyle === "active") weeks -= 1;
+      if (matting === "high") {
+        weeks -= 3;
+        notes.push("A history of mats or shave-downs usually means the schedule should be shorter until the coat is stable.");
+      } else if (matting === "some") {
+        weeks -= 1;
+      }
+      if (season !== "normal") {
+        weeks -= 1;
+        notes.push("Seasonal conditions can change the schedule. Salt, mud, shedding, swimming, burrs, and sweaters all add maintenance needs.");
+      }
+
+      weeks = Math.max(3, Math.min(14, weeks));
+      const low = Math.max(3, weeks - 1);
+      const high = Math.min(16, weeks + 1);
+      const homeCare =
+        coat === "short"
+          ? "Brush weekly, keep nails on schedule, and wipe paws after salt, mud, or heat exposure."
+          : "Brush in sections, check with a metal comb, and inspect ears, armpits, belly, legs, feet, and tail base.";
+
+      result.innerHTML = `<h2>Estimated grooming interval: every ${low}-${high} weeks</h2>
+        <p>${homeCare}</p>
+        <ul class="check-list">${notes.slice(0, 4).map((note) => `<li>${escapeHtml(note)}</li>`).join("")}</ul>
+        <p class="muted">Ask a groomer to adjust this after seeing your dog's coat, skin, nails, behavior, and haircut goals.</p>`;
+    }
+
+    form.addEventListener("submit", (event) => {
+      event.preventDefault();
+      estimate();
+    });
+    form.addEventListener("change", estimate);
+  }
+
+  function initMattingTool() {
+    const form = $("[data-matting-tool]");
+    const result = $("[data-matting-result]");
+    if (!form || !result) return;
+
+    function update() {
+      const score = $$("input[type='checkbox']:checked", form).reduce((sum, input) => sum + Number(input.dataset.points || 0), 0);
+      let level = "Low";
+      let advice = "Keep checking friction zones and maintain your normal brushing and nail routine.";
+      if (score >= 11) {
+        level = "High";
+        advice = "Book a grooming assessment soon. Avoid bathing a tangled coat and do not cut tight mats with scissors.";
+      } else if (score >= 6) {
+        level = "Moderate";
+        advice = "Increase comb checks, shorten brushing sessions, and consider booking earlier than usual.";
+      }
+      result.innerHTML = `<h2>Risk score: ${score} (${level})</h2>
+        <p>${escapeHtml(advice)}</p>
+        <p class="muted">If mats are tight, close to the skin, painful, damp, or pelted, ask a professional groomer or veterinarian for guidance.</p>`;
+    }
+
+    form.addEventListener("change", update);
+    update();
+  }
+
+  function initCoatPlannerTool() {
+    const form = $("[data-coat-planner-tool]");
+    const result = $("[data-coat-planner-result]");
+    if (!form || !result) return;
+
+    function plan() {
+      const coat = fieldValue(form, "coat");
+      const length = fieldValue(form, "length");
+      const season = fieldValue(form, "season");
+      const lifestyle = fieldValue(form, "lifestyle");
+      const interval = fieldValue(form, "interval");
+      const tools = fieldValue(form, "tools");
+      const notes = [];
+      let frequency = "Brush 1-2 times per week and check nails, paws, ears, and skin weekly.";
+
+      if (coat === "curly" || coat === "drop") {
+        frequency = length === "long" ? "Brush and comb in sections daily or every other day." : "Brush and comb 3-4 times per week.";
+        notes.push("A metal comb should glide to the skin after brushing, especially behind ears, armpits, belly, legs, feet, and tail base.");
+      } else if (coat === "double") {
+        frequency = "Brush 2-3 times per week, with extra undercoat work during seasonal shedding.";
+        notes.push("Avoid shaving double coats unless a veterinarian or groomer recommends it for a specific health or comfort reason.");
+      } else if (coat === "short") {
+        frequency = "Brush weekly, wipe paws as needed, and keep nails on a predictable schedule.";
+        notes.push("Short coats still need skin checks, paw care, nail trims, and seasonal bath planning.");
+      }
+
+      if (season !== "normal") notes.push("Add quick coat checks after salt, mud, lake water, burrs, wet leaves, sweaters, or harness use.");
+      if (lifestyle === "wet") notes.push("Dry the coat fully after rain, swimming, snow, or baths because moisture can tighten tangles.");
+      if (lifestyle === "active") notes.push("Check friction zones after daycare, trails, dog parks, harness walks, or long outings.");
+      if (interval === "long") notes.push("If professional grooming is more than 10 weeks apart, keep the coat shorter or increase comb checks.");
+      if (tools === "none" || tools === "basic") notes.push("Ask a groomer which brush and comb match your dog's coat instead of buying every tool at once.");
+
+      result.innerHTML = `<h2>Recommended home plan</h2>
+        <p>${escapeHtml(frequency)}</p>
+        <ul class="check-list">${notes.slice(0, 6).map((note) => `<li>${escapeHtml(note)}</li>`).join("")}</ul>
+        <p class="muted">If the comb catches near the skin, book earlier and avoid bathing until the coat is assessed.</p>`;
+    }
+
+    form.addEventListener("submit", (event) => {
+      event.preventDefault();
+      plan();
+    });
+    form.addEventListener("change", plan);
+  }
+
+  function initPuppyPlannerTool() {
+    const form = $("[data-puppy-planner-tool]");
+    const result = $("[data-puppy-planner-result]");
+    if (!form || !result) return;
+
+    function plan() {
+      const age = fieldValue(form, "age");
+      const vaccines = fieldValue(form, "vaccines");
+      const coat = fieldValue(form, "coat");
+      const handling = fieldValue(form, "handling");
+      const goal = fieldValue(form, "goal");
+      const home = fieldValue(form, "home");
+      const notes = [];
+      let appointment = "Ask for a gentle intro appointment focused on handling comfort, short breaks, and positive exposure.";
+
+      if (age === "young") {
+        notes.push("Ask your veterinarian and groomer about safe timing before visiting a salon.");
+      } else if (age === "starter") {
+        appointment = "A short puppy intro, bath, dry, nails, and light tidy may be a better first step than a long full haircut.";
+      } else if (age === "late") {
+        notes.push("Older puppies with adult coat changes may need a more careful matting and comfort assessment.");
+      }
+
+      if (vaccines !== "current") notes.push("Confirm vaccine requirements and age policy before booking.");
+      if (coat === "curly" || coat === "drop") notes.push("Start comb checks early because puppy coat changes can mat close to the skin.");
+      if (handling === "sensitive") notes.push("Choose a groomer who is comfortable with short sessions, breaks, and slower handling.");
+      if (goal === "full") notes.push("Ask whether a full haircut is realistic for a first visit or whether a tidy intro is kinder.");
+      if (home === "rare" || home === "none") notes.push("Practice touching paws, ears, face, tail, brushing, combing, and dryer sounds for a few seconds at a time.");
+
+      result.innerHTML = `<h2>Suggested first-groom plan</h2>
+        <p>${escapeHtml(appointment)}</p>
+        <ul class="check-list">${notes.slice(0, 6).map((note) => `<li>${escapeHtml(note)}</li>`).join("")}</ul>
+        <p class="muted">The first visit should build trust. A perfect haircut can wait if the puppy needs a shorter, calmer appointment.</p>`;
+    }
+
+    form.addEventListener("submit", (event) => {
+      event.preventDefault();
+      plan();
+    });
+    form.addEventListener("change", plan);
+  }
+
+  function initWinterPawTool() {
+    const form = $("[data-winter-paw-tool]");
+    const result = $("[data-winter-paw-result]");
+    if (!form || !result) return;
+
+    function update() {
+      const score = $$("input[type='checkbox']:checked", form).reduce((sum, input) => sum + Number(input.dataset.points || 0), 0);
+      let level = "Low";
+      let advice = "Keep wiping paws after walks, checking nails, and watching for salt irritation.";
+      if (score >= 11) {
+        level = "High";
+        advice = "Book paw, nail, or coat maintenance soon and ask about winter-safe trimming. Call a veterinarian for cracked, bleeding, painful, or infected pads.";
+      } else if (score >= 6) {
+        level = "Moderate";
+        advice = "Add paw rinsing, drying, nail checks, friction-zone combing, and boot or balm planning before conditions worsen.";
+      }
+      result.innerHTML = `<h2>Winter paw risk score: ${score} (${level})</h2>
+        <p>${escapeHtml(advice)}</p>
+        <p class="muted">Avoid cutting mats or paw hair tightly with scissors at home. Ask a groomer if ice balls, salt, or coat friction keep returning.</p>`;
+    }
+
+    form.addEventListener("change", update);
+    update();
+  }
+
+  function fieldValue(form, name) {
+    return form.querySelector(`[name='${name}']`)?.value || "";
+  }
+
   function escapeHtml(value) {
     return String(value || "")
       .replace(/&/g, "&amp;")
@@ -345,5 +646,11 @@
     initSearchPage();
     initNearMePage();
     initNearbyHint();
+    initCostEstimatorTool();
+    initFrequencyTool();
+    initMattingTool();
+    initCoatPlannerTool();
+    initPuppyPlannerTool();
+    initWinterPawTool();
   });
 })();
