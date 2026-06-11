@@ -8,7 +8,7 @@
   "theme_color": "#073b2a",
   "icons": [
     {
-      "src": "/assets/logo-mark.svg",
+      "src": "/assets/logo-mark-realistic.png",
       "sizes": "any",
       "type": "image/svg+xml"
     }

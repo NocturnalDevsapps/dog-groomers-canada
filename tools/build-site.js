@@ -15,9 +15,12 @@ const NOW = new Date().toISOString().slice(0, 10);
 const BRAND_NAME = "Dog Groomers Canada";
 const THEME_COLOR = "#073b2a";
 const CONTACT_EMAIL = "nocturnaldevs@gmail.com";
-const LOGO_MARK_PATH = "/assets/logo-mark.svg";
-const LOGO_PATH = "/assets/logo.svg";
+const LOGO_MARK_PATH = "/assets/logo-mark-realistic.png";
+const LOGO_PATH = "/assets/logo-mark-realistic.png";
+const FAVICON_PATH = "/assets/favicon-realistic.png";
 const OG_IMAGE_PATH = "/assets/og-image.svg";
+const PHOTO_HERO_PATH = "/assets/dgc-photo-hero-grooming.jpg";
+const PHOTO_FALLBACK_PATH = "/assets/dgc-photo-coat-care.jpg";
 const ADSENSE_CLIENT = "ca-pub-2494233247909241";
 const GOOGLE_ANALYTICS_ID = "G-BY1BF23TD7";
 const DISPLAY_AD_UNITS = false;
@@ -920,7 +923,7 @@ function writeListingPages(context) {
               <div class="meta-line">${ratingLine(listing)}<span>${esc(listing.city)}, ${esc(listing.provinceCode)}</span></div>
               <div class="tag-cloud" style="margin-top:18px">${listing.phone ? `<a class="btn btn-dark" href="tel:${escAttr(listing.phoneRaw || listing.phone)}">Call ${esc(listing.phone)}</a>` : ""}${listing.website ? `<a class="btn btn-primary" href="${escAttr(listing.website)}" target="_blank" rel="nofollow noopener">Visit Website</a>` : ""}${listing.mapsUrl ? `<a class="btn btn-light" href="${escAttr(listing.mapsUrl)}" target="_blank" rel="nofollow noopener">Open Map</a>` : ""}</div>
             </div>
-            <div class="profile-photo">${listing.image ? `<img src="${escAttr(listing.image)}" alt="${escAttr(listing.title)} listing photo" loading="eager" referrerpolicy="no-referrer">` : dogFallback()}</div>
+            <div class="profile-photo">${listing.image ? `<img src="${escAttr(listing.image)}" alt="${escAttr(listing.title)} listing photo" loading="eager" referrerpolicy="no-referrer">` : dogFallback("eager")}</div>
           </div>
         </div>
       </section>
@@ -2249,8 +2252,9 @@ function pageHtml(route, title, description, body, schema = [], options = {}) {
   <meta name="twitter:card" content="summary_large_image">
   <meta name="twitter:image" content="${SITE_URL}${OG_IMAGE_PATH}">
   <meta name="twitter:image:alt" content="${BRAND_NAME}: find dog grooming near me across Canada">
-  <link rel="icon" href="/assets/favicon.svg" type="image/svg+xml">
+  <link rel="icon" href="${FAVICON_PATH}" type="image/png">
   <link rel="manifest" href="/assets/site.webmanifest">
+  ${routePath === "/" ? `<link rel="preload" href="${PHOTO_HERO_PATH}" as="image">` : ""}
   <link rel="preload" href="/assets/site.css?v=${NOW}" as="style">
   <link rel="stylesheet" href="/assets/site.css?v=${NOW}">
   ${schemaItems.map((item) => `<script type="application/ld+json">${safeJson(item)}</script>`).join("\n  ")}
@@ -3461,8 +3465,8 @@ function organizationSchema() {
     logo: {
       "@type": "ImageObject",
       url: `${SITE_URL}${LOGO_PATH}`,
-      width: 760,
-      height: 180,
+      width: 512,
+      height: 512,
     },
     image: `${SITE_URL}${OG_IMAGE_PATH}`,
     contactPoint: {
@@ -3993,8 +3997,8 @@ function dogLogo() {
   return `<svg viewBox="0 0 64 64" aria-hidden="true"><path fill="currentColor" d="M20 17c-4.8 0-8.9 2.9-10.8 7.3L5.7 33c-.6 1.4.4 3 1.9 3H12v12.2c0 1 .8 1.8 1.8 1.8h4.4c1 0 1.8-.8 1.8-1.8V42h20v6.2c0 1 .8 1.8 1.8 1.8h4.4c1 0 1.8-.8 1.8-1.8V34l5.7-3.8c1.4-.9 1.6-2.9.4-4.1l-5.9-5.9c-.7-.7-1.6-1-2.5-1H38l-3.8-5.1c-.5-.7-1.2-1-2-1H25l-5 3.9Zm-.2 9.2c0-1.2 1-2.2 2.2-2.2s2.2 1 2.2 2.2-1 2.2-2.2 2.2-2.2-1-2.2-2.2Zm24.8 0c0-1.2 1-2.2 2.2-2.2s2.2 1 2.2 2.2-1 2.2-2.2 2.2-2.2-1-2.2-2.2Z"/></svg>`;
 }
 
-function dogFallback() {
-  return `<span class="fallback" aria-hidden="true">${dogLogo()}</span>`;
+function dogFallback(loading = "lazy") {
+  return `<img class="fallback-photo" src="${PHOTO_FALLBACK_PATH}" alt="" loading="${escAttr(loading)}">`;
 }
 
 function searchIcon() {

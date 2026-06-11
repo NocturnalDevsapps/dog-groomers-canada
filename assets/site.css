@@ -226,7 +226,10 @@ button {
 }
 
 .hero {
-  background: #fff;
+  background:
+    linear-gradient(90deg, #fff 0%, #fff 52%, rgba(255, 255, 255, 0.94) 70%, rgba(255, 255, 255, 0.42) 100%),
+    url("/assets/dgc-photo-hero-grooming.jpg") right 42px top 128px / min(46vw, 680px) auto no-repeat,
+    #fff;
   border-bottom: 1px solid var(--line);
 }
 
@@ -243,6 +246,7 @@ button {
 }
 
 .hero-main {
+  position: relative;
   padding: 28px 0 38px 40px;
 }
 
@@ -599,6 +603,11 @@ h3 {
   object-fit: cover;
 }
 
+.listing-image .fallback-photo,
+.profile-photo .fallback-photo {
+  filter: saturate(0.98) contrast(1.02);
+}
+
 .listing-image .fallback {
   height: 100%;
   min-height: inherit;
@@ -837,7 +846,10 @@ h3 {
 }
 
 .guide-band {
-  background: linear-gradient(180deg, #fff, var(--bg));
+  background:
+    linear-gradient(90deg, rgba(255, 255, 255, 0.97) 0%, rgba(251, 252, 250, 0.96) 62%, rgba(251, 252, 250, 0.78) 100%),
+    url("/assets/dgc-photo-coat-care.jpg") right 6% center / min(31vw, 410px) auto no-repeat,
+    linear-gradient(180deg, #fff, var(--bg));
 }
 
 .guide-rail {
@@ -898,6 +910,26 @@ h3 {
   display: inline-block;
   margin-top: 12px;
   color: var(--coral-2);
+}
+
+body[data-page="cost-estimator-tool"] .page-intro,
+body[data-page="frequency-tool"] .page-intro,
+body[data-page="matting-tool"] .page-intro,
+body[data-page="coat-planner-tool"] .page-intro,
+body[data-page="puppy-planner-tool"] .page-intro,
+body[data-page="winter-paw-tool"] .page-intro {
+  background:
+    linear-gradient(90deg, #fff 0%, rgba(255, 255, 255, 0.96) 57%, rgba(255, 255, 255, 0.78) 100%),
+    var(--tool-photo, url("/assets/dgc-photo-coat-care.jpg")) right center / min(36vw, 440px) auto no-repeat,
+    #fff;
+}
+
+body[data-page="puppy-planner-tool"] .page-intro {
+  --tool-photo: url("/assets/dgc-photo-puppy-groom.jpg");
+}
+
+body[data-page="winter-paw-tool"] .page-intro {
+  --tool-photo: url("/assets/dgc-photo-winter-paw.jpg");
 }
 
 .guide-card.compact {
@@ -1357,6 +1389,17 @@ h3 {
 }
 
 @media (max-width: 980px) {
+  .hero,
+  .guide-band,
+  body[data-page="cost-estimator-tool"] .page-intro,
+  body[data-page="frequency-tool"] .page-intro,
+  body[data-page="matting-tool"] .page-intro,
+  body[data-page="coat-planner-tool"] .page-intro,
+  body[data-page="puppy-planner-tool"] .page-intro,
+  body[data-page="winter-paw-tool"] .page-intro {
+    background-image: none;
+  }
+
   .hero-grid,
   .content-layout,
   .profile-hero {
