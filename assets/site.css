@@ -452,6 +452,10 @@ h3 {
   background: var(--bg);
 }
 
+#results {
+  scroll-margin-top: 94px;
+}
+
 .section + .section {
   border-top: 1px solid var(--line);
 }

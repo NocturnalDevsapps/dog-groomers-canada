@@ -821,16 +821,16 @@ function writeCityPages(context) {
       <section class="section">
         <div class="wrap content-layout">
           <main>
-            <div class="filter-bar">
+            <div class="filter-bar" id="results">
               <strong>${city.count.toLocaleString()} groomers found</strong>
               <div class="tag-cloud">${services.map((service) => `<a class="tag" href="${service.url}">${esc(service.short)}</a>`).join("")}</div>
             </div>
+            <div class="listing-stack">${listings.map((item) => listingCard(item)).join("")}</div>
+            ${adUnit("inContent", { inContent: true })}
             ${cityQualitySection(city, services, nearby)}
             ${cityServicePlannerSection(city, services)}
             ${citySeasonalCareSection(city)}
             ${cityBookingQuestionsSection(city, services, province, costMap)}
-            ${adUnit("inContent", { inContent: true })}
-            <div class="listing-stack">${listings.map((item) => listingCard(item)).join("")}</div>
             <section class="section">
               <h2>Choosing a groomer in ${esc(city.city)}</h2>
               <p>Use the listings above to compare location, rating volume, phone availability, website links, and services mentioned in each profile. Always confirm current pricing, appointment availability, coat-specific experience, and any special handling needs directly with the groomer.</p>
@@ -1225,7 +1225,16 @@ function provinceCostBody(province, provinceCities, context) {
 
 function cityCostBody(city, province, services, costMap) {
   const notes = cityCostLocalNotes(city);
-  const nearby = province ? province.cities.filter((item) => item.url !== city.url).slice(0, 8) : [];
+  const nearby = province ? nearbyCities(city, province.cities) : [];
+  const nearbyCostPages = nearby.filter((item) => costMap.has(costCityKey(item))).slice(0, 8);
+  const nearbyCostMarkup = nearbyCostPages.length
+    ? linkList(
+        nearbyCostPages,
+        cityCostRoute,
+        (item) => `${item.city}, ${item.provinceCode}`,
+        (item) => `${item.count}`,
+      )
+    : `<p>No other same-province city cost guides are available yet.</p><a class="btn btn-light" href="${province ? provinceCostRoute(province) : "/dog-grooming-cost/"}">View ${esc(province ? province.name : "Canada")} cost guide</a>`;
   return `
     <section class="page-intro">
       <div class="wrap">
@@ -1263,12 +1272,7 @@ function cityCostBody(city, province, services, costMap) {
         </main>
         <aside class="side-panel">
           <div class="info-card"><h2>Cost estimator</h2><p>Estimate a planning range before requesting a quote from ${esc(city.city)} groomers.</p><a class="btn btn-primary" href="/grooming-tools/dog-grooming-cost-estimator/">Open estimator</a></div>
-          <div class="info-card"><h2>Nearby cost pages</h2>${linkList(
-            nearby.filter((item) => costMap.has(costCityKey(item))).slice(0, 8),
-            cityCostRoute,
-            (item) => `${item.city}, ${item.provinceCode}`,
-            (item) => `${item.count}`,
-          )}</div>
+          <div class="info-card"><h2>Nearby cost pages</h2>${nearbyCostMarkup}</div>
           <div class="info-card"><h2>Pricing references</h2>${costReferenceLinks()}</div>
         </aside>
       </div>
@@ -1884,7 +1888,7 @@ function nearMeBody(context) {
     <section class="section">
       <div class="wrap content-layout">
         <main>
-          <div class="search-results" data-nearby-results><div class="empty-state"><h2>Location required</h2><p>Click "Use my location" to sort dog grooming listings by distance. You can also browse the city links below.</p></div></div>
+          <div class="search-results" id="results" data-nearby-results><div class="empty-state"><h2>Location required</h2><p>Click "Use my location" to sort dog grooming listings by distance. You can also browse the city links below.</p></div></div>
           <section class="section">
             <div class="section-head">
               <div><h2>Popular dog grooming near me city pages</h2><p>These local pages are fully crawlable and include dog groomer profile links, contact details, ratings, and services.</p></div>
@@ -1925,7 +1929,7 @@ function writeUtilityPages(context) {
         <p class="muted"><span data-result-count></span></p>
       </div>
     </section>
-    <section class="section"><div class="wrap"><div class="listing-stack search-results" data-search-results></div></div></section>`;
+    <section class="section" id="results"><div class="wrap"><div class="listing-stack search-results" data-search-results></div></div></section>`;
   writePage(context, "/search/", "Search Dog Groomers Canada", "Search dog grooming in Canada by business name, city, province, service, rating, phone number, website, and local profile page.", searchBody, breadcrumbSchema([{ label: "Home", url: "/" }, { label: "Search", url: "/search/" }]), { bodyAttrs: 'data-page="search"' });
 
   writePage(context, "/near-me/", "Dog Grooming Near Me | Dog Groomers Canada", nearMeMetaDescription(), nearMeBody(context), breadcrumbSchema([{ label: "Home", url: "/" }, { label: "Dog Grooming Near Me", url: "/dog-grooming-near-me/" }]), { bodyAttrs: 'data-page="near-me"', canonicalRoute: "/dog-grooming-near-me/", noSitemap: true });

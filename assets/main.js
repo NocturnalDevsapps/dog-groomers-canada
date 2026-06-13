@@ -105,6 +105,12 @@
       .slice(0, limit || 24);
   }
 
+  function resultsUrl(url) {
+    if (!url) return withBase("/search/#results");
+    const path = withBase(url);
+    return path.includes("#") ? path : `${path}#results`;
+  }
+
   function ratingMarkup(item) {
     const rating = Number(item.rating || 0);
     if (!rating) return "";
@@ -118,6 +124,34 @@
     }
     return `<span class="fallback" aria-hidden="true">${dogIcon()}</span>`;
   }
+
+  function replaceBrokenListingImage(img) {
+    if (!img || !img.closest || !img.closest(".listing-image")) return;
+    const fallback = document.createElement("span");
+    fallback.className = "fallback";
+    fallback.setAttribute("aria-hidden", "true");
+    fallback.innerHTML = dogIcon();
+    img.replaceWith(fallback);
+  }
+
+  function initImageFallbacks() {
+    $$("img").forEach((img) => {
+      if (!img.closest(".listing-image")) return;
+      if (img.complete && img.naturalWidth === 0) {
+        replaceBrokenListingImage(img);
+        return;
+      }
+      img.addEventListener("error", () => replaceBrokenListingImage(img), { once: true });
+    });
+  }
+
+  window.addEventListener(
+    "error",
+    (event) => {
+      if (event.target instanceof HTMLImageElement) replaceBrokenListingImage(event.target);
+    },
+    true,
+  );
 
   function cardMarkup(item) {
     const distance = typeof item.distance === "number" ? `<span>${item.distance.toFixed(1)} km away</span>` : "";
@@ -149,10 +183,25 @@
     let results = index.listings;
 
     if (whereText) {
-      results = results.filter((item) => {
-        const place = normalizeText(`${item.city} ${item.province} ${item.provinceCode} ${item.address}`);
-        return place.includes(whereText) || whereText.includes(normalizeText(item.city));
+      const exactCities = index.cities.filter((city) => {
+        const cityText = normalizeText(city.city);
+        return (
+          whereText === cityText ||
+          whereText === normalizeText(`${city.city} ${city.province}`) ||
+          whereText === normalizeText(`${city.city} ${city.provinceCode}`)
+        );
       });
+
+      if (exactCities.length) {
+        results = results.filter((item) =>
+          exactCities.some((city) => normalizeText(item.city) === normalizeText(city.city) && normalizeText(item.provinceCode || item.province) === normalizeText(city.provinceCode || city.province)),
+        );
+      } else {
+        results = results.filter((item) => {
+          const place = normalizeText(`${item.city} ${item.province} ${item.provinceCode} ${item.address}`);
+          return place.includes(whereText) || whereText.includes(normalizeText(item.city));
+        });
+      }
     }
 
     if (queryText) {
@@ -203,7 +252,7 @@
           if (!q.trim() && place) {
             const exactCity = index.cities.find((city) => normalizeText(`${city.city} ${city.province} ${city.provinceCode}`) === place || normalizeText(city.city) === place);
             if (exactCity) {
-              window.location.href = withBase(exactCity.url);
+              window.location.href = resultsUrl(exactCity.url);
               return;
             }
           }
@@ -211,7 +260,7 @@
           // Search page can still handle the query if data is temporarily unavailable here.
         }
 
-        window.location.href = `${withBase("/search/")}${params.toString() ? `?${params.toString()}` : ""}`;
+        window.location.href = `${withBase("/search/")}${params.toString() ? `?${params.toString()}` : ""}#results`;
       });
     });
   }
@@ -233,8 +282,9 @@
 
           if (document.body.dataset.page === "near-me") {
             renderNearMe(coords, index);
+            scheduleResultsScroll();
           } else if (city) {
-            window.location.href = `${withBase(city.url)}?near=1`;
+            window.location.href = `${withBase(city.url)}?near=1#results`;
           }
         } catch (error) {
           setStatus(status, error.message || "Location permission was not granted.");
@@ -269,6 +319,7 @@
     } catch (error) {
       mount.innerHTML = `<div class="empty-state"><h2>Search data could not load</h2><p>Please try again in a moment, or browse by province from the links below.</p></div>`;
     }
+    if (window.location.hash === "#results") scheduleResultsScroll();
   }
 
   async function initNearMePage() {
@@ -291,7 +342,7 @@
     const listings = nearestListings(index.listings, coords, 36);
     if (count) count.textContent = `${listings.length.toLocaleString()} nearby groomers`;
     const cityMarkup = city
-      ? `<div class="notice"><strong>Closest city page:</strong> <a href="${escapeAttr(withBase(city.url))}">${escapeHtml(city.city)}, ${escapeHtml(city.provinceCode || city.province)}</a> (${city.distance.toFixed(1)} km away)</div>`
+      ? `<div class="notice"><strong>Closest city page:</strong> <a href="${escapeAttr(resultsUrl(city.url))}">${escapeHtml(city.city)}, ${escapeHtml(city.provinceCode || city.province)}</a> (${city.distance.toFixed(1)} km away)</div>`
       : "";
     mount.innerHTML = `${cityMarkup}<div class="listing-stack">${listings.map(cardMarkup).join("")}</div>`;
   }
@@ -304,7 +355,7 @@
       .then((index) => {
         const city = nearestCity(index.cities, saved);
         if (!city) return;
-        mount.innerHTML = `<a class="link-arrow" href="${escapeAttr(withBase(city.url))}">Browse groomers near ${escapeHtml(city.city)} →</a>`;
+        mount.innerHTML = `<a class="link-arrow" href="${escapeAttr(resultsUrl(city.url))}">Browse groomers near ${escapeHtml(city.city)} →</a>`;
       })
       .catch(() => {});
   }
@@ -606,6 +657,19 @@
     update();
   }
 
+  function initResultsHashScroll() {
+    if (window.location.hash !== "#results") return;
+    scheduleResultsScroll();
+  }
+
+  function scheduleResultsScroll() {
+    const target = document.getElementById("results");
+    if (!target) return;
+    const scrollToResults = () => target.scrollIntoView({ block: "start" });
+    requestAnimationFrame(scrollToResults);
+    window.setTimeout(scrollToResults, 150);
+  }
+
   function fieldValue(form, name) {
     return form.querySelector(`[name='${name}']`)?.value || "";
   }
@@ -646,11 +710,13 @@
     initSearchPage();
     initNearMePage();
     initNearbyHint();
+    initImageFallbacks();
     initCostEstimatorTool();
     initFrequencyTool();
     initMattingTool();
     initCoatPlannerTool();
     initPuppyPlannerTool();
     initWinterPawTool();
+    initResultsHashScroll();
   });
 })();
