@@ -47,6 +47,31 @@
     return normalizeText(value).replace(/[^a-z0-9]+/g, " ").replace(/\s+/g, " ").trim();
   }
 
+  function serviceKeywordMap(services) {
+    const aliases = {
+      "dog-haircuts": "dog haircuts haircut haircuts full groom full grooming styling trim clipping breed cut breed specific grooming",
+      "nail-trimming": "dog nail trimming nail trims nail trim nails clipping grinding nail grind pawdicure",
+      "puppy-grooming": "puppy grooming puppy groom first groom intro groom puppy bath",
+      "bath-and-brush": "bath and brush bath brush dog bath dog wash washing coat cleaning tidy up brush out",
+      deshedding: "dog de-shedding deshedding de shedding shedding undercoat blowout undercoat removal",
+      "mobile-dog-grooming": "mobile dog grooming mobile grooming house call at home grooming van grooming",
+      "teeth-cleaning": "dog teeth brushing teeth cleaning tooth brushing dental add on breath",
+      dematting: "dog de-matting dematting de matting matted coat mat removal tangled coat coat rescue",
+      "cat-grooming": "cat grooming cats feline grooming",
+    };
+    return new Map(
+      (services || []).map((service) => [
+        service.slug,
+        `${service.slug.replace(/-/g, " ")} ${service.name || ""} ${service.short || ""} ${aliases[service.slug] || ""}`,
+      ]),
+    );
+  }
+
+  function listingSearchHaystack(item, serviceTerms) {
+    const serviceText = (item.serviceSlugs || []).map((slug) => serviceTerms.get(slug) || slug.replace(/-/g, " ")).join(" ");
+    return normalizeText(`${item.title} ${item.category || ""} ${item.services.join(" ")} ${serviceText} ${item.city} ${item.province} ${item.provinceCode || ""}`);
+  }
+
   function haversineKm(a, b) {
     const radius = 6371;
     const lat1 = (a.lat * Math.PI) / 180;
@@ -205,6 +230,7 @@
     const serviceSlug = options.serviceSlug || "";
     const coords = options.coords;
     const includeNearby = Boolean(options.includeNearby && coords);
+    const serviceTerms = serviceKeywordMap(index.services || []);
     let results = index.listings;
 
     if (serviceSlug) {
@@ -236,23 +262,28 @@
           results = cityResults;
         }
       } else {
-        results = results.filter((item) => {
-          const place = normalizePlace(`${item.city} ${item.province} ${item.provinceCode} ${item.address}`);
-          return place.includes(wherePlace) || wherePlace.includes(normalizePlace(item.city));
-        });
+        const exactProvinces = uniqueProvincePlaces(index.cities).filter((province) => wherePlace === province.name || wherePlace === province.code);
+        if (exactProvinces.length) {
+          results = results.filter((item) => exactProvinces.some((province) => normalizePlace(item.province) === province.name || normalizePlace(item.provinceCode) === province.code));
+        } else {
+          results = results.filter((item) => {
+            const place = normalizePlace(`${item.city} ${item.province} ${item.provinceCode} ${item.address}`);
+            return place.includes(wherePlace) || wherePlace.includes(normalizePlace(item.city));
+          });
+        }
       }
     }
 
     if (queryText) {
       results = results.filter((item) => {
-        const haystack = normalizeText(`${item.title} ${item.category || ""} ${item.services.join(" ")} ${item.city} ${item.province}`);
+        const haystack = listingSearchHaystack(item, serviceTerms);
         return terms.every((term) => haystack.includes(term));
       });
     }
 
-    return results
+    const ranked = results
       .map((item) => {
-        const haystack = normalizeText(`${item.title} ${item.city} ${item.province} ${item.services.join(" ")}`);
+        const haystack = listingSearchHaystack(item, serviceTerms);
         const distance = coords && Number.isFinite(item.lat) && Number.isFinite(item.lng) ? haversineKm(coords, item) : null;
         const score =
           (normalizeText(item.title).includes(queryText) ? 8 : 0) +
@@ -265,8 +296,26 @@
       .sort((a, b) => {
         if (coords) return (a.distance ?? Number.POSITIVE_INFINITY) - (b.distance ?? Number.POSITIVE_INFINITY) || b.score - a.score;
         return b.score - a.score;
-      })
-      .slice(0, 80);
+      });
+    return {
+      results: ranked.slice(0, 80),
+      total: ranked.length,
+    };
+  }
+
+  function uniqueProvincePlaces(cities) {
+    const seen = new Set();
+    return (cities || [])
+      .map((city) => ({
+        name: normalizePlace(city.province),
+        code: normalizePlace(city.provinceCode),
+      }))
+      .filter((province) => {
+        const key = `${province.name}|${province.code}`;
+        if (!province.name || seen.has(key)) return false;
+        seen.add(key);
+        return true;
+      });
   }
 
   function initNav() {
@@ -372,9 +421,10 @@
       const service = serviceSlug ? (index.services || []).find((item) => item.slug === serviceSlug) : null;
       const coords = getSavedLocation();
       const useDistance = nearRequested && coords ? coords : null;
-      const results = runSearch(index, q, where, { serviceSlug, coords: useDistance, includeNearby: Boolean(useDistance && where) });
-      if (count) count.textContent = `${results.length.toLocaleString()} results`;
-      const summary = searchSummaryMarkup(results, { query: q, where, service, nearRequested, coords: useDistance });
+      const search = runSearch(index, q, where, { serviceSlug, coords: useDistance, includeNearby: Boolean(useDistance && where) });
+      const results = search.results;
+      if (count) count.textContent = search.total === results.length ? `${results.length.toLocaleString()} results` : `${search.total.toLocaleString()} results, showing ${results.length.toLocaleString()}`;
+      const summary = searchSummaryMarkup(results, { query: q, where, service, nearRequested, coords: useDistance, total: search.total });
       mount.innerHTML = results.length
         ? `${summary}<div class="listing-stack">${results.map(cardMarkup).join("")}</div>`
         : `${summary}<div class="empty-state"><h2>No exact matches found</h2><p>Try searching by city, province, service, or business name.</p></div>`;
@@ -389,10 +439,12 @@
   function searchSummaryMarkup(results, options) {
     const serviceText = options.service ? `${options.service.short.toLowerCase()} matches` : options.query ? `matches for "${options.query}"` : "directory matches";
     const placeText = options.where ? (options.coords ? ` close to you around ${options.where}` : ` in ${options.where}`) : "";
-    const countText = `${results.length.toLocaleString()} ${serviceText}${placeText}`;
+    const total = typeof options.total === "number" ? options.total : results.length;
+    const countText = `${total.toLocaleString()} ${serviceText}${placeText}`;
+    const shownText = total > results.length ? ` Showing the first ${results.length.toLocaleString()} matching listings.` : "";
     const distanceText = options.coords
-      ? `Sorted by distance from your location. The selected service stays filtered, and nearby matches within about ${nearbySearchRadiusKm} km are included.`
-      : "Use your location to include nearby matching groomers and sort by closest to you.";
+      ? `Sorted by distance from your location. The selected service stays filtered, and nearby matches within about ${nearbySearchRadiusKm} km are included.${shownText}`
+      : `Use your location to include nearby matching groomers and sort by closest to you.${shownText}`;
     const locationButton = options.coords
       ? ""
       : `<button class="btn btn-light" type="button" data-use-location data-status-target="[data-location-status-results]">Use my location</button><p class="muted" data-location-status-results></p>`;

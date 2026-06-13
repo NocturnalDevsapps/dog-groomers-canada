@@ -1197,7 +1197,7 @@ function provinceCostBody(province, provinceCities, context) {
             <p>${esc(factors.intro)}</p>
             <div class="grid-3">${factors.cards.map((card) => `<div class="info-card"><h3>${esc(card.title)}</h3><p>${esc(card.body)}</p></div>`).join("")}</div>
           </section>
-          ${serviceCostSignalSection(services, province.name)}
+          ${serviceCostSignalSection(services, province)}
           ${costQuoteChecklist(province.name)}
           ${costFaqSection(province.name)}
         </main>
@@ -1265,7 +1265,7 @@ function cityCostBody(city, province, services, costMap) {
               <div class="info-card"><h3>Best next step</h3><p>Call two or three groomers with the same dog details: weight, coat type, last groom date, matting, temperament, and desired finish.</p></div>
             </div>
           </section>
-          ${serviceCostSignalSection(services, city.city)}
+          ${serviceCostSignalSection(services, city)}
           ${costQuoteChecklist(city.city)}
           <section class="section">
             <h2>Compare ${esc(city.city)} groomers after checking cost</h2>
@@ -1341,7 +1341,8 @@ function costQuoteChecklist(placeName) {
     </section>`;
 }
 
-function serviceCostSignalSection(services, placeName) {
+function serviceCostSignalSection(services, place) {
+  const placeName = servicePlaceName(place);
   if (!services.length) {
     return `<section class="section">
       <h2>Service signals for ${esc(placeName)}</h2>
@@ -1353,11 +1354,33 @@ function serviceCostSignalSection(services, placeName) {
       <p>These service signals appear in local directory data. Use them as prompts for quote questions, not as a guarantee that the service is currently available.</p>
       <div class="grid-3">${services
         .map(
-          (service) =>
-            `<div class="info-card"><h3>${esc(service.short)}</h3><p>${service.localCount.toLocaleString()} local listing signals. ${esc(serviceCostAdvice(service.slug))}</p><a class="link-arrow" href="${service.url}">Compare ${esc(service.short.toLowerCase())} -></a></div>`,
+          (service) => {
+            const compareText = placeName ? `Compare ${service.short.toLowerCase()} in ${placeName}` : `Compare ${service.short.toLowerCase()}`;
+            return `<div class="info-card"><h3>${esc(service.short)}</h3><p>${service.localCount.toLocaleString()} local listing signals. ${esc(serviceCostAdvice(service.slug))}</p><a class="link-arrow" href="${serviceComparisonUrl(place, service)}">${esc(compareText)} -></a></div>`;
+          },
         )
         .join("")}</div>
     </section>`;
+}
+
+function servicePlaceName(place) {
+  if (!place) return "";
+  if (typeof place === "string") return place;
+  if (place.city) return place.city;
+  return place.name || place.province || "";
+}
+
+function serviceComparisonUrl(place, service) {
+  if (!place || typeof place === "string") return service.url;
+  if (place.city && place.provinceCode) return localServiceSearchUrl(place, service);
+  const where = place.name || place.province || place.code;
+  if (!where) return service.url;
+  const params = new URLSearchParams({
+    service: service.slug,
+    where,
+    near: "1",
+  });
+  return `/search/?${params.toString()}#results`;
 }
 
 function serviceCostAdvice(slug) {
