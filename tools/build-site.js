@@ -829,7 +829,7 @@ function writeCityPages(context) {
               <strong>${city.count.toLocaleString()} groomers found</strong>
               <div class="tag-cloud">${services.map((service) => `<a class="tag" href="${localServiceSearchUrl(city, service)}">${esc(service.short)}</a>`).join("")}</div>
             </div>
-            <div class="listing-stack">${listings.map((item) => listingCard(item)).join("")}</div>
+            <div class="listing-stack" data-city-listings>${listings.map((item) => listingCard(item)).join("")}</div>
             ${adUnit("inContent", { inContent: true })}
             ${cityQualitySection(city, services, nearby)}
             ${cityServicePlannerSection(city, services)}
@@ -3215,7 +3215,7 @@ function cityQualitySection(city, services, nearby) {
   const withHours = city.listings.filter((item) => item.hours.length).length;
   const serviceText = services.length ? services.slice(0, 5).map((service) => service.short).join(", ") : "bath, brush, haircut, nail trim, and coat-care";
   const nearbyText = nearby.length ? nearby.slice(0, 3).map((item) => `${item.city}, ${item.provinceCode}`).join("; ") : `${city.province} cities nearby`;
-  return `<section class="section">
+  return `<section class="section" data-city-compare-guide>
       <h2>What to compare in ${esc(city.city)}</h2>
       <p>Use this local page as a shortlist, then confirm the details that matter for your dog before booking. The strongest matches usually combine clear contact details, recent customer signals, relevant coat-care experience, and realistic appointment availability.</p>
       <div class="grid-3">

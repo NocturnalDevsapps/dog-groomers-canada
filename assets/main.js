@@ -489,6 +489,15 @@
       .catch(() => {});
   }
 
+  function initLocationResultLayout() {
+    const params = new URLSearchParams(window.location.search);
+    if (params.get("near") !== "1") return;
+    const guide = $("[data-city-compare-guide]");
+    const listings = $("[data-city-listings]");
+    if (!guide || !listings || (guide.compareDocumentPosition(listings) & Node.DOCUMENT_POSITION_FOLLOWING)) return;
+    listings.parentNode.insertBefore(guide, listings);
+  }
+
   function initCostEstimatorTool() {
     const form = $("[data-cost-estimator-tool]");
     const result = $("[data-cost-estimator-result]");
@@ -839,6 +848,7 @@
     initSearchPage();
     initNearMePage();
     initNearbyHint();
+    initLocationResultLayout();
     initImageFallbacks();
     initCostEstimatorTool();
     initFrequencyTool();
