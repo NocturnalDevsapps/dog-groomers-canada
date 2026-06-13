@@ -3,6 +3,7 @@
 
   const DATA_URL = "/assets/search-index.json";
   const locationKey = "dgc:last-location";
+  const nearbySearchRadiusKm = 35;
   let indexPromise;
 
   const $ = (selector, root = document) => root.querySelector(selector);
@@ -40,6 +41,10 @@
       .replace(/[\u0300-\u036f]/g, "")
       .toLowerCase()
       .trim();
+  }
+
+  function normalizePlace(value) {
+    return normalizeText(value).replace(/[^a-z0-9]+/g, " ").replace(/\s+/g, " ").trim();
   }
 
   function haversineKm(a, b) {
@@ -105,6 +110,20 @@
       .slice(0, limit || 24);
   }
 
+  function uniqueListings(listings) {
+    const seen = new Set();
+    return listings.filter((item) => {
+      const key = item.url || `${item.title}|${item.address}|${item.city}`;
+      if (seen.has(key)) return false;
+      seen.add(key);
+      return true;
+    });
+  }
+
+  function listingMatchesCity(item, city) {
+    return normalizePlace(item.city) === normalizePlace(city.city) && normalizePlace(item.provinceCode || item.province) === normalizePlace(city.provinceCode || city.province);
+  }
+
   function resultsUrl(url) {
     if (!url) return withBase("/search/#results");
     const path = withBase(url);
@@ -137,6 +156,8 @@
   function initImageFallbacks() {
     $$("img").forEach((img) => {
       if (!img.closest(".listing-image")) return;
+      if (img.dataset.imageFallbackBound === "1") return;
+      img.dataset.imageFallbackBound = "1";
       if (img.complete && img.naturalWidth === 0) {
         replaceBrokenListingImage(img);
         return;
@@ -176,30 +197,48 @@
     </article>`;
   }
 
-  function runSearch(index, query, where) {
-    const terms = normalizeText(`${query} ${where}`).split(/\s+/).filter(Boolean);
+  function runSearch(index, query, where, options = {}) {
+    const terms = normalizeText(query).split(/\s+/).filter(Boolean);
     const whereText = normalizeText(where);
+    const wherePlace = normalizePlace(where);
     const queryText = normalizeText(query);
+    const serviceSlug = options.serviceSlug || "";
+    const coords = options.coords;
+    const includeNearby = Boolean(options.includeNearby && coords);
     let results = index.listings;
+
+    if (serviceSlug) {
+      results = results.filter((item) => Array.isArray(item.serviceSlugs) && item.serviceSlugs.includes(serviceSlug));
+    }
 
     if (whereText) {
       const exactCities = index.cities.filter((city) => {
-        const cityText = normalizeText(city.city);
+        const cityText = normalizePlace(city.city);
         return (
-          whereText === cityText ||
-          whereText === normalizeText(`${city.city} ${city.province}`) ||
-          whereText === normalizeText(`${city.city} ${city.provinceCode}`)
+          wherePlace === cityText ||
+          wherePlace === normalizePlace(`${city.city} ${city.province}`) ||
+          wherePlace === normalizePlace(`${city.city} ${city.provinceCode}`)
         );
       });
 
       if (exactCities.length) {
-        results = results.filter((item) =>
-          exactCities.some((city) => normalizeText(item.city) === normalizeText(city.city) && normalizeText(item.provinceCode || item.province) === normalizeText(city.provinceCode || city.province)),
-        );
+        const cityResults = results.filter((item) => exactCities.some((city) => listingMatchesCity(item, city)));
+        if (includeNearby) {
+          const provinceCodes = new Set(exactCities.map((city) => normalizePlace(city.provinceCode || city.province)).filter(Boolean));
+          const nearbyResults = results.filter((item) => {
+            if (!Number.isFinite(item.lat) || !Number.isFinite(item.lng)) return false;
+            const itemProvince = normalizePlace(item.provinceCode || item.province);
+            if (provinceCodes.size && !provinceCodes.has(itemProvince)) return false;
+            return haversineKm(coords, item) <= nearbySearchRadiusKm;
+          });
+          results = uniqueListings([...cityResults, ...nearbyResults]);
+        } else {
+          results = cityResults;
+        }
       } else {
         results = results.filter((item) => {
-          const place = normalizeText(`${item.city} ${item.province} ${item.provinceCode} ${item.address}`);
-          return place.includes(whereText) || whereText.includes(normalizeText(item.city));
+          const place = normalizePlace(`${item.city} ${item.province} ${item.provinceCode} ${item.address}`);
+          return place.includes(wherePlace) || wherePlace.includes(normalizePlace(item.city));
         });
       }
     }
@@ -214,15 +253,19 @@
     return results
       .map((item) => {
         const haystack = normalizeText(`${item.title} ${item.city} ${item.province} ${item.services.join(" ")}`);
+        const distance = coords && Number.isFinite(item.lat) && Number.isFinite(item.lng) ? haversineKm(coords, item) : null;
         const score =
           (normalizeText(item.title).includes(queryText) ? 8 : 0) +
-          (whereText && normalizeText(item.city).includes(whereText) ? 6 : 0) +
+          (wherePlace && normalizePlace(item.city).includes(wherePlace) ? 6 : 0) +
           Number(item.rating || 0) +
           Math.min(Number(item.reviews || 0) / 100, 5) +
           terms.reduce((sum, term) => sum + (haystack.includes(term) ? 1 : 0), 0);
-        return { ...item, score };
+        return { ...item, score, distance };
       })
-      .sort((a, b) => b.score - a.score)
+      .sort((a, b) => {
+        if (coords) return (a.distance ?? Number.POSITIVE_INFINITY) - (b.distance ?? Number.POSITIVE_INFINITY) || b.score - a.score;
+        return b.score - a.score;
+      })
       .slice(0, 80);
   }
 
@@ -267,32 +310,45 @@
 
   function initLocationButtons() {
     $$("[data-use-location]").forEach((button) => {
-      button.addEventListener("click", async () => {
-        const status = document.querySelector(button.getAttribute("data-status-target") || "[data-location-status]");
-        const original = button.textContent;
-        button.disabled = true;
-        setStatus(status, "Checking your location...");
-        button.textContent = "Locating...";
-        try {
-          const position = await requestLocation();
-          const coords = saveLocation(position);
-          const index = await loadIndex();
-          const city = nearestCity(index.cities, coords);
-          setStatus(status, city ? `Nearest directory page: ${city.city}, ${city.provinceCode || city.province}.` : "Location saved.");
+      bindLocationButton(button);
+    });
+  }
 
-          if (document.body.dataset.page === "near-me") {
-            renderNearMe(coords, index);
-            scheduleResultsScroll();
-          } else if (city) {
-            window.location.href = `${withBase(city.url)}?near=1#results`;
-          }
-        } catch (error) {
-          setStatus(status, error.message || "Location permission was not granted.");
-        } finally {
-          button.disabled = false;
-          button.textContent = original;
+  function bindLocationButton(button) {
+    if (!button || button.dataset.locationBound === "1") return;
+    button.dataset.locationBound = "1";
+    button.addEventListener("click", async () => {
+      const status = document.querySelector(button.getAttribute("data-status-target") || "[data-location-status]");
+      const original = button.textContent;
+      button.disabled = true;
+      setStatus(status, "Checking your location...");
+      button.textContent = "Locating...";
+      try {
+        const position = await requestLocation();
+        const coords = saveLocation(position);
+        const index = await loadIndex();
+        const city = nearestCity(index.cities, coords);
+        setStatus(status, city ? `Nearest directory page: ${city.city}, ${city.provinceCode || city.province}.` : "Location saved.");
+
+        const searchParams = new URLSearchParams(window.location.search);
+        const hasSearchFilters = document.body.dataset.page === "search" && (searchParams.get("service") || searchParams.get("q") || searchParams.get("where"));
+        if (document.body.dataset.page === "near-me") {
+          renderNearMe(coords, index);
+          scheduleResultsScroll();
+        } else if (hasSearchFilters) {
+          searchParams.set("near", "1");
+          window.history.replaceState(null, "", `${withBase("/search/")}?${searchParams.toString()}#results`);
+          await initSearchPage();
+          scheduleResultsScroll();
+        } else if (city) {
+          window.location.href = `${withBase(city.url)}?near=1#results`;
         }
-      });
+      } catch (error) {
+        setStatus(status, error.message || "Location permission was not granted.");
+      } finally {
+        button.disabled = false;
+        button.textContent = original;
+      }
     });
   }
 
@@ -303,6 +359,8 @@
     const params = new URLSearchParams(window.location.search);
     const q = params.get("q") || "";
     const where = params.get("where") || "";
+    const serviceSlug = params.get("service") || "";
+    const nearRequested = params.get("near") === "1";
     const qInput = document.querySelector("[name='q']");
     const whereInput = document.querySelector("[name='where']");
     if (qInput) qInput.value = q;
@@ -311,15 +369,34 @@
     mount.innerHTML = `<div class="empty-state">Loading directory results...</div>`;
     try {
       const index = await loadIndex();
-      const results = runSearch(index, q, where);
+      const service = serviceSlug ? (index.services || []).find((item) => item.slug === serviceSlug) : null;
+      const coords = getSavedLocation();
+      const useDistance = nearRequested && coords ? coords : null;
+      const results = runSearch(index, q, where, { serviceSlug, coords: useDistance, includeNearby: Boolean(useDistance && where) });
       if (count) count.textContent = `${results.length.toLocaleString()} results`;
+      const summary = searchSummaryMarkup(results, { query: q, where, service, nearRequested, coords: useDistance });
       mount.innerHTML = results.length
-        ? results.map(cardMarkup).join("")
-        : `<div class="empty-state"><h2>No exact matches found</h2><p>Try searching by city, province, service, or business name.</p></div>`;
+        ? `${summary}<div class="listing-stack">${results.map(cardMarkup).join("")}</div>`
+        : `${summary}<div class="empty-state"><h2>No exact matches found</h2><p>Try searching by city, province, service, or business name.</p></div>`;
+      initLocationButtons();
+      initImageFallbacks();
     } catch (error) {
       mount.innerHTML = `<div class="empty-state"><h2>Search data could not load</h2><p>Please try again in a moment, or browse by province from the links below.</p></div>`;
     }
     if (window.location.hash === "#results") scheduleResultsScroll();
+  }
+
+  function searchSummaryMarkup(results, options) {
+    const serviceText = options.service ? `${options.service.short.toLowerCase()} matches` : options.query ? `matches for "${options.query}"` : "directory matches";
+    const placeText = options.where ? (options.coords ? ` close to you around ${options.where}` : ` in ${options.where}`) : "";
+    const countText = `${results.length.toLocaleString()} ${serviceText}${placeText}`;
+    const distanceText = options.coords
+      ? `Sorted by distance from your location. The selected service stays filtered, and nearby matches within about ${nearbySearchRadiusKm} km are included.`
+      : "Use your location to include nearby matching groomers and sort by closest to you.";
+    const locationButton = options.coords
+      ? ""
+      : `<button class="btn btn-light" type="button" data-use-location data-status-target="[data-location-status-results]">Use my location</button><p class="muted" data-location-status-results></p>`;
+    return `<div class="notice result-summary"><strong>${escapeHtml(countText)}</strong><p>${escapeHtml(distanceText)}</p>${locationButton}</div>`;
   }
 
   async function initNearMePage() {

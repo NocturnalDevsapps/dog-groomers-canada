@@ -1336,6 +1336,21 @@ body[data-page="winter-paw-tool"] .page-intro {
   box-shadow: var(--shadow-soft);
 }
 
+.result-summary {
+  display: grid;
+  gap: 10px;
+  margin-bottom: 16px;
+}
+
+.result-summary p {
+  margin: 0;
+  color: var(--muted);
+}
+
+.result-summary .btn {
+  justify-self: start;
+}
+
 .search-results {
   min-height: 180px;
 }

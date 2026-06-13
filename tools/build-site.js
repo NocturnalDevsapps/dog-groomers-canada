@@ -133,7 +133,7 @@ const serviceDefinitions = [
     slug: "nail-trimming",
     name: "Dog Nail Trimming",
     short: "Nail trims",
-    patterns: [/nail/i, /grind/i],
+    patterns: [/nail/i, /grind/i, /dremel/i, /pawdicure/i],
     intro:
       "Find dog groomers that mention nail trims, nail grinding, or paw-care services in their directory data.",
   },
@@ -506,9 +506,7 @@ function finalizeCity(city) {
 function groupServices(listings) {
   return serviceDefinitions
     .map((service) => {
-      const matching = listings
-        .filter((listing) => service.patterns.some((pattern) => pattern.test(`${listing.services.join(" ")} ${listing.serviceText} ${listing.convenienceText}`)))
-        .sort(sortListings);
+      const matching = listings.filter((listing) => matchedServiceSlugs(listing).includes(service.slug)).sort(sortListings);
       return {
         ...service,
         url: `/services/${service.slug}/`,
@@ -527,6 +525,11 @@ function writeStaticAssets(context) {
     JSON.stringify({
       generatedAt: NOW,
       stats: context.stats,
+      services: context.services.map((service) => ({
+        slug: service.slug,
+        name: service.name,
+        short: service.short,
+      })),
       cities: context.cities.map((city) => ({
         city: city.city,
         province: city.province,
@@ -552,6 +555,7 @@ function writeStaticAssets(context) {
         lng: listing.lng,
         image: listing.image,
         services: listing.services,
+        serviceSlugs: matchedServiceSlugs(listing),
         url: listing.url,
         cityUrl: listing.cityUrl,
       })),
@@ -823,7 +827,7 @@ function writeCityPages(context) {
           <main>
             <div class="filter-bar" id="results">
               <strong>${city.count.toLocaleString()} groomers found</strong>
-              <div class="tag-cloud">${services.map((service) => `<a class="tag" href="${service.url}">${esc(service.short)}</a>`).join("")}</div>
+              <div class="tag-cloud">${services.map((service) => `<a class="tag" href="${localServiceSearchUrl(city, service)}">${esc(service.short)}</a>`).join("")}</div>
             </div>
             <div class="listing-stack">${listings.map((item) => listingCard(item)).join("")}</div>
             ${adUnit("inContent", { inContent: true })}
@@ -2966,7 +2970,7 @@ function cityServicePlannerSection(city, services) {
             <h3>${esc(service.short)} in ${esc(city.city)}</h3>
             <p>${esc(advice.intro)}</p>
             <p><strong>${service.localCount.toLocaleString()} local listing signals.</strong></p>
-            <a class="link-arrow" href="${service.url}">Compare ${esc(service.short.toLowerCase())} -></a>
+            <a class="link-arrow" href="${localServiceSearchUrl(city, service)}">Compare ${esc(service.short.toLowerCase())} in ${esc(city.city)} -></a>
           </div>`;
         })
         .join("")
@@ -2978,6 +2982,15 @@ function cityServicePlannerSection(city, services) {
       <p>Use these service signals to prepare better booking questions. A listing signal does not guarantee current availability, so confirm the exact package, price, timing, and coat requirements directly with the business.</p>
       <div class="grid-3">${cards}</div>
     </section>`;
+}
+
+function localServiceSearchUrl(city, service) {
+  const params = new URLSearchParams({
+    service: service.slug,
+    where: `${city.city}, ${city.provinceCode}`,
+    near: "1",
+  });
+  return `/search/?${params.toString()}#results`;
 }
 
 function cityBookingQuestionsSection(city, services, province, costMap) {
@@ -3246,9 +3259,26 @@ function profileQuestionsSection(listing) {
 }
 
 function listingServiceSlugs(listing) {
-  const text = `${listing.services.join(" ")} ${listing.serviceText} ${listing.convenienceText}`;
-  const matches = serviceDefinitions.filter((service) => service.patterns.some((pattern) => pattern.test(text))).map((service) => service.slug);
+  const matches = matchedServiceSlugs(listing);
   return matches.length ? matches.slice(0, 4) : ["dog-haircuts", "bath-and-brush", "nail-trimming"];
+}
+
+function matchedServiceSlugs(listing) {
+  return serviceDefinitions.filter((service) => service.patterns.some((pattern) => pattern.test(serviceMatchText(listing, service.slug)))).map((service) => service.slug);
+}
+
+function serviceMatchText(listing, serviceSlug) {
+  const explicitServices = listing.services.join(" ");
+  if (serviceSlug === "mobile-dog-grooming") {
+    return `${explicitServices} ${listing.convenienceText} ${listing.title} ${listing.category}`;
+  }
+  if (serviceSlug === "cat-grooming") {
+    return `${explicitServices} ${listing.title} ${listing.category}`;
+  }
+  if (serviceSlug === "bath-and-brush") {
+    return explicitServices.replace(/\b(teeth|tooth|dental)\s+brushing\b/gi, "");
+  }
+  return explicitServices;
 }
 
 function serviceGuidanceSection(service) {
@@ -3440,7 +3470,7 @@ function cityServices(listings, services) {
   return services
     .map((service) => ({
       ...service,
-      localCount: listings.filter((listing) => service.patterns.some((pattern) => pattern.test(`${listing.services.join(" ")} ${listing.serviceText} ${listing.convenienceText}`))).length,
+      localCount: listings.filter((listing) => matchedServiceSlugs(listing).includes(service.slug)).length,
     }))
     .filter((service) => service.localCount > 0)
     .sort((a, b) => b.localCount - a.localCount);
