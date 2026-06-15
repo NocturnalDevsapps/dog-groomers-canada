@@ -168,7 +168,7 @@ const serviceDefinitions = [
     short: "Mobile grooming",
     patterns: [/mobile/i, /at home/i, /in-home/i, /house call/i],
     intro:
-      "Browse listings that mention mobile, in-home, house-call, or convenient location-based grooming options.",
+      "Browse listings that explicitly mention mobile grooming, mobile pet salons, mobile nail care, in-home grooming, or house-call grooming.",
   },
   {
     slug: "teeth-cleaning",
@@ -327,6 +327,8 @@ function loadListings(file) {
       hours,
       services,
       serviceText: clean(get("servicesOffered")),
+      websiteServiceText: clean(get("websiteServicesFound")),
+      websiteConvenienceText: clean(get("websiteConvenienceFound")),
       convenienceText: clean(get("convenientLocationOrMobileService")),
       description,
       temporarilyClosed: isTruthy(get("temporarilyClosed")),
@@ -1825,7 +1827,7 @@ function writeKeywordPages(context) {
                 `<a class="province-card" href="${city.url}"><span><strong>Dog grooming in ${esc(city.city)}, ${esc(city.provinceCode)}</strong><span>${city.count.toLocaleString()} local groomers</span></span><span aria-hidden="true">&rarr;</span></a>`,
             )
             .join("")}</div>
-          <div class="notice" style="margin-top:18px"><strong>Need grooming at home?</strong> <a href="/mobile-dog-grooming-near-me/">Find mobile dog grooming near you</a> and sort mobile-service listings by distance.</div>
+          <div class="notice" style="margin-top:18px"><strong>Need grooming at home?</strong> <a href="/mobile-dog-grooming-near-me/">Find mobile dog grooming near you</a> and sort explicit mobile-service matches by distance.</div>
           <section class="section">
             <h2>Popular dog grooming services</h2>
             <div class="grid-3">${context.services
@@ -1986,7 +1988,7 @@ function mobileDogGroomingNearMeBody(context, service) {
       <div class="wrap">
         ${breadcrumbs([{ label: "Home", url: "/" }, { label: "Mobile Dog Grooming Near Me" }])}
         <h1 class="city-title">Mobile Dog Grooming Near Me</h1>
-        <p class="lead">Use your location to find nearby companies that mention mobile, in-home, house-call, or convenient location-based dog grooming. This directory currently has ${service.count.toLocaleString()} mobile dog grooming signals across Canada.</p>
+        <p class="lead">Use your location to find nearby companies with explicit mobile grooming, mobile pet salon, mobile nail-care, in-home grooming, or house-call grooming wording. This directory currently has ${service.count.toLocaleString()} mobile dog grooming matches across Canada.</p>
         <button class="btn btn-dark" type="button" data-use-location data-status-target="[data-location-status]">Use my location</button>
         <p class="muted" data-location-status style="margin-top:12px">Press the button to sort mobile grooming listings by distance. Your location stays in your browser.</p>
         <p class="muted"><span data-result-count></span></p>
@@ -1998,7 +2000,7 @@ function mobileDogGroomingNearMeBody(context, service) {
           <div class="search-results" id="results" data-nearby-results><div class="empty-state"><h2>Location required</h2><p>Click "Use my location" to sort mobile dog grooming listings by distance. You can also browse top mobile grooming cities below.</p></div></div>
           <section class="section">
             <div class="section-head">
-              <div><h2>Mobile dog grooming companies in this directory</h2><p>These listings mention mobile, in-home, house-call, or location-based grooming signals. Always confirm route coverage, travel fees, and current availability before booking.</p></div>
+              <div><h2>Mobile dog grooming companies in this directory</h2><p>These listings use explicit mobile, in-home, house-call, mobile salon/spa, or mobile nail-care wording. Always confirm route coverage, travel fees, package scope, and current availability before booking.</p></div>
               <a class="link-arrow" href="/services/mobile-dog-grooming/">Browse all mobile grooming listings -></a>
             </div>
             <div class="listing-stack">${topListings.map((item) => listingCard(item)).join("")}</div>
@@ -2018,7 +2020,7 @@ function mobileDogGroomingNearMeBody(context, service) {
             <div class="grid-3">${topCities
               .map(
                 (city) =>
-                  `<a class="province-card" href="${localServiceSearchUrl(city, service)}"><span><strong>Mobile dog grooming in ${esc(city.city)}, ${esc(city.provinceCode)}</strong><span>${city.serviceCount.toLocaleString()} mobile signals</span></span><span aria-hidden="true">&rarr;</span></a>`,
+                  `<a class="province-card" href="${localServiceSearchUrl(city, service)}"><span><strong>Mobile dog grooming in ${esc(city.city)}, ${esc(city.provinceCode)}</strong><span>${city.serviceCount.toLocaleString()} explicit matches</span></span><span aria-hidden="true">&rarr;</span></a>`,
               )
               .join("")}</div>
           </section>
@@ -2028,7 +2030,7 @@ function mobileDogGroomingNearMeBody(context, service) {
           <div class="info-card">
             <h2>Mobile grooming snapshot</h2>
             <ul class="check-list">
-              <li>${service.count.toLocaleString()} mobile-service listing signals</li>
+              <li>${service.count.toLocaleString()} explicit mobile-service matches</li>
               <li>${phoneCount.toLocaleString()} listings with phone numbers</li>
               <li>${websiteCount.toLocaleString()} listings with websites</li>
               <li>${cityCount.toLocaleString()} city or area pages represented</li>
@@ -3407,13 +3409,53 @@ function listingServiceSlugs(listing) {
 }
 
 function matchedServiceSlugs(listing) {
-  return serviceDefinitions.filter((service) => service.patterns.some((pattern) => pattern.test(serviceMatchText(listing, service.slug)))).map((service) => service.slug);
+  return serviceDefinitions
+    .filter((service) => {
+      if (service.slug === "mobile-dog-grooming") return hasMobileGroomingSignal(listing);
+      return service.patterns.some((pattern) => pattern.test(serviceMatchText(listing, service.slug)));
+    })
+    .map((service) => service.slug);
+}
+
+function hasMobileGroomingSignal(listing) {
+  const title = `${listing.title || ""}`.trim();
+  const category = `${listing.category || ""}`.trim();
+  const serviceText = `${listing.serviceText || ""} ${listing.websiteServiceText || ""}`;
+  const website = `${listing.website || ""}`.trim();
+  const serviceContext = `${title} ${category} ${serviceText}`;
+
+  if (negativeMobileSignal(title)) return false;
+  if (titleHasMobileGroomingSignal(title, serviceContext)) return true;
+  if (explicitMobileGroomingText(serviceText)) return true;
+  return mobileGroomingUrl(website) && /\b(groom|salon|spa|spaw|pet|dog|cat|pooch|paw|fur|toilettage)\b/i.test(serviceContext);
+}
+
+function negativeMobileSignal(text) {
+  return /\b(not|no|non)\s+(a\s+)?mobile\b|nous\s+ne\s+sommes\s+pas\s+le\s+mobile|not\s+the\s+mobile|not\s+mobile/i.test(text);
+}
+
+function titleHasMobileGroomingSignal(title, serviceContext) {
+  const groomingTerms = "groom|groomer|grooming|salon|spa|spaw|wash|clip|clippers|pawdicure|pedicure|nail|toilettage|pooch|parlour|parlor";
+  const mobileAndGrooming = new RegExp(`\\bmobile\\b.*\\b(${groomingTerms})\\b|\\b(${groomingTerms})\\b.*\\bmobile\\b`, "i");
+  if (mobileAndGrooming.test(title)) return true;
+  if (/\bmobile\s+(dog|pet|cat)\s+services?\b/i.test(title)) {
+    return /\b(groom|groomer|grooming|salon|spa|spaw|nail|pawdicure|pedicure|toilettage)\b/i.test(serviceContext);
+  }
+  return false;
+}
+
+function explicitMobileGroomingText(text) {
+  return /\b(mobile\s+(dog|pet|cat)?\s*(groom|groomer|grooming|salon|spa|spaw|wash|clip|styling|nail|pawdicure|pedicure)|mobile\s+grooming|grooming\s+(van|trailer)|hydrobath\s+van|in[-\s]?home\s+(dog|pet|cat)?\s*groom|at[-\s]?home\s+(dog|pet|cat)?\s*groom|house[-\s]?call\s+(dog|pet|cat)?\s*groom|dog\s+grooming\s+at\s+home|pet\s+grooming\s+at\s+home)\b/i.test(text);
+}
+
+function mobileGroomingUrl(website) {
+  return /\b(mobilegroom|mobile-groom|mobilepet|mobile-pet|mobiledog|mobile-dog|mobilecat|mobile-cat)\b/i.test(website);
 }
 
 function serviceMatchText(listing, serviceSlug) {
   const explicitServices = listing.services.join(" ");
   if (serviceSlug === "mobile-dog-grooming") {
-    return `${explicitServices} ${listing.convenienceText} ${listing.title} ${listing.category}`;
+    return `${explicitServices} ${listing.serviceText || ""} ${listing.websiteServiceText || ""} ${listing.title} ${listing.category}`;
   }
   if (serviceSlug === "cat-grooming") {
     return `${explicitServices} ${listing.title} ${listing.category}`;
@@ -3573,7 +3615,7 @@ function nearMeMetaDescription() {
 
 function mobileGroomingNearMeMetaDescription(service) {
   return metaDescription(
-    `Mobile dog grooming near me: use your location to compare ${service.count.toLocaleString()} mobile, in-home, and house-call dog grooming signals across Canada.`,
+    `Mobile dog grooming near me: use your location to compare ${service.count.toLocaleString()} explicit mobile, in-home, house-call, and mobile nail-care grooming matches across Canada.`,
   );
 }
 
@@ -3756,7 +3798,7 @@ function mobileGroomingFaqSchema(service) {
         name: "How do I find mobile dog grooming near me?",
         acceptedAnswer: {
           "@type": "Answer",
-          text: `Use the location button to sort mobile grooming listings by distance, or browse city links filtered to businesses that mention mobile, in-home, house-call, or convenient location-based grooming. This directory currently has ${service.count.toLocaleString()} mobile grooming signals across Canada.`,
+          text: `Use the location button to sort mobile grooming listings by distance, or browse city links filtered to businesses with explicit mobile grooming, in-home grooming, house-call grooming, mobile pet salon, or mobile nail-care wording. This directory currently has ${service.count.toLocaleString()} mobile grooming matches across Canada.`,
         },
       },
       {
