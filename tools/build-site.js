@@ -29,7 +29,7 @@ const AD_SLOTS = Object.freeze({
   sidebar: "4819416718",
   leaderboard: "9035205346",
 });
-const ADSENSE_SCRIPT_ROUTES = new Set(["/", "/about/", "/contact/", "/privacy/", "/terms/", "/editorial-policy/", "/dog-grooming/", "/dog-grooming-near-me/", "/dog-grooming-cost/", "/grooming-tools/"]);
+const ADSENSE_SCRIPT_ROUTES = new Set(["/", "/about/", "/contact/", "/privacy/", "/terms/", "/editorial-policy/", "/dog-grooming/", "/dog-grooming-near-me/", "/mobile-dog-grooming-near-me/", "/dog-grooming-cost/", "/grooming-tools/"]);
 
 const CITY_COST_PAGE_LIMIT = 120;
 const CITY_COST_MIN_LISTINGS = 8;
@@ -60,6 +60,7 @@ const GENERATED_DIRS = [
   "near-me",
   "dog-grooming",
   "dog-grooming-near-me",
+  "mobile-dog-grooming-near-me",
   "dog-grooming-cost",
   "guides",
   "grooming-tools",
@@ -645,8 +646,9 @@ function writeHomePage(context) {
       <div class="wrap grid-3">
         <div class="info-card">
           <h2>Location based</h2>
-          <p>Use your location to jump to the nearest city page or compare nearby groomers by distance. Location is only requested when you press the button.</p>
+          <p>Use your location to jump to the nearest city page, compare nearby groomers by distance, or narrow the list to mobile dog grooming that may serve your area. Location is only requested when you press the button.</p>
           <a class="btn btn-dark" href="/dog-grooming-near-me/">Find dog grooming near me</a>
+          <p><a class="link-arrow" href="/mobile-dog-grooming-near-me/">Find mobile grooming near me -></a></p>
         </div>
         <div class="info-card">
           <h2>Built for discovery</h2>
@@ -1040,6 +1042,11 @@ function writeServicePages(context) {
                 (item) => `${item.count}`,
               )}
             </div>
+            ${
+              service.slug === "mobile-dog-grooming"
+                ? `<div class="info-card"><h2>Use your location</h2><p>Sort mobile grooming listings by distance and compare companies that mention mobile, in-home, or house-call grooming.</p><a class="btn btn-light" href="/mobile-dog-grooming-near-me/">Mobile grooming near me</a></div>`
+                : ""
+            }
             <div class="info-card"><h2>Confirm before booking</h2><p>Service data can be incomplete. Ask the groomer about the exact package, timing, price, coat requirements, and whether your dog needs a consultation.</p></div>
           </aside>
         </div>
@@ -1792,6 +1799,7 @@ function writeKeywordPages(context) {
   const topCities = context.cities.slice(0, 24);
   const topCostCities = costCityPages(context).slice(0, 12);
   const topListings = context.listings.filter((item) => item.provinceSlug !== "canada").slice(0, 12);
+  const mobileService = context.services.find((service) => service.slug === "mobile-dog-grooming");
   const groomingBody = `
     <section class="page-intro">
       <div class="wrap">
@@ -1817,6 +1825,7 @@ function writeKeywordPages(context) {
                 `<a class="province-card" href="${city.url}"><span><strong>Dog grooming in ${esc(city.city)}, ${esc(city.provinceCode)}</strong><span>${city.count.toLocaleString()} local groomers</span></span><span aria-hidden="true">&rarr;</span></a>`,
             )
             .join("")}</div>
+          <div class="notice" style="margin-top:18px"><strong>Need grooming at home?</strong> <a href="/mobile-dog-grooming-near-me/">Find mobile dog grooming near you</a> and sort mobile-service listings by distance.</div>
           <section class="section">
             <h2>Popular dog grooming services</h2>
             <div class="grid-3">${context.services
@@ -1896,6 +1905,22 @@ function writeKeywordPages(context) {
     ],
     { bodyAttrs: 'data-page="near-me"' },
   );
+
+  if (mobileService) {
+    writePage(
+      context,
+      "/mobile-dog-grooming-near-me/",
+      "Mobile Dog Grooming Near Me | Find In-Home Dog Groomers",
+      mobileGroomingNearMeMetaDescription(mobileService),
+      mobileDogGroomingNearMeBody(context, mobileService),
+      [
+        breadcrumbSchema([{ label: "Home", url: "/" }, { label: "Mobile Dog Grooming Near Me", url: "/mobile-dog-grooming-near-me/" }]),
+        itemListSchema("Mobile dog grooming companies in Canada", mobileService.listings.slice(0, 50)),
+        mobileGroomingFaqSchema(mobileService),
+      ],
+      { bodyAttrs: 'data-page="near-me" data-near-service="mobile-dog-grooming"' },
+    );
+  }
 }
 
 function nearMeBody(context) {
@@ -1930,6 +1955,7 @@ function nearMeBody(context) {
         </main>
         <aside class="side-panel">
           ${adUnit("sidebar", { sidebar: true, format: "rectangle" })}
+          <div class="info-card"><h2>Mobile grooming</h2><p>Need grooming at your home or curbside? Use the mobile grooming page to show only listings that mention mobile, in-home, or house-call grooming.</p><a class="btn btn-light" href="/mobile-dog-grooming-near-me/">Mobile grooming near me</a></div>
           <div class="info-card">
             <h2>Browse by province</h2>
             ${linkList(
@@ -1940,6 +1966,84 @@ function nearMeBody(context) {
             )}
           </div>
           <div class="info-card"><h2>Booking tip</h2><p>For the best dog grooming match near you, confirm coat type experience, package details, wait time, pricing, de-matting policy, and whether the groomer is accepting new dogs.</p></div>
+        </aside>
+      </div>
+    </section>`;
+}
+
+function mobileDogGroomingNearMeBody(context, service) {
+  const topCities = serviceTopCities(service, context, 24);
+  const topListings = service.listings.slice(0, 12);
+  const provinceCounts = countBy(
+    service.listings.filter((item) => item.province !== "Canada"),
+    (item) => item.province,
+  ).slice(0, 12);
+  const phoneCount = service.listings.filter((item) => item.phone).length;
+  const websiteCount = service.listings.filter((item) => item.website).length;
+  const cityCount = new Set(service.listings.map((item) => item.cityUrl).filter(Boolean)).size;
+  return `
+    <section class="page-intro">
+      <div class="wrap">
+        ${breadcrumbs([{ label: "Home", url: "/" }, { label: "Mobile Dog Grooming Near Me" }])}
+        <h1 class="city-title">Mobile Dog Grooming Near Me</h1>
+        <p class="lead">Use your location to find nearby companies that mention mobile, in-home, house-call, or convenient location-based dog grooming. This directory currently has ${service.count.toLocaleString()} mobile dog grooming signals across Canada.</p>
+        <button class="btn btn-dark" type="button" data-use-location data-status-target="[data-location-status]">Use my location</button>
+        <p class="muted" data-location-status style="margin-top:12px">Press the button to sort mobile grooming listings by distance. Your location stays in your browser.</p>
+        <p class="muted"><span data-result-count></span></p>
+      </div>
+    </section>
+    <section class="section">
+      <div class="wrap content-layout">
+        <main>
+          <div class="search-results" id="results" data-nearby-results><div class="empty-state"><h2>Location required</h2><p>Click "Use my location" to sort mobile dog grooming listings by distance. You can also browse top mobile grooming cities below.</p></div></div>
+          <section class="section">
+            <div class="section-head">
+              <div><h2>Mobile dog grooming companies in this directory</h2><p>These listings mention mobile, in-home, house-call, or location-based grooming signals. Always confirm route coverage, travel fees, and current availability before booking.</p></div>
+              <a class="link-arrow" href="/services/mobile-dog-grooming/">Browse all mobile grooming listings -></a>
+            </div>
+            <div class="listing-stack">${topListings.map((item) => listingCard(item)).join("")}</div>
+          </section>
+          <section class="section">
+            <h2>What to confirm before booking mobile grooming</h2>
+            <div class="grid-3">
+              <div class="info-card"><h3>Service area and fees</h3><p>Ask whether your address is inside the groomer's current route, whether there is a travel fee, and whether your postal code has a minimum package or waitlist.</p></div>
+              <div class="info-card"><h3>Parking and setup</h3><p>Confirm driveway, condo, street parking, power, water, winter access, and weather policies. Mobile vans may need level parking and enough space around the vehicle.</p></div>
+              <div class="info-card"><h3>Dog fit and package</h3><p>Share your dog's breed, size, coat condition, age, temperament, and last groom date. Ask what is included, what costs extra, and whether large or matted dogs need approval first.</p></div>
+            </div>
+          </section>
+          <section class="section">
+            <div class="section-head">
+              <div><h2>Top cities for mobile dog grooming</h2><p>City links open filtered mobile grooming results and can include nearby matches when you use location.</p></div>
+            </div>
+            <div class="grid-3">${topCities
+              .map(
+                (city) =>
+                  `<a class="province-card" href="${localServiceSearchUrl(city, service)}"><span><strong>Mobile dog grooming in ${esc(city.city)}, ${esc(city.provinceCode)}</strong><span>${city.serviceCount.toLocaleString()} mobile signals</span></span><span aria-hidden="true">&rarr;</span></a>`,
+              )
+              .join("")}</div>
+          </section>
+        </main>
+        <aside class="side-panel">
+          ${adUnit("sidebar", { sidebar: true, format: "rectangle" })}
+          <div class="info-card">
+            <h2>Mobile grooming snapshot</h2>
+            <ul class="check-list">
+              <li>${service.count.toLocaleString()} mobile-service listing signals</li>
+              <li>${phoneCount.toLocaleString()} listings with phone numbers</li>
+              <li>${websiteCount.toLocaleString()} listings with websites</li>
+              <li>${cityCount.toLocaleString()} city or area pages represented</li>
+            </ul>
+          </div>
+          <div class="info-card">
+            <h2>Top provinces</h2>
+            ${linkList(
+              provinceCounts,
+              (item) => context.provinces.find((province) => province.name === item.name)?.url || "/provinces/",
+              (item) => `${item.name} mobile grooming`,
+              (item) => `${item.count}`,
+            )}
+          </div>
+          <div class="info-card"><h2>Search instead</h2><p>Use directory search if you want mobile grooming plus a specific city, postal area, or business name.</p><a class="btn btn-light" href="/search/?service=mobile-dog-grooming#results">Search mobile groomers</a></div>
         </aside>
       </div>
     </section>`;
@@ -2198,6 +2302,7 @@ function writeSitemap(context) {
             { url: "/dog-grooming/", name: "Dog Grooming", count: "" },
             { url: "/dog-grooming-cost/", name: "Dog Grooming Cost", count: context.provinces.length + costCities.length },
             { url: "/dog-grooming-near-me/", name: "Dog Grooming Near Me", count: "" },
+            { url: "/mobile-dog-grooming-near-me/", name: "Mobile Dog Grooming Near Me", count: "" },
             { url: "/cities/", name: "All Cities", count: context.cities.length },
             { url: "/search/", name: "Search", count: "" },
             { url: "/about/", name: "About", count: "" },
@@ -2331,7 +2436,7 @@ function footer() {
         <p>Canada's static directory of dog grooming businesses. Find, compare, and connect with trusted local groomers near you.</p>
         <p class="copyright">&copy; ${new Date().getFullYear()} Dog Groomers Canada</p>
       </div>
-      <div><h3>Browse</h3><a href="/dog-grooming/">Dog Grooming</a><a href="/dog-grooming-cost/">Grooming Costs</a><a href="/dog-grooming-near-me/">Dog Grooming Near Me</a><a href="/provinces/">Provinces</a><a href="/cities/">Cities</a><a href="/services/">Services</a><a href="/guides/">Guides</a></div>
+      <div><h3>Browse</h3><a href="/dog-grooming/">Dog Grooming</a><a href="/dog-grooming-cost/">Grooming Costs</a><a href="/dog-grooming-near-me/">Dog Grooming Near Me</a><a href="/mobile-dog-grooming-near-me/">Mobile Grooming Near Me</a><a href="/provinces/">Provinces</a><a href="/cities/">Cities</a><a href="/services/">Services</a><a href="/guides/">Guides</a></div>
       <div><h3>Guides</h3><a href="/guides/techniques/">Techniques</a><a href="/guides/seasonal-care/">Seasonal Care</a><a href="/guides/breed-guides/">Breed Guides</a><a href="/guides/costs-and-booking/">Costs and Booking</a><a href="/guides/dog-grooming-cost-canada/">Cost Guide</a></div>
       <div><h3>Tools</h3><a href="/grooming-tools/">All Tools</a><a href="/grooming-tools/dog-grooming-cost-estimator/">Cost Estimator</a><a href="/grooming-tools/dog-grooming-frequency-calculator/">Frequency Calculator</a><a href="/grooming-tools/matting-risk-checklist/">Matting Checklist</a><a href="/grooming-tools/dog-groomer-call-script/">Call Script</a><a href="/search/">Search Directory</a></div>
       <div><h3>Company</h3><a href="/about/">About</a><a href="/contact/">Contact</a><a href="/editorial-policy/">Editorial Policy</a><a href="/privacy/">Privacy Policy</a><a href="/terms/">Terms of Use</a><a href="/sitemap/">HTML Sitemap</a></div>
@@ -3016,6 +3121,21 @@ function localServiceSearchUrl(city, service) {
   return `/search/?${params.toString()}#results`;
 }
 
+function serviceTopCities(service, context, limit = 24) {
+  const cityMap = new Map(context.cities.map((city) => [city.url, city]));
+  const counts = new Map();
+  for (const listing of service.listings) {
+    const city = cityMap.get(listing.cityUrl);
+    if (!city || city.city === "Canada") continue;
+    const existing = counts.get(city.url) || { ...city, serviceCount: 0 };
+    existing.serviceCount += 1;
+    counts.set(city.url, existing);
+  }
+  return [...counts.values()]
+    .sort((a, b) => b.serviceCount - a.serviceCount || b.count - a.count || a.city.localeCompare(b.city))
+    .slice(0, limit);
+}
+
 function cityBookingQuestionsSection(city, services, province, costMap) {
   const costUrl = costGuideUrlForCity(city, province, costMap);
   const serviceQuestions = services.flatMap((service) => bookingQuestionsForService(service.slug));
@@ -3451,6 +3571,12 @@ function nearMeMetaDescription() {
   );
 }
 
+function mobileGroomingNearMeMetaDescription(service) {
+  return metaDescription(
+    `Mobile dog grooming near me: use your location to compare ${service.count.toLocaleString()} mobile, in-home, and house-call dog grooming signals across Canada.`,
+  );
+}
+
 function metaDescription(value, maxLength = 156) {
   const cleanValue = clean(String(value || ""));
   if (cleanValue.length <= maxLength) return cleanValue;
@@ -3614,6 +3740,39 @@ function faqSchema(city) {
         acceptedAnswer: {
           "@type": "Answer",
           text: "Yes. Directory data can change, so confirm bath, haircut, nail trim, de-shedding, puppy grooming, de-matting, teeth brushing, mobile service, and pricing directly with the business.",
+        },
+      },
+    ],
+  };
+}
+
+function mobileGroomingFaqSchema(service) {
+  return {
+    "@context": "https://schema.org",
+    "@type": "FAQPage",
+    mainEntity: [
+      {
+        "@type": "Question",
+        name: "How do I find mobile dog grooming near me?",
+        acceptedAnswer: {
+          "@type": "Answer",
+          text: `Use the location button to sort mobile grooming listings by distance, or browse city links filtered to businesses that mention mobile, in-home, house-call, or convenient location-based grooming. This directory currently has ${service.count.toLocaleString()} mobile grooming signals across Canada.`,
+        },
+      },
+      {
+        "@type": "Question",
+        name: "What should I ask before booking a mobile dog groomer?",
+        acceptedAnswer: {
+          "@type": "Answer",
+          text: "Confirm that your address is inside the groomer's current route, ask about travel fees, parking or setup requirements, package inclusions, dog size limits, coat-condition fees, and current availability.",
+        },
+      },
+      {
+        "@type": "Question",
+        name: "Is mobile dog grooming good for anxious dogs?",
+        acceptedAnswer: {
+          "@type": "Answer",
+          text: "Mobile grooming can be helpful for some anxious dogs because there is less travel and less salon traffic, but fit depends on the dog, van noise, handling rules, owner presence policies, and the groomer's experience.",
         },
       },
     ],

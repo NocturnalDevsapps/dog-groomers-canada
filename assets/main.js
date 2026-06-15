@@ -155,6 +155,15 @@
     return path.includes("#") ? path : `${path}#results`;
   }
 
+  function serviceCitySearchUrl(city, serviceSlug) {
+    const params = new URLSearchParams({
+      service: serviceSlug,
+      where: `${city.city}, ${city.provinceCode || city.province}`,
+      near: "1",
+    });
+    return withBase(`/search/?${params.toString()}#results`);
+  }
+
   function ratingMarkup(item) {
     const rating = Number(item.rating || 0);
     if (!rating) return "";
@@ -467,13 +476,23 @@
     const mount = $("[data-nearby-results]");
     const count = $("[data-result-count]");
     if (!mount) return;
+    const serviceSlug = document.body.dataset.nearService || "";
+    const service = serviceSlug ? (index.services || []).find((item) => item.slug === serviceSlug) : null;
+    const sourceListings = serviceSlug ? index.listings.filter((item) => Array.isArray(item.serviceSlugs) && item.serviceSlugs.includes(serviceSlug)) : index.listings;
     const city = nearestCity(index.cities, coords);
-    const listings = nearestListings(index.listings, coords, 36);
-    if (count) count.textContent = `${listings.length.toLocaleString()} nearby groomers`;
+    const listings = nearestListings(sourceListings, coords, 36);
+    if (count) count.textContent = nearMeCountText(listings.length, serviceSlug, service);
     const cityMarkup = city
-      ? `<div class="notice"><strong>Closest city page:</strong> <a href="${escapeAttr(resultsUrl(city.url))}">${escapeHtml(city.city)}, ${escapeHtml(city.provinceCode || city.province)}</a> (${city.distance.toFixed(1)} km away)</div>`
+      ? `<div class="notice"><strong>${serviceSlug ? "Closest filtered search" : "Closest city page"}:</strong> <a href="${escapeAttr(serviceSlug ? serviceCitySearchUrl(city, serviceSlug) : resultsUrl(city.url))}">${escapeHtml(city.city)}, ${escapeHtml(city.provinceCode || city.province)}</a> (${city.distance.toFixed(1)} km away)</div>`
       : "";
-    mount.innerHTML = `${cityMarkup}<div class="listing-stack">${listings.map(cardMarkup).join("")}</div>`;
+    const emptyMarkup = `<div class="empty-state"><h2>No nearby matches found</h2><p>Try searching by city or province, or contact mobile groomers to confirm their current service area.</p></div>`;
+    mount.innerHTML = `${cityMarkup}${listings.length ? `<div class="listing-stack">${listings.map(cardMarkup).join("")}</div>` : emptyMarkup}`;
+  }
+
+  function nearMeCountText(count, serviceSlug, service) {
+    if (serviceSlug === "mobile-dog-grooming") return `${count.toLocaleString()} nearby mobile groomers`;
+    if (service) return `${count.toLocaleString()} nearby ${service.short.toLowerCase()} matches`;
+    return `${count.toLocaleString()} nearby groomers`;
   }
 
   function initNearbyHint() {
