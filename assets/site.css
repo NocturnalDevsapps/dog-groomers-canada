@@ -607,6 +607,12 @@ h3 {
   object-fit: cover;
 }
 
+.listing-image img[hidden],
+.profile-photo img[hidden],
+.photo-grid img[hidden] {
+  display: none;
+}
+
 .listing-image .fallback-photo,
 .profile-photo .fallback-photo {
   filter: saturate(0.98) contrast(1.02);

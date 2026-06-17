@@ -4,12 +4,6 @@
   const DATA_URL = "/assets/search-index.json";
   const locationKey = "dgc:last-location";
   const nearbySearchRadiusKm = 35;
-  const fallbackImages = [
-    "/assets/dgc-photo-coat-care.jpg",
-    "/assets/dgc-photo-hero-grooming.jpg",
-    "/assets/dgc-photo-puppy-groom.jpg",
-    "/assets/dgc-photo-winter-paw.jpg",
-  ];
   let indexPromise;
 
   const $ = (selector, root = document) => root.querySelector(selector);
@@ -33,7 +27,7 @@
 
   async function loadIndex() {
     if (!indexPromise) {
-      indexPromise = fetch(withBase(DATA_URL), { credentials: "same-origin" }).then((response) => {
+      indexPromise = fetch(withBase(DATA_URL), { credentials: "same-origin", cache: "no-cache" }).then((response) => {
         if (!response.ok) throw new Error("Could not load directory data.");
         return response.json();
       });
@@ -178,46 +172,54 @@
   }
 
   function imageMarkup(item) {
-    const fallbackImage = fallbackImageForItem(item);
-    const image = item.image || fallbackImage;
-    const isFallback = item.imageIsFallback || !item.image || fallbackImages.includes(item.image);
-    return `<img${isFallback ? ` class="fallback-photo"` : ""} src="${escapeAttr(image)}" alt="${escapeAttr(isFallback ? representativeImageAlt() : `${item.title} dog grooming listing photo`)}" loading="lazy" referrerpolicy="no-referrer" data-fallback-image="${escapeAttr(fallbackImage)}" data-fallback-alt="${escapeAttr(representativeImageAlt())}">`;
+    if (!item.image) return `<span class="fallback image-unavailable" aria-hidden="true"></span>`;
+    const fallbackAttrs = item.fallbackImage && item.fallbackImage !== item.image ? ` data-fallback-image="${escapeAttr(item.fallbackImage)}" data-fallback-alt="${escapeAttr(`${item.title} dog grooming listing photo`)}"` : "";
+    return `<img src="${escapeAttr(item.image)}" alt="${escapeAttr(`${item.title} dog grooming listing photo`)}" loading="lazy" referrerpolicy="no-referrer"${fallbackAttrs}>`;
   }
 
   function replaceBrokenListingImage(img) {
-    if (!img || !img.closest || !img.closest(".listing-image")) return;
-    const fallbackImage = img.getAttribute("data-fallback-image") || fallbackImages[0];
-    if (img.getAttribute("src") === fallbackImage) return;
+    if (!img || !img.closest) return;
+    if (!img.matches("[data-fallback-image]") && !img.closest(".listing-image, .profile-photo, .photo-grid")) return;
+    const fallbackImage = img.getAttribute("data-fallback-image") || "";
+    if (!fallbackImage) {
+      img.hidden = true;
+      img.style.display = "none";
+      img.classList.add("is-broken");
+      return;
+    }
+    if (img.getAttribute("src") === fallbackImage || img.dataset.fallbackApplied === "1") {
+      img.hidden = true;
+      img.style.display = "none";
+      img.classList.add("is-broken");
+      return;
+    }
+    img.dataset.fallbackApplied = "1";
+    img.hidden = false;
+    img.style.display = "";
+    img.classList.remove("is-broken");
     img.src = fallbackImage;
-    img.alt = img.getAttribute("data-fallback-alt") || representativeImageAlt();
-    img.classList.add("fallback-photo");
+    img.alt = img.getAttribute("data-fallback-alt") || img.alt;
   }
 
-  function fallbackImageForItem(item) {
-    const serviceSlugs = Array.isArray(item.serviceSlugs) ? item.serviceSlugs : [];
-    const text = normalizeText(`${item.title || ""} ${item.category || ""} ${(item.services || []).join(" ")}`);
-    if (serviceSlugs.includes("puppy-grooming") || text.includes("puppy")) return "/assets/dgc-photo-puppy-groom.jpg";
-    if (serviceSlugs.includes("nail-trimming") || text.includes("nail")) return "/assets/dgc-photo-winter-paw.jpg";
-    if (serviceSlugs.some((slug) => ["bath-and-brush", "deshedding", "dematting"].includes(slug)) || /\b(bath|brush|shed|mat)\b/.test(text)) return "/assets/dgc-photo-coat-care.jpg";
-    if (serviceSlugs.includes("mobile-dog-grooming") || serviceSlugs.includes("dog-haircuts")) return "/assets/dgc-photo-hero-grooming.jpg";
-    const seed = `${item.url || ""}${item.title || ""}`;
-    const index = [...seed].reduce((sum, char) => sum + char.charCodeAt(0), 0) % fallbackImages.length;
-    return fallbackImages[index];
-  }
-
-  function representativeImageAlt() {
-    return "Representative dog grooming photo";
+  function revealLoadedListingImage(img) {
+    if (!img || !img.closest || !img.closest(".listing-image, .profile-photo, .photo-grid")) return;
+    if (!img.naturalWidth) return;
+    img.hidden = false;
+    img.style.display = "";
+    img.classList.remove("is-broken");
   }
 
   function initImageFallbacks() {
     $$("img").forEach((img) => {
-      if (!img.closest(".listing-image")) return;
+      if (!img.matches("[data-fallback-image]") && !img.closest(".listing-image, .profile-photo, .photo-grid")) return;
       if (img.dataset.imageFallbackBound === "1") return;
       img.dataset.imageFallbackBound = "1";
+      img.addEventListener("load", () => revealLoadedListingImage(img));
       if (img.complete && img.naturalWidth === 0) {
         replaceBrokenListingImage(img);
         return;
       }
+      if (img.complete) revealLoadedListingImage(img);
       img.addEventListener("error", () => replaceBrokenListingImage(img), { once: true });
     });
   }
