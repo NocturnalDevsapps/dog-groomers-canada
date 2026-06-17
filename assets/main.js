@@ -4,6 +4,12 @@
   const DATA_URL = "/assets/search-index.json";
   const locationKey = "dgc:last-location";
   const nearbySearchRadiusKm = 35;
+  const fallbackImages = [
+    "/assets/dgc-photo-coat-care.jpg",
+    "/assets/dgc-photo-hero-grooming.jpg",
+    "/assets/dgc-photo-puppy-groom.jpg",
+    "/assets/dgc-photo-winter-paw.jpg",
+  ];
   let indexPromise;
 
   const $ = (selector, root = document) => root.querySelector(selector);
@@ -172,19 +178,35 @@
   }
 
   function imageMarkup(item) {
-    if (item.image) {
-      return `<img src="${escapeAttr(item.image)}" alt="${escapeAttr(item.title)} dog grooming listing photo" loading="lazy" referrerpolicy="no-referrer">`;
-    }
-    return `<span class="fallback" aria-hidden="true">${dogIcon()}</span>`;
+    const fallbackImage = fallbackImageForItem(item);
+    const image = item.image || fallbackImage;
+    const isFallback = item.imageIsFallback || !item.image || fallbackImages.includes(item.image);
+    return `<img${isFallback ? ` class="fallback-photo"` : ""} src="${escapeAttr(image)}" alt="${escapeAttr(isFallback ? representativeImageAlt() : `${item.title} dog grooming listing photo`)}" loading="lazy" referrerpolicy="no-referrer" data-fallback-image="${escapeAttr(fallbackImage)}" data-fallback-alt="${escapeAttr(representativeImageAlt())}">`;
   }
 
   function replaceBrokenListingImage(img) {
     if (!img || !img.closest || !img.closest(".listing-image")) return;
-    const fallback = document.createElement("span");
-    fallback.className = "fallback";
-    fallback.setAttribute("aria-hidden", "true");
-    fallback.innerHTML = dogIcon();
-    img.replaceWith(fallback);
+    const fallbackImage = img.getAttribute("data-fallback-image") || fallbackImages[0];
+    if (img.getAttribute("src") === fallbackImage) return;
+    img.src = fallbackImage;
+    img.alt = img.getAttribute("data-fallback-alt") || representativeImageAlt();
+    img.classList.add("fallback-photo");
+  }
+
+  function fallbackImageForItem(item) {
+    const serviceSlugs = Array.isArray(item.serviceSlugs) ? item.serviceSlugs : [];
+    const text = normalizeText(`${item.title || ""} ${item.category || ""} ${(item.services || []).join(" ")}`);
+    if (serviceSlugs.includes("puppy-grooming") || text.includes("puppy")) return "/assets/dgc-photo-puppy-groom.jpg";
+    if (serviceSlugs.includes("nail-trimming") || text.includes("nail")) return "/assets/dgc-photo-winter-paw.jpg";
+    if (serviceSlugs.some((slug) => ["bath-and-brush", "deshedding", "dematting"].includes(slug)) || /\b(bath|brush|shed|mat)\b/.test(text)) return "/assets/dgc-photo-coat-care.jpg";
+    if (serviceSlugs.includes("mobile-dog-grooming") || serviceSlugs.includes("dog-haircuts")) return "/assets/dgc-photo-hero-grooming.jpg";
+    const seed = `${item.url || ""}${item.title || ""}`;
+    const index = [...seed].reduce((sum, char) => sum + char.charCodeAt(0), 0) % fallbackImages.length;
+    return fallbackImages[index];
+  }
+
+  function representativeImageAlt() {
+    return "Representative dog grooming photo";
   }
 
   function initImageFallbacks() {

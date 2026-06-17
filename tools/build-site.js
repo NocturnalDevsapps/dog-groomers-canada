@@ -20,7 +20,11 @@ const LOGO_PATH = "/assets/logo-mark-realistic.png";
 const FAVICON_PATH = "/assets/favicon-realistic.png";
 const OG_IMAGE_PATH = "/assets/og-image.svg";
 const PHOTO_HERO_PATH = "/assets/dgc-photo-hero-grooming.jpg";
-const PHOTO_FALLBACK_PATH = "/assets/dgc-photo-coat-care.jpg";
+const PHOTO_COAT_CARE_PATH = "/assets/dgc-photo-coat-care.jpg";
+const PHOTO_PUPPY_GROOM_PATH = "/assets/dgc-photo-puppy-groom.jpg";
+const PHOTO_WINTER_PAW_PATH = "/assets/dgc-photo-winter-paw.jpg";
+const PHOTO_FALLBACK_PATH = PHOTO_COAT_CARE_PATH;
+const PHOTO_FALLBACK_ROTATION = Object.freeze([PHOTO_COAT_CARE_PATH, PHOTO_HERO_PATH, PHOTO_PUPPY_GROOM_PATH, PHOTO_WINTER_PAW_PATH]);
 const ADSENSE_CLIENT = "ca-pub-2494233247909241";
 const GOOGLE_ANALYTICS_ID = "G-BY1BF23TD7";
 const DISPLAY_AD_UNITS = false;
@@ -279,8 +283,8 @@ function loadListings(file) {
     const phone = clean(get("phone"));
     const phoneRaw = clean(get("phoneUnformatted")) || phone.replace(/[^\d+]/g, "");
     const category = clean(get("categoryName")) || firstPresent(getRange(get, "categories/", 0, 10));
-    const image = bestImage(get);
-    const photos = unique([image, ...getRange(get, "imageUrls/", 0, 4), ...getNestedImages(get)]).filter(Boolean).slice(0, 8);
+    const sourceImage = bestImage(get);
+    const photos = unique([sourceImage, ...getRange(get, "imageUrls/", 0, 4), ...getNestedImages(get)]).filter(Boolean).slice(0, 8);
     const hours = getHours(get);
     const services = getServices(get);
     const description = buildListingDescription({
@@ -322,7 +326,8 @@ function loadListings(file) {
       reviews,
       lat,
       lng,
-      image,
+      image: sourceImage,
+      imageIsFallback: false,
       photos,
       hours,
       services,
@@ -335,6 +340,10 @@ function loadListings(file) {
       scrapedAt: clean(get("scrapedAt")),
       score: 0,
     };
+    if (!listing.image) {
+      listing.image = fallbackImageForListing(listing);
+      listing.imageIsFallback = true;
+    }
     listing.score = qualityScore(listing);
     listings.push(listing);
   });
@@ -557,6 +566,8 @@ function writeStaticAssets(context) {
         lat: listing.lat,
         lng: listing.lng,
         image: listing.image,
+        imageIsFallback: listing.imageIsFallback,
+        fallbackImage: fallbackImageForListing(listing),
         services: listing.services,
         serviceSlugs: matchedServiceSlugs(listing),
         url: listing.url,
@@ -931,7 +942,7 @@ function writeListingPages(context) {
               <div class="meta-line">${ratingLine(listing)}<span>${esc(listing.city)}, ${esc(listing.provinceCode)}</span></div>
               <div class="tag-cloud" style="margin-top:18px">${listing.phone ? `<a class="btn btn-dark" href="tel:${escAttr(listing.phoneRaw || listing.phone)}">Call ${esc(listing.phone)}</a>` : ""}${listing.website ? `<a class="btn btn-primary" href="${escAttr(listing.website)}" target="_blank" rel="nofollow noopener">Visit Website</a>` : ""}${listing.mapsUrl ? `<a class="btn btn-light" href="${escAttr(listing.mapsUrl)}" target="_blank" rel="nofollow noopener">Open Map</a>` : ""}</div>
             </div>
-            <div class="profile-photo">${listing.image ? `<img src="${escAttr(listing.image)}" alt="${escAttr(listing.title)} listing photo" loading="eager" referrerpolicy="no-referrer">` : dogFallback("eager")}</div>
+            <div class="profile-photo">${listing.image ? `<img src="${escAttr(listing.image)}" alt="${escAttr(listingImageAlt(listing, "profile"))}" loading="eager" referrerpolicy="no-referrer" data-fallback-image="${escAttr(fallbackImageForListing(listing))}" data-fallback-alt="${escAttr(representativeImageAlt())}">` : dogFallback("eager")}</div>
           </div>
         </div>
       </section>
@@ -2467,7 +2478,7 @@ function listingCard(item, compact = false) {
   actions.push(`<a class="btn btn-primary" href="${item.url}">View Profile</a>`);
 
   return `<article class="listing-card${compact ? " compact" : ""}">
-    <a class="listing-image" href="${item.url}">${item.image ? `<img src="${escAttr(item.image)}" alt="${escAttr(item.title)} dog grooming listing photo" loading="lazy" referrerpolicy="no-referrer">` : dogFallback()}</a>
+    <a class="listing-image" href="${item.url}">${item.image ? `<img src="${escAttr(item.image)}" alt="${escAttr(listingImageAlt(item, "card"))}" loading="lazy" referrerpolicy="no-referrer" data-fallback-image="${escAttr(fallbackImageForListing(item))}" data-fallback-alt="${escAttr(representativeImageAlt())}">` : dogFallback()}</a>
     <div class="listing-body">
       <h3><a class="listing-title" href="${item.url}">${esc(item.title)}</a></h3>
       <div class="meta-line">${ratingLine(item)}<span>${esc(item.city)}, ${esc(item.provinceCode)}</span></div>
@@ -3740,7 +3751,7 @@ function localBusinessSchema(listing) {
     url: absoluteUrl(listing.url),
     description: listing.description,
     telephone: listing.phone || undefined,
-    image: listing.photos.length ? listing.photos : undefined,
+    image: listing.photos.length ? listing.photos : [absoluteUrl(fallbackImageForListing(listing))],
     address: {
       "@type": "PostalAddress",
       streetAddress: listing.street || listing.address,
@@ -4256,7 +4267,29 @@ function dogLogo() {
 }
 
 function dogFallback(loading = "lazy") {
-  return `<img class="fallback-photo" src="${PHOTO_FALLBACK_PATH}" alt="" loading="${escAttr(loading)}">`;
+  return `<img class="fallback-photo" src="${PHOTO_FALLBACK_PATH}" alt="${escAttr(representativeImageAlt())}" loading="${escAttr(loading)}">`;
+}
+
+function fallbackImageForListing(listing) {
+  const serviceSlugs = Array.isArray(listing.serviceSlugs) ? listing.serviceSlugs : listingServiceSlugs(listing);
+  if (serviceSlugs.includes("puppy-grooming")) return PHOTO_PUPPY_GROOM_PATH;
+  if (serviceSlugs.includes("nail-trimming")) return PHOTO_WINTER_PAW_PATH;
+  if (serviceSlugs.includes("bath-and-brush") || serviceSlugs.includes("deshedding") || serviceSlugs.includes("dematting")) return PHOTO_COAT_CARE_PATH;
+  if (serviceSlugs.includes("mobile-dog-grooming")) return PHOTO_HERO_PATH;
+  if (serviceSlugs.includes("dog-haircuts")) return PHOTO_HERO_PATH;
+
+  const seed = listing.id || listing.url || listing.title || "";
+  const index = parseInt(shortHash(seed).slice(0, 2), 16) % PHOTO_FALLBACK_ROTATION.length;
+  return PHOTO_FALLBACK_ROTATION[index];
+}
+
+function representativeImageAlt() {
+  return "Representative dog grooming photo";
+}
+
+function listingImageAlt(listing, context = "card") {
+  if (listing.imageIsFallback || PHOTO_FALLBACK_ROTATION.includes(listing.image)) return representativeImageAlt();
+  return context === "profile" ? `${listing.title} listing photo` : `${listing.title} dog grooming listing photo`;
 }
 
 function searchIcon() {
