@@ -282,7 +282,9 @@ function loadListings(file) {
     const phoneRaw = clean(get("phoneUnformatted")) || phone.replace(/[^\d+]/g, "");
     const category = clean(get("categoryName")) || firstPresent(getRange(get, "categories/", 0, 10));
     const sourceImage = bestImage(get);
-    const photos = unique([sourceImage, ...getRange(get, "imageUrls/", 0, 4), ...getNestedImages(get)]).filter(Boolean).slice(0, 8);
+    const photos = unique([sourceImage, ...getRange(get, "imageUrls/", 0, 4), ...getNestedImages(get), ...getGoogleFallbackImages(get)])
+      .filter(Boolean)
+      .slice(0, 24);
     const hours = getHours(get);
     const services = getServices(get);
     const description = buildListingDescription({
@@ -442,9 +444,12 @@ function applyImageOverrides(listings, overrides) {
 }
 
 function removeBrokenListingImages(listings, brokenImageUrls) {
+  const usedPrimaryImages = new Set();
   return listings.map((listing) => {
     const photos = (listing.photos || []).filter((photo) => photo && !isUnusableListingImage(photo, brokenImageUrls));
-    const image = listing.image && !isUnusableListingImage(listing.image, brokenImageUrls) ? listing.image : photos[0] || "";
+    const candidates = unique([listing.image, ...photos]).filter((photo) => photo && !isUnusableListingImage(photo, brokenImageUrls) && !usedPrimaryImages.has(photo));
+    const image = candidates[0] || "";
+    if (image) usedPrimaryImages.add(image);
     if (image === listing.image && photos.length === listing.photos.length) return listing;
     return {
       ...listing,
@@ -457,11 +462,7 @@ function removeBrokenListingImages(listings, brokenImageUrls) {
 
 function isUnusableListingImage(url, brokenImageUrls) {
   if (!url) return false;
-  return brokenImageUrls.has(url) || isStreetViewThumbnail(url);
-}
-
-function isStreetViewThumbnail(url) {
-  return /^https:\/\/streetviewpixels-pa\.googleapis\.com\//i.test(url);
+  return brokenImageUrls.has(url);
 }
 
 function groupProvinces(listings) {
@@ -2454,8 +2455,8 @@ function pageHtml(route, title, description, body, schema = [], options = {}) {
   <link rel="icon" href="${FAVICON_PATH}" type="image/png">
   <link rel="manifest" href="/assets/site.webmanifest">
   ${routePath === "/" ? `<link rel="preload" href="${PHOTO_HERO_PATH}" as="image">` : ""}
-  <link rel="preload" href="/assets/site.css?v=${NOW}" as="style">
-  <link rel="stylesheet" href="/assets/site.css?v=${NOW}">
+  <link rel="preload" href="/assets/site.css?v=${ASSET_VERSION}" as="style">
+  <link rel="stylesheet" href="/assets/site.css?v=${ASSET_VERSION}">
   ${schemaItems.map((item) => `<script type="application/ld+json">${safeJson(item)}</script>`).join("\n  ")}
   <script src="/assets/main.js?v=${ASSET_VERSION}" defer></script>
 </head>
@@ -3987,6 +3988,17 @@ function getNestedImages(get) {
   return images;
 }
 
+function getGoogleFallbackImages(get) {
+  const images = [];
+  for (let i = 0; i <= 9; i += 1) images.push(clean(get(`ownerUpdates/${i}/imageUrl`)));
+  for (let reviewIndex = 0; reviewIndex <= 9; reviewIndex += 1) {
+    for (let imageIndex = 0; imageIndex <= 2; imageIndex += 1) {
+      images.push(clean(get(`reviews/${reviewIndex}/reviewImageUrls/${imageIndex}`)));
+    }
+  }
+  return images;
+}
+
 function getHours(get) {
   const hours = [];
   for (let i = 0; i <= 6; i += 1) {
@@ -4317,7 +4329,7 @@ function dogLogo() {
 }
 
 function imageUnavailable() {
-  return `<span class="fallback image-unavailable" aria-hidden="true"></span>`;
+  return `<span class="fallback image-unavailable" aria-hidden="true">${dogLogo()}</span>`;
 }
 
 function sameBusinessFallbackImage(listing, sourceImage = listing.image) {
