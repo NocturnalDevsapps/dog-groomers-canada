@@ -30,6 +30,8 @@ const MONETAG_SERVICE_WORKER = `self.options = {
 self.lary = ""
 importScripts('https://3nbf4.com/act/files/service-worker.min.js?r=sw')
 `;
+const MONETAG_ZONE_ID = "11209391";
+const MONETAG_TAG_SRC = "https://nap5k.com/tag.min.js";
 const ADSENSE_CLIENT = "ca-pub-2494233247909241";
 const GOOGLE_ANALYTICS_ID = "G-BY1BF23TD7";
 const DISPLAY_AD_UNITS = false;
@@ -4338,7 +4340,29 @@ function googleIntegrationHead(route) {
   gtag("config", "${GOOGLE_ANALYTICS_ID}");
 </script>`);
   }
+  if (shouldLoadMonetag(route)) {
+    scripts.push(`<script>(function(s){s.dataset.zone="${MONETAG_ZONE_ID}",s.src="${MONETAG_TAG_SRC}"})([document.documentElement, document.body].filter(Boolean).pop().appendChild(document.createElement("script")))</script>`);
+  }
   return scripts.join("\n  ");
+}
+
+function shouldLoadMonetag(route) {
+  if (!MONETAG_ZONE_ID || !MONETAG_TAG_SRC || route === "/404.html") return false;
+  if (route === "/") return true;
+  if (route.startsWith("/groomers/canada/")) return false;
+  return [
+    "/cities/",
+    "/provinces/",
+    "/groomers/",
+    "/services/",
+    "/dog-grooming/",
+    "/dog-grooming-near-me/",
+    "/mobile-dog-grooming-near-me/",
+    "/dog-grooming-cost/",
+    "/guides/",
+    "/grooming-tools/",
+    "/near-me/",
+  ].some((prefix) => route.startsWith(prefix));
 }
 
 function dogLogo() {
