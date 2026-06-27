@@ -23,16 +23,11 @@ const OG_IMAGE_PATH = "/assets/og-image.svg";
 const PHOTO_HERO_PATH = "/assets/dgc-photo-hero-grooming.jpg";
 const IMAGE_OVERRIDES_FILE = path.join(ROOT, "data", "listing-image-overrides.json");
 const BROKEN_IMAGE_URLS_FILE = path.join(ROOT, "data", "broken-image-urls.json");
-const MONETAG_SERVICE_WORKER = `self.options = {
-    "domain": "3nbf4.com",
-    "zoneId": 11209318
-}
-self.lary = ""
-importScripts('https://3nbf4.com/act/files/service-worker.min.js?r=sw')
+const MONETAG_SERVICE_WORKER = `self.addEventListener("install", () => self.skipWaiting());
+self.addEventListener("activate", (event) => {
+  event.waitUntil(self.registration.unregister());
+});
 `;
-const MONETAG_IN_PAGE_PUSH_ZONE_ID = "11209391";
-const MONETAG_IN_PAGE_PUSH_SRC = "https://nap5k.com/tag.min.js";
-const MONETAG_IN_PAGE_PUSH_COOLDOWN_MINUTES = 30;
 const ADSENSE_CLIENT = "ca-pub-2494233247909241";
 const GOOGLE_ANALYTICS_ID = "G-BY1BF23TD7";
 const DISPLAY_AD_UNITS = false;
@@ -4341,43 +4336,12 @@ function googleIntegrationHead(route) {
   gtag("config", "${GOOGLE_ANALYTICS_ID}");
 </script>`);
   }
-  if (shouldLoadMonetagInPagePush(route)) {
-    scripts.push(
-      monetagSnippet(MONETAG_IN_PAGE_PUSH_ZONE_ID, MONETAG_IN_PAGE_PUSH_SRC, {
-        cooldownMinutes: MONETAG_IN_PAGE_PUSH_COOLDOWN_MINUTES,
-        storageKey: "dgc-monetag-in-page-push",
-      }),
-    );
-  }
+  scripts.push(monetagServiceWorkerCleanupScript());
   return scripts.join("\n  ");
 }
 
-function monetagSnippet(zoneId, src, options = {}) {
-  const cooldownMinutes = Number(options.cooldownMinutes || 0);
-  const cooldownMs = Math.max(0, cooldownMinutes) * 60 * 1000;
-  const storageKey = options.storageKey || `dgc-monetag-${zoneId}`;
-  const cooldownGuard = cooldownMs
-    ? `try{var k='${storageKey}',n=Date.now(),last=Number(localStorage.getItem(k)||0);if(last&&n-last<${cooldownMs})return;localStorage.setItem(k,String(n));}catch(e){}`
-    : "";
-  return `<script>(function(){${cooldownGuard}(function(s){s.dataset.zone='${zoneId}',s.src='${src}'})([document.documentElement, document.body].filter(Boolean).pop().appendChild(document.createElement('script')))}())</script>`;
-}
-
-function shouldLoadMonetagInPagePush(route) {
-  if (!MONETAG_IN_PAGE_PUSH_ZONE_ID || !MONETAG_IN_PAGE_PUSH_SRC || route === "/404.html") return false;
-  if (route === "/") return true;
-  if (route.startsWith("/groomers/canada/")) return false;
-  return [
-    "/cities/",
-    "/provinces/",
-    "/services/",
-    "/dog-grooming/",
-    "/dog-grooming-near-me/",
-    "/mobile-dog-grooming-near-me/",
-    "/dog-grooming-cost/",
-    "/guides/",
-    "/grooming-tools/",
-    "/near-me/",
-  ].some((prefix) => route.startsWith(prefix));
+function monetagServiceWorkerCleanupScript() {
+  return `<script>(function(){if(!("serviceWorker" in navigator))return;navigator.serviceWorker.getRegistrations().then(function(registrations){registrations.forEach(function(registration){var worker=registration.active||registration.waiting||registration.installing;if(worker&&/\\/sw\\.js(?:[?#].*)?$/.test(worker.scriptURL)){registration.unregister();}});}).catch(function(){});}())</script>`;
 }
 
 function dogLogo() {
