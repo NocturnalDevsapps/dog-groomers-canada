@@ -4346,13 +4346,17 @@ function googleIntegrationHead(route) {
     scripts.push(monetagSnippet(MONETAG_IN_PAGE_PUSH_ZONE_ID, MONETAG_IN_PAGE_PUSH_SRC));
   }
   if (shouldLoadMonetagVignette(route)) {
-    scripts.push(monetagSnippet(MONETAG_VIGNETTE_ZONE_ID, MONETAG_VIGNETTE_SRC));
+    scripts.push(monetagDesktopSnippet(MONETAG_VIGNETTE_ZONE_ID, MONETAG_VIGNETTE_SRC));
   }
   return scripts.join("\n  ");
 }
 
 function monetagSnippet(zoneId, src) {
   return `<script>(function(s){s.dataset.zone='${zoneId}',s.src='${src}'})([document.documentElement, document.body].filter(Boolean).pop().appendChild(document.createElement('script')))</script>`;
+}
+
+function monetagDesktopSnippet(zoneId, src) {
+  return `<script>if(!window.matchMedia||window.matchMedia('(min-width: 768px)').matches){(function(s){s.dataset.zone='${zoneId}',s.src='${src}'})([document.documentElement, document.body].filter(Boolean).pop().appendChild(document.createElement('script')))}</script>`;
 }
 
 function shouldLoadMonetagInPagePush(route) {
