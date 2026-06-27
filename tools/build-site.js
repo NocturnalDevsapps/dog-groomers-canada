@@ -2058,6 +2058,7 @@ function nearMeBody(context) {
     <section class="section">
       <div class="wrap content-layout">
         <main>
+          ${adUnit("inContent", { inContent: true })}
           <div class="search-results" id="results" data-nearby-results><div class="empty-state"><h2>Location required</h2><p>Click "Use my location" to sort dog grooming listings by distance. You can also browse the city links below.</p></div></div>
           <section class="section">
             <div class="section-head">
@@ -2072,7 +2073,7 @@ function nearMeBody(context) {
           </section>
         </main>
         <aside class="side-panel">
-          ${adUnit("sidebar", { sidebar: true, format: "rectangle" })}
+          ${adsterraDesktopRailBannerAd()}
           <div class="info-card"><h2>Mobile grooming</h2><p>Need grooming at your home or curbside? Use the mobile grooming page to show only listings that mention mobile, in-home, or house-call grooming.</p><a class="btn btn-light" href="/mobile-dog-grooming-near-me/">Mobile grooming near me</a></div>
           <div class="info-card">
             <h2>Browse by province</h2>
@@ -2113,6 +2114,7 @@ function mobileDogGroomingNearMeBody(context, service) {
     <section class="section">
       <div class="wrap content-layout">
         <main>
+          ${adUnit("inContent", { inContent: true })}
           <div class="search-results" id="results" data-nearby-results><div class="empty-state"><h2>Location required</h2><p>Click "Use my location" to sort mobile dog grooming listings by distance. You can also browse top mobile grooming cities below.</p></div></div>
           <section class="section">
             <div class="section-head">
@@ -2142,7 +2144,7 @@ function mobileDogGroomingNearMeBody(context, service) {
           </section>
         </main>
         <aside class="side-panel">
-          ${adUnit("sidebar", { sidebar: true, format: "rectangle" })}
+          ${adsterraDesktopRailBannerAd()}
           <div class="info-card">
             <h2>Mobile grooming snapshot</h2>
             <ul class="check-list">
