@@ -1258,11 +1258,13 @@ function costHubBody(context, costCities) {
       <div class="wrap content-layout">
         <main>
           ${costRangeTable("Canada")}
+          ${adUnit("inContent", { inContent: true })}
           ${costAdjustmentSection()}
           ${costQuoteChecklist("Canada")}
           ${costFaqSection("Canada")}
         </main>
         <aside class="side-panel">
+          ${adsterraDesktopRailBannerAd()}
           <div class="info-card"><h2>Cost estimator</h2><p>Estimate a planning range by dog size, service type, coat condition, and mobile grooming needs.</p><a class="btn btn-primary" href="/grooming-tools/dog-grooming-cost-estimator/">Open estimator</a></div>
           <div class="info-card"><h2>Pricing references reviewed</h2>${costReferenceLinks()}</div>
           <div class="info-card"><h2>Directory snapshot</h2><p>${context.stats.listings.toLocaleString()} Canadian grooming listings across ${context.stats.cities.toLocaleString()} city pages.</p><a class="btn btn-light" href="/cities/">Browse cities</a></div>
@@ -1313,6 +1315,7 @@ function provinceCostBody(province, provinceCities, context) {
       <div class="wrap content-layout">
         <main>
           ${costRangeTable(province.name)}
+          ${adUnit("inContent", { inContent: true })}
           <section class="section">
             <h2>${esc(province.name)} price factors to ask about</h2>
             <p>${esc(factors.intro)}</p>
@@ -1323,6 +1326,7 @@ function provinceCostBody(province, provinceCities, context) {
           ${costFaqSection(province.name)}
         </main>
         <aside class="side-panel">
+          ${adsterraDesktopRailBannerAd()}
           <div class="info-card"><h2>${esc(province.name)} directory</h2><p>Compare ${province.count.toLocaleString()} dog grooming listings by city, rating, service signal, phone, website, hours, and profile notes.</p><a class="btn btn-light" href="${province.url}">Browse ${esc(province.name)}</a></div>
           <div class="info-card"><h2>Cost estimator</h2><p>Use the estimator before calling so you can describe size, coat, matting, and package scope clearly.</p><a class="btn btn-primary" href="/grooming-tools/dog-grooming-cost-estimator/">Open estimator</a></div>
           <div class="info-card"><h2>Pricing references</h2>${costReferenceLinks()}</div>
@@ -1377,6 +1381,7 @@ function cityCostBody(city, province, services, costMap) {
       <div class="wrap content-layout">
         <main>
           ${costRangeTable(`${city.city}, ${city.provinceCode}`)}
+          ${adUnit("inContent", { inContent: true })}
           <section class="section">
             <h2>Local price notes for ${esc(city.city)}</h2>
             <p>${esc(notes.body)}</p>
@@ -1396,6 +1401,7 @@ function cityCostBody(city, province, services, costMap) {
           ${costFaqSection(city.city)}
         </main>
         <aside class="side-panel">
+          ${adsterraDesktopRailBannerAd()}
           <div class="info-card"><h2>Cost estimator</h2><p>Estimate a planning range before requesting a quote from ${esc(city.city)} groomers.</p><a class="btn btn-primary" href="/grooming-tools/dog-grooming-cost-estimator/">Open estimator</a></div>
           <div class="info-card"><h2>Nearby cost pages</h2>${nearbyCostMarkup}</div>
           <div class="info-card"><h2>Pricing references</h2>${costReferenceLinks()}</div>
@@ -1800,6 +1806,7 @@ function writeToolPages(context) {
               `<a class="tool-card" href="${tool.url}"><span class="guide-card-meta">${esc(tool.kind)}</span><h2>${esc(tool.name)}</h2><p>${esc(tool.summary)}</p><strong>Open tool</strong></a>`,
           )
           .join("")}</div>
+        ${adUnit("inContent", { inContent: true })}
       </div>
     </section>
     <section class="section">
@@ -2782,6 +2789,7 @@ function guideArticleBody(article, context) {
           </article>
         </main>
         <aside class="side-panel">
+          ${adsterraDesktopRailBannerAd()}
           <div class="info-card article-toc">
             <h2>On this page</h2>
             <nav aria-label="Guide sections">${toc}</nav>
@@ -2938,12 +2946,14 @@ function costEstimatorToolBody(context) {
             <h2>Estimated planning range</h2>
             <p>Choose your dog's size, coat, service, and add-ons to build a realistic range to discuss with a groomer.</p>
           </div>
+          ${adUnit("inContent", { inContent: true })}
           <section class="section">
             <h2>How to use this estimate</h2>
             <p>Use the result as a conversation starter. Call the groomer with your dog's breed or mix, weight, coat length, last groom date, matting, skin concerns, behavior notes, and the exact finish you want.</p>
           </section>
         </main>
         <aside class="side-panel">
+          ${adsterraDesktopRailBannerAd()}
           <div class="info-card"><h2>Read the cost guide</h2><p>See Canadian grooming cost ranges and the add-ons that commonly change a quote.</p><a class="btn btn-light" href="/dog-grooming-cost/">Dog grooming cost guide</a></div>
           <div class="info-card"><h2>Use with city pages</h2><p>After estimating, compare groomers by local page and call two or three with the same details.</p><a class="btn btn-light" href="/cities/">Browse city pages</a></div>
           <div class="info-card"><h2>Pricing references</h2>${costReferenceLinks()}</div>
@@ -2979,8 +2989,10 @@ function frequencyToolBody(context) {
             <h2>Estimated grooming interval</h2>
             <p>Choose your dog's coat and care details to see a recommended professional grooming range and at-home maintenance notes.</p>
           </div>
+          ${adUnit("inContent", { inContent: true })}
         </main>
         <aside class="side-panel">
+          ${adsterraDesktopRailBannerAd()}
           <div class="info-card"><h2>Helpful guides</h2>${linkList(
             guideArticles.filter((article) => ["line-brushing-curly-coated-dogs", "safe-dematting-dogs", "double-coat-deshedding-guide", "dog-grooming-cost-canada"].includes(article.slug)),
             guideArticleRoute,
@@ -3020,8 +3032,10 @@ function coatPlannerToolBody(context) {
             <h2>Your coat plan</h2>
             <p>Choose the coat and lifestyle details to see brushing frequency, comb-check zones, and appointment notes.</p>
           </div>
+          ${adUnit("inContent", { inContent: true })}
         </main>
         <aside class="side-panel">
+          ${adsterraDesktopRailBannerAd()}
           <div class="info-card"><h2>Related guides</h2>${linkList(
             guideArticles.filter((article) => ["line-brushing-curly-coated-dogs", "double-coat-deshedding-guide", "safe-dematting-dogs", "winter-dog-grooming-canada"].includes(article.slug)),
             guideArticleRoute,
@@ -3061,8 +3075,10 @@ function puppyPlannerToolBody(context) {
             <h2>First groom plan</h2>
             <p>Choose the puppy details to see appointment goals, questions, and home prep steps.</p>
           </div>
+          ${adUnit("inContent", { inContent: true })}
         </main>
         <aside class="side-panel">
+          ${adsterraDesktopRailBannerAd()}
           <div class="info-card"><h2>Related guides</h2>${linkList(
             guideArticles.filter((article) => ["puppy-first-grooming-guide", "dog-grooming-appointment-checklist", "how-to-compare-dog-groomers-canada"].includes(article.slug)),
             guideArticleRoute,
@@ -3109,8 +3125,10 @@ function winterPawToolBody(context) {
             <h2>Winter paw risk score: 0</h2>
             <p>Check the items that apply. The result will update automatically.</p>
           </div>
+          ${adUnit("inContent", { inContent: true })}
         </main>
         <aside class="side-panel">
+          ${adsterraDesktopRailBannerAd()}
           <div class="info-card"><h2>Related guides</h2>${linkList(
             guideArticles.filter((article) => ["winter-dog-grooming-canada", "dog-nail-trimming-grinding-guide", "rainy-weather-dog-grooming"].includes(article.slug)),
             guideArticleRoute,
@@ -3157,8 +3175,10 @@ function mattingToolBody(context) {
             <h2>Risk score: 0</h2>
             <p>Check the items that apply to your dog. The result will update automatically.</p>
           </div>
+          ${adUnit("inContent", { inContent: true })}
         </main>
         <aside class="side-panel">
+          ${adsterraDesktopRailBannerAd()}
           <div class="info-card"><h2>Related guides</h2>${linkList(
             guideArticles.filter((article) => ["safe-dematting-dogs", "line-brushing-curly-coated-dogs", "doodle-dematting-haircut-guide", "winter-dog-grooming-canada"].includes(article.slug)),
             guideArticleRoute,
@@ -3192,8 +3212,10 @@ function callScriptToolBody(context) {
           <div class="script-stack">${blocks
             .map((block) => `<section class="script-block"><h2>${esc(block.title)}</h2><ul class="check-list">${block.lines.map((line) => `<li>${esc(line)}</li>`).join("")}</ul></section>`)
             .join("")}</div>
+          ${adUnit("inContent", { inContent: true })}
         </main>
         <aside class="side-panel">
+          ${adsterraDesktopRailBannerAd()}
           <div class="info-card"><h2>Use with the directory</h2><p>Open a few local profiles, call realistic options, and compare answers in your notes.</p><a class="btn btn-light" href="/cities/">Browse city pages</a></div>
           <div class="info-card"><h2>Related guides</h2>${linkList(
             guideArticles.filter((article) => ["how-to-compare-dog-groomers-canada", "dog-grooming-cost-canada", "dog-grooming-appointment-checklist"].includes(article.slug)),
