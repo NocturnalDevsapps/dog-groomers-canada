@@ -23,6 +23,13 @@ const OG_IMAGE_PATH = "/assets/og-image.svg";
 const PHOTO_HERO_PATH = "/assets/dgc-photo-hero-grooming.jpg";
 const IMAGE_OVERRIDES_FILE = path.join(ROOT, "data", "listing-image-overrides.json");
 const BROKEN_IMAGE_URLS_FILE = path.join(ROOT, "data", "broken-image-urls.json");
+const MONETAG_SERVICE_WORKER = `self.options = {
+    "domain": "3nbf4.com",
+    "zoneId": 11209318
+}
+self.lary = ""
+importScripts('https://3nbf4.com/act/files/service-worker.min.js?r=sw')
+`;
 const ADSENSE_CLIENT = "ca-pub-2494233247909241";
 const GOOGLE_ANALYTICS_ID = "G-BY1BF23TD7";
 const DISPLAY_AD_UNITS = false;
@@ -76,7 +83,7 @@ const GENERATED_DIRS = [
   "sitemap",
 ];
 
-const ROOT_FILES = ["index.html", "404.html", "robots.txt", "sitemap.xml", "ads.txt", "CNAME", ".nojekyll"];
+const ROOT_FILES = ["index.html", "404.html", "robots.txt", "sitemap.xml", "ads.txt", "sw.js", "CNAME", ".nojekyll"];
 
 function adUnit(slotName, options = {}) {
   if (!DISPLAY_AD_UNITS) return "";
@@ -281,6 +288,7 @@ function loadListings(file) {
     const phone = clean(get("phone"));
     const phoneRaw = clean(get("phoneUnformatted")) || phone.replace(/[^\d+]/g, "");
     const category = clean(get("categoryName")) || firstPresent(getRange(get, "categories/", 0, 10));
+    const website = sanitizeBusinessWebsite(clean(get("website")));
     const sourceImage = bestImage(get);
     const photos = unique([sourceImage, ...getRange(get, "imageUrls/", 0, 4), ...getNestedImages(get), ...getGoogleFallbackImages(get)])
       .filter(Boolean)
@@ -297,7 +305,7 @@ function loadListings(file) {
       reviews,
       services,
       phone,
-      website: clean(get("website")),
+      website,
       hours,
     });
     const idSeed =
@@ -320,7 +328,7 @@ function loadListings(file) {
       countryCode: clean(get("countryCode")) || "CA",
       phone,
       phoneRaw,
-      website: clean(get("website")),
+      website,
       mapsUrl: clean(get("url")),
       rating,
       reviews,
@@ -462,7 +470,15 @@ function removeBrokenListingImages(listings, brokenImageUrls) {
 
 function isUnusableListingImage(url, brokenImageUrls) {
   if (!url) return false;
-  return brokenImageUrls.has(url);
+  return brokenImageUrls.has(url) || hasWordPressUrlFingerprint(url);
+}
+
+function hasWordPressUrlFingerprint(url) {
+  return /(?:\/wp-(?:content|includes|admin|json)\b|wordpress\.com|(?:^|\/\/)i\d\.wp\.com|elementor\/|woocommerce\/)/i.test(url);
+}
+
+function sanitizeBusinessWebsite(url) {
+  return hasWordPressUrlFingerprint(url) ? "" : url;
 }
 
 function groupProvinces(listings) {
@@ -2400,6 +2416,7 @@ function writeSitemap(context) {
 function writeRobotsAndDomain() {
   fs.writeFileSync(path.join(ROOT, "robots.txt"), `User-agent: *\nAllow: /\nSitemap: ${SITE_URL}/sitemap.xml\n`);
   fs.writeFileSync(path.join(ROOT, "ads.txt"), "google.com, pub-2494233247909241, DIRECT, f08c47fec0942fa0\n");
+  fs.writeFileSync(path.join(ROOT, "sw.js"), MONETAG_SERVICE_WORKER);
   fs.writeFileSync(path.join(ROOT, "CNAME"), "doggroomerscanada.ca\n");
   fs.writeFileSync(path.join(ROOT, ".nojekyll"), "");
 }
