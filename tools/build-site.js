@@ -32,8 +32,11 @@ const ADSENSE_CLIENT = "ca-pub-2494233247909241";
 const GOOGLE_ANALYTICS_ID = "G-BY1BF23TD7";
 const ADSTERRA_NATIVE_BANNER_SRC = "https://pl30102679.effectivecpmnetwork.com/f4c406575dd92fe0cc1f7be5871d8b2e/invoke.js";
 const ADSTERRA_NATIVE_BANNER_CONTAINER_ID = "container-f4c406575dd92fe0cc1f7be5871d8b2e";
-// Disabled after rendered QA showed non-family-friendly native creatives despite adult ads being off.
-const ADSTERRA_NATIVE_BANNER_ENABLED = false;
+const ADSTERRA_NATIVE_BANNER_ENABLED = true;
+const ADSTERRA_BANNER_BASE_URL = "https://www.highperformanceformat.com";
+const ADSTERRA_BANNER_ENABLED = true;
+const ADSTERRA_BANNER_DESKTOP = Object.freeze({ key: "417cb5d996a8655e1ca6900659ba9d41", width: 728, height: 90 });
+const ADSTERRA_BANNER_MOBILE = Object.freeze({ key: "ab7a86ce39dd6571b80f21b2bd1835db", width: 320, height: 50 });
 const DISPLAY_AD_UNITS = false;
 const AD_SLOTS = Object.freeze({
   inContent: "8427489237",
@@ -88,7 +91,10 @@ const GENERATED_DIRS = [
 const ROOT_FILES = ["index.html", "404.html", "robots.txt", "sitemap.xml", "ads.txt", "sw.js", "CNAME", ".nojekyll"];
 
 function adUnit(slotName, options = {}) {
-  if (ADSTERRA_NATIVE_BANNER_ENABLED && (options.inContent || options.leaderboard)) {
+  if (ADSTERRA_BANNER_ENABLED && options.leaderboard) {
+    return adsterraResponsiveBannerAd(options);
+  }
+  if (ADSTERRA_NATIVE_BANNER_ENABLED && options.inContent) {
     return adsterraNativeBannerAd(options);
   }
   if (!DISPLAY_AD_UNITS) return "";
@@ -109,6 +115,14 @@ function adsterraNativeBannerAd(options = {}) {
   if (options.leaderboard) classes.push("ad-leaderboard");
   if (options.inContent) classes.push("ad-in-content");
   return `<aside class="${classes.join(" ")}" aria-label="Advertisement"><div class="ad-label">Advertisement</div><script async="async" data-cfasync="false" src="${ADSTERRA_NATIVE_BANNER_SRC}"></script><div id="${ADSTERRA_NATIVE_BANNER_CONTAINER_ID}"></div></aside>`;
+}
+
+function adsterraResponsiveBannerAd(options = {}) {
+  if (!ADSTERRA_BANNER_DESKTOP.key || !ADSTERRA_BANNER_MOBILE.key) return "";
+  const classes = ["ad-slot", "adsterra-banner-slot"];
+  if (options.leaderboard) classes.push("ad-leaderboard");
+  const script = `(function(){var desktop=window.matchMedia&&window.matchMedia("(min-width: 760px)").matches;var unit=desktop?{key:"${ADSTERRA_BANNER_DESKTOP.key}",width:${ADSTERRA_BANNER_DESKTOP.width},height:${ADSTERRA_BANNER_DESKTOP.height}}:{key:"${ADSTERRA_BANNER_MOBILE.key}",width:${ADSTERRA_BANNER_MOBILE.width},height:${ADSTERRA_BANNER_MOBILE.height}};window.atOptions={key:unit.key,format:"iframe",height:unit.height,width:unit.width,params:{}};document.write('<script src="${ADSTERRA_BANNER_BASE_URL}/'+unit.key+'/invoke.js"><\\/script>');})();`;
+  return `<aside class="${classes.join(" ")}" aria-label="Advertisement"><div class="ad-label">Advertisement</div><div class="adsterra-banner-frame"><script>${script}</script></div></aside>`;
 }
 
 const provinceMap = new Map([

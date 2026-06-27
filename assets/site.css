@@ -564,6 +564,26 @@ h3 {
   min-height: 92px;
 }
 
+.adsterra-banner-slot {
+  min-height: 122px;
+  padding: 0;
+  text-align: center;
+}
+
+.adsterra-banner-frame {
+  align-items: center;
+  display: flex;
+  justify-content: center;
+  min-height: 90px;
+  overflow: hidden;
+  padding: 8px 4px 14px;
+  width: 100%;
+}
+
+.adsterra-banner-frame iframe {
+  max-width: 100%;
+}
+
 .ad-in-content {
   margin: 24px 0;
 }
@@ -1630,6 +1650,15 @@ body[data-page="winter-paw-tool"] .page-intro {
 
   .adsterra-native-slot [id^="container-"] {
     min-height: 86px;
+  }
+
+  .adsterra-banner-slot {
+    min-height: 82px;
+  }
+
+  .adsterra-banner-frame {
+    min-height: 50px;
+    padding: 8px 0 12px;
   }
 
   .ad-sidebar,
