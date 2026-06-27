@@ -125,6 +125,13 @@ function adsterraResponsiveBannerAd(options = {}) {
   return `<aside class="${classes.join(" ")}" aria-label="Advertisement"><div class="ad-label">Advertisement</div><div class="adsterra-banner-frame"><script>${script}</script></div></aside>`;
 }
 
+function adsterraDesktopRailBannerAd() {
+  if (!ADSTERRA_BANNER_ENABLED || !ADSTERRA_BANNER_MOBILE.key) return "";
+  const unit = ADSTERRA_BANNER_MOBILE;
+  const script = `(function(){if(!window.matchMedia||!window.matchMedia("(min-width: 981px)").matches)return;window.atOptions={key:"${unit.key}",format:"iframe",height:${unit.height},width:${unit.width},params:{}};document.write('<script src="${ADSTERRA_BANNER_BASE_URL}/${unit.key}/invoke.js"><\\/script>');})();`;
+  return `<aside class="ad-slot adsterra-banner-slot adsterra-rail-banner" aria-label="Advertisement"><div class="ad-label">Advertisement</div><div class="adsterra-banner-frame"><script>${script}</script></div></aside>`;
+}
+
 const provinceMap = new Map([
   ["alberta", ["Alberta", "AB"]],
   ["ab", ["Alberta", "AB"]],
@@ -873,6 +880,7 @@ function writeProvincePages(context) {
             <div class="section-head">
               <div><h2>Top ${esc(province.name)} dog groomer listings</h2><p>Profiles are sorted by rating strength, review volume, contact completeness, and listing quality.</p></div>
             </div>
+            ${adUnit("inContent", { inContent: true })}
             <section class="section">
               <h2>Using this ${esc(province.name)} directory</h2>
               <p>Start with the city links below if you need a local shortlist, or compare the strongest province-wide listings when you are flexible on location. Confirm current services, pricing, and appointment availability directly with each business.</p>
@@ -883,7 +891,6 @@ function writeProvincePages(context) {
               </div>
             </section>
             <div class="listing-stack">${province.topListings.map((item) => listingCard(item)).join("")}</div>
-            ${adUnit("inContent", { inContent: true })}
             <h2>Cities in ${esc(province.name)}</h2>
             <div class="grid-3">${topCities
               .map(
@@ -893,7 +900,7 @@ function writeProvincePages(context) {
               .join("")}</div>
           </main>
           <aside class="side-panel">
-            ${adUnit("sidebar", { sidebar: true, format: "rectangle" })}
+            ${adsterraDesktopRailBannerAd()}
             <div class="info-card"><h2>Province snapshot</h2><p>${province.count.toLocaleString()} listings</p><p>${province.cities.length.toLocaleString()} city pages</p><p>${province.listings.filter((item) => item.phone).length.toLocaleString()} with phone numbers</p></div>
           </aside>
         </div>
@@ -935,8 +942,8 @@ function writeCityPages(context) {
               <strong>${city.count.toLocaleString()} groomers found</strong>
               <div class="tag-cloud">${services.map((service) => `<a class="tag" href="${localServiceSearchUrl(city, service)}">${esc(service.short)}</a>`).join("")}</div>
             </div>
-            <div class="listing-stack" data-city-listings>${listings.map((item) => listingCard(item)).join("")}</div>
             ${adUnit("inContent", { inContent: true })}
+            <div class="listing-stack" data-city-listings>${listings.map((item) => listingCard(item)).join("")}</div>
             ${cityQualitySection(city, services, nearby)}
             ${cityServicePlannerSection(city, services)}
             ${citySeasonalCareSection(city)}
@@ -952,7 +959,7 @@ function writeCityPages(context) {
             </section>
           </main>
           <aside class="side-panel">
-            ${adUnit("sidebar", { sidebar: true, format: "rectangle" })}
+            ${adsterraDesktopRailBannerAd()}
             <div class="info-card">
               <h2>Nearby city pages</h2>
               ${linkList(
