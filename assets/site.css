@@ -533,13 +533,35 @@ h3 {
   background: #fff;
   display: block;
   overflow: hidden;
-  text-align: center;
+  text-align: left;
   margin: 20px 0;
+}
+
+.ad-label {
+  color: var(--muted);
+  font-size: 0.7rem;
+  font-weight: 800;
+  letter-spacing: 0.08em;
+  line-height: 1;
+  margin: 10px 12px 0;
+  text-transform: uppercase;
 }
 
 .ad-slot .adsbygoogle {
   display: block;
   min-height: 120px;
+}
+
+.adsterra-native-slot {
+  padding: 0 0 10px;
+}
+
+.adsterra-native-slot > script {
+  display: none;
+}
+
+.adsterra-native-slot [id^="container-"] {
+  min-height: 92px;
 }
 
 .ad-in-content {
@@ -1604,6 +1626,10 @@ body[data-page="winter-paw-tool"] .page-intro {
   .ad-slot,
   .ad-slot .adsbygoogle {
     min-height: 100px;
+  }
+
+  .adsterra-native-slot [id^="container-"] {
+    min-height: 86px;
   }
 
   .ad-sidebar,

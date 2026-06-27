@@ -30,6 +30,10 @@ self.addEventListener("activate", (event) => {
 `;
 const ADSENSE_CLIENT = "ca-pub-2494233247909241";
 const GOOGLE_ANALYTICS_ID = "G-BY1BF23TD7";
+const ADSTERRA_NATIVE_BANNER_SRC = "https://pl30102679.effectivecpmnetwork.com/f4c406575dd92fe0cc1f7be5871d8b2e/invoke.js";
+const ADSTERRA_NATIVE_BANNER_CONTAINER_ID = "container-f4c406575dd92fe0cc1f7be5871d8b2e";
+// Disabled after rendered QA showed non-family-friendly native creatives despite adult ads being off.
+const ADSTERRA_NATIVE_BANNER_ENABLED = false;
 const DISPLAY_AD_UNITS = false;
 const AD_SLOTS = Object.freeze({
   inContent: "8427489237",
@@ -84,6 +88,9 @@ const GENERATED_DIRS = [
 const ROOT_FILES = ["index.html", "404.html", "robots.txt", "sitemap.xml", "ads.txt", "sw.js", "CNAME", ".nojekyll"];
 
 function adUnit(slotName, options = {}) {
+  if (ADSTERRA_NATIVE_BANNER_ENABLED && (options.inContent || options.leaderboard)) {
+    return adsterraNativeBannerAd(options);
+  }
   if (!DISPLAY_AD_UNITS) return "";
   const slot = AD_SLOTS[slotName];
   if (!ADSENSE_CLIENT || !slot) return "";
@@ -94,6 +101,14 @@ function adUnit(slotName, options = {}) {
   const format = options.format || "auto";
   const fullWidth = options.fullWidthResponsive === false ? "false" : "true";
   return `<div class="${classes.join(" ")}" aria-label="Advertisement"><ins class="adsbygoogle" style="display:block" data-ad-client="${ADSENSE_CLIENT}" data-ad-slot="${slot}" data-ad-format="${format}" data-full-width-responsive="${fullWidth}"></ins><script>(adsbygoogle = window.adsbygoogle || []).push({});</script></div>`;
+}
+
+function adsterraNativeBannerAd(options = {}) {
+  if (!ADSTERRA_NATIVE_BANNER_SRC || !ADSTERRA_NATIVE_BANNER_CONTAINER_ID) return "";
+  const classes = ["ad-slot", "adsterra-native-slot"];
+  if (options.leaderboard) classes.push("ad-leaderboard");
+  if (options.inContent) classes.push("ad-in-content");
+  return `<aside class="${classes.join(" ")}" aria-label="Advertisement"><div class="ad-label">Advertisement</div><script async="async" data-cfasync="false" src="${ADSTERRA_NATIVE_BANNER_SRC}"></script><div id="${ADSTERRA_NATIVE_BANNER_CONTAINER_ID}"></div></aside>`;
 }
 
 const provinceMap = new Map([
@@ -1662,6 +1677,7 @@ function writeGuidePages(context) {
               `<a class="guide-card guide-category-card" href="/guides/${category.slug}/"><span class="guide-card-meta">${esc(category.shortName)}</span><h3>${esc(category.name)}</h3><p>${esc(category.description)}</p><strong>${guideArticlesForCategory(category.slug).length} guides</strong></a>`,
           )
           .join("")}</div>
+        ${adUnit("inContent", { inContent: true })}
       </div>
     </section>
     <section class="section">
@@ -1705,7 +1721,10 @@ function writeGuidePages(context) {
         </div>
       </section>
       <section class="section">
-        <div class="wrap guide-grid">${articles.map((article) => guideCard(article)).join("")}</div>
+        <div class="wrap">
+          <div class="guide-grid">${articles.map((article) => guideCard(article)).join("")}</div>
+          ${adUnit("inContent", { inContent: true })}
+        </div>
       </section>`;
     writePage(
       context,
@@ -2725,6 +2744,7 @@ function guideArticleBody(article, context) {
           <article class="article-content">
             <p class="article-summary">${esc(article.description)}</p>
             ${guideAuthorBox(article)}
+            ${adUnit("inContent", { inContent: true })}
             ${article.sections.map((section, index) => guideArticleSection(section, index)).join("")}
             ${guideFaqSection(article)}
             <section class="article-section">
