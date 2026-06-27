@@ -32,8 +32,7 @@ importScripts('https://3nbf4.com/act/files/service-worker.min.js?r=sw')
 `;
 const MONETAG_IN_PAGE_PUSH_ZONE_ID = "11209391";
 const MONETAG_IN_PAGE_PUSH_SRC = "https://nap5k.com/tag.min.js";
-const MONETAG_VIGNETTE_ZONE_ID = "11209422";
-const MONETAG_VIGNETTE_SRC = "https://n6wxm.com/vignette.min.js";
+const MONETAG_IN_PAGE_PUSH_COOLDOWN_MINUTES = 30;
 const ADSENSE_CLIENT = "ca-pub-2494233247909241";
 const GOOGLE_ANALYTICS_ID = "G-BY1BF23TD7";
 const DISPLAY_AD_UNITS = false;
@@ -4343,44 +4342,30 @@ function googleIntegrationHead(route) {
 </script>`);
   }
   if (shouldLoadMonetagInPagePush(route)) {
-    scripts.push(monetagSnippet(MONETAG_IN_PAGE_PUSH_ZONE_ID, MONETAG_IN_PAGE_PUSH_SRC));
-  }
-  if (shouldLoadMonetagVignette(route)) {
-    scripts.push(monetagDesktopSnippet(MONETAG_VIGNETTE_ZONE_ID, MONETAG_VIGNETTE_SRC));
+    scripts.push(
+      monetagSnippet(MONETAG_IN_PAGE_PUSH_ZONE_ID, MONETAG_IN_PAGE_PUSH_SRC, {
+        cooldownMinutes: MONETAG_IN_PAGE_PUSH_COOLDOWN_MINUTES,
+        storageKey: "dgc-monetag-in-page-push",
+      }),
+    );
   }
   return scripts.join("\n  ");
 }
 
-function monetagSnippet(zoneId, src) {
-  return `<script>(function(s){s.dataset.zone='${zoneId}',s.src='${src}'})([document.documentElement, document.body].filter(Boolean).pop().appendChild(document.createElement('script')))</script>`;
-}
-
-function monetagDesktopSnippet(zoneId, src) {
-  return `<script>if(!window.matchMedia||window.matchMedia('(min-width: 768px)').matches){(function(s){s.dataset.zone='${zoneId}',s.src='${src}'})([document.documentElement, document.body].filter(Boolean).pop().appendChild(document.createElement('script')))}</script>`;
+function monetagSnippet(zoneId, src, options = {}) {
+  const cooldownMinutes = Number(options.cooldownMinutes || 0);
+  const cooldownMs = Math.max(0, cooldownMinutes) * 60 * 1000;
+  const storageKey = options.storageKey || `dgc-monetag-${zoneId}`;
+  const cooldownGuard = cooldownMs
+    ? `try{var k='${storageKey}',n=Date.now(),last=Number(localStorage.getItem(k)||0);if(last&&n-last<${cooldownMs})return;localStorage.setItem(k,String(n));}catch(e){}`
+    : "";
+  return `<script>(function(){${cooldownGuard}(function(s){s.dataset.zone='${zoneId}',s.src='${src}'})([document.documentElement, document.body].filter(Boolean).pop().appendChild(document.createElement('script')))}())</script>`;
 }
 
 function shouldLoadMonetagInPagePush(route) {
   if (!MONETAG_IN_PAGE_PUSH_ZONE_ID || !MONETAG_IN_PAGE_PUSH_SRC || route === "/404.html") return false;
   if (route === "/") return true;
   if (route.startsWith("/groomers/canada/")) return false;
-  return [
-    "/cities/",
-    "/provinces/",
-    "/groomers/",
-    "/services/",
-    "/dog-grooming/",
-    "/dog-grooming-near-me/",
-    "/mobile-dog-grooming-near-me/",
-    "/dog-grooming-cost/",
-    "/guides/",
-    "/grooming-tools/",
-    "/near-me/",
-  ].some((prefix) => route.startsWith(prefix));
-}
-
-function shouldLoadMonetagVignette(route) {
-  if (!MONETAG_VIGNETTE_ZONE_ID || !MONETAG_VIGNETTE_SRC || route === "/404.html") return false;
-  if (route === "/") return true;
   return [
     "/cities/",
     "/provinces/",
