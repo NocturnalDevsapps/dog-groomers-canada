@@ -4341,7 +4341,7 @@ function googleIntegrationHead(route) {
 </script>`);
   }
   if (shouldLoadMonetag(route)) {
-    scripts.push(`<script>(function(s){s.dataset.zone="${MONETAG_ZONE_ID}",s.src="${MONETAG_TAG_SRC}"})([document.documentElement, document.body].filter(Boolean).pop().appendChild(document.createElement("script")))</script>`);
+    scripts.push(`<script>(function(s){s.dataset.zone='${MONETAG_ZONE_ID}',s.src='${MONETAG_TAG_SRC}'})([document.documentElement, document.body].filter(Boolean).pop().appendChild(document.createElement('script')))</script>`);
   }
   return scripts.join("\n  ");
 }
