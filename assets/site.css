@@ -1668,12 +1668,12 @@ body[data-page="winter-paw-tool"] .page-intro {
   }
 
   .adsterra-banner-slot {
-    min-height: 82px;
+    min-height: 282px;
   }
 
   .adsterra-banner-frame {
-    min-height: 50px;
-    padding: 8px 0 12px;
+    min-height: 250px;
+    padding: 8px 0 14px;
   }
 
   .side-panel .adsterra-rail-banner {

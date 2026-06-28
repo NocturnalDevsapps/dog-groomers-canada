@@ -37,6 +37,7 @@ const ADSTERRA_BANNER_BASE_URL = "https://www.highperformanceformat.com";
 const ADSTERRA_BANNER_ENABLED = true;
 const ADSTERRA_BANNER_DESKTOP = Object.freeze({ key: "417cb5d996a8655e1ca6900659ba9d41", width: 728, height: 90 });
 const ADSTERRA_BANNER_MOBILE = Object.freeze({ key: "ab7a86ce39dd6571b80f21b2bd1835db", width: 320, height: 50 });
+const ADSTERRA_BANNER_MOBILE_SQUARE = Object.freeze({ key: "d132f046239ff24ad96e040b8e12d83b", width: 300, height: 250 });
 const DISPLAY_AD_UNITS = false;
 const AD_SLOTS = Object.freeze({
   inContent: "8427489237",
@@ -118,10 +119,10 @@ function adsterraNativeBannerAd(options = {}) {
 }
 
 function adsterraResponsiveBannerAd(options = {}) {
-  if (!ADSTERRA_BANNER_DESKTOP.key || !ADSTERRA_BANNER_MOBILE.key) return "";
+  if (!ADSTERRA_BANNER_DESKTOP.key || !ADSTERRA_BANNER_MOBILE_SQUARE.key) return "";
   const classes = ["ad-slot", "adsterra-banner-slot"];
   if (options.leaderboard) classes.push("ad-leaderboard");
-  const script = `(function(){var desktop=window.matchMedia&&window.matchMedia("(min-width: 760px)").matches;var unit=desktop?{key:"${ADSTERRA_BANNER_DESKTOP.key}",width:${ADSTERRA_BANNER_DESKTOP.width},height:${ADSTERRA_BANNER_DESKTOP.height}}:{key:"${ADSTERRA_BANNER_MOBILE.key}",width:${ADSTERRA_BANNER_MOBILE.width},height:${ADSTERRA_BANNER_MOBILE.height}};window.atOptions={key:unit.key,format:"iframe",height:unit.height,width:unit.width,params:{}};document.write('<script src="${ADSTERRA_BANNER_BASE_URL}/'+unit.key+'/invoke.js"><\\/script>');})();`;
+  const script = `(function(){var desktop=window.matchMedia&&window.matchMedia("(min-width: 761px)").matches;var unit=desktop?{key:"${ADSTERRA_BANNER_DESKTOP.key}",width:${ADSTERRA_BANNER_DESKTOP.width},height:${ADSTERRA_BANNER_DESKTOP.height}}:{key:"${ADSTERRA_BANNER_MOBILE_SQUARE.key}",width:${ADSTERRA_BANNER_MOBILE_SQUARE.width},height:${ADSTERRA_BANNER_MOBILE_SQUARE.height}};window.atOptions={key:unit.key,format:"iframe",height:unit.height,width:unit.width,params:{}};document.write('<script src="${ADSTERRA_BANNER_BASE_URL}/'+unit.key+'/invoke.js"><\\/script>');})();`;
   return `<aside class="${classes.join(" ")}" aria-label="Advertisement"><div class="ad-label">Advertisement</div><div class="adsterra-banner-frame"><script>${script}</script></div></aside>`;
 }
 
