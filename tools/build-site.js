@@ -1060,6 +1060,7 @@ function writeListingPages(context) {
               ${services}
               <p class="muted" style="margin-top:14px">Service information is summarized from available listing data and may not be complete. Confirm current services and prices directly with the groomer.</p>
             </section>
+            ${adUnit("inContent", { inContent: true })}
             ${listingGuidanceSection(listing)}
             ${profileCostAndQuoteSection(listing, city, province, costMap)}
             ${profileQuestionsSection(listing)}
@@ -1072,7 +1073,7 @@ function writeListingPages(context) {
             </section>
           </main>
           <aside class="side-panel">
-            ${adUnit("sidebar", { sidebar: true, format: "rectangle" })}
+            ${adsterraDesktopRailBannerAd()}
             <div class="info-card">
               <h2>Local directory</h2>
               <p>Compare more dog groomers in ${esc(listing.city)}, ${esc(listing.provinceCode)}.</p>
