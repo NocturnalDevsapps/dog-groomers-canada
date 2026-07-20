@@ -525,96 +525,6 @@ h3 {
   white-space: nowrap;
 }
 
-.ad-slot {
-  width: 100%;
-  min-height: 120px;
-  border: 1px solid rgba(7, 59, 42, 0.1);
-  border-radius: var(--radius);
-  background: #fff;
-  display: block;
-  overflow: hidden;
-  text-align: left;
-  margin: 20px 0;
-}
-
-.ad-label {
-  color: var(--muted);
-  font-size: 0.7rem;
-  font-weight: 800;
-  letter-spacing: 0.08em;
-  line-height: 1;
-  margin: 10px 12px 0;
-  text-transform: uppercase;
-}
-
-.ad-slot .adsbygoogle {
-  display: block;
-  min-height: 120px;
-}
-
-.adsterra-native-slot {
-  padding: 0 0 10px;
-}
-
-.adsterra-native-slot > script {
-  display: none;
-}
-
-.adsterra-native-slot [id^="container-"] {
-  min-height: 92px;
-}
-
-.adsterra-banner-slot {
-  min-height: 122px;
-  padding: 0;
-  text-align: center;
-}
-
-.adsterra-banner-frame {
-  align-items: center;
-  display: flex;
-  justify-content: center;
-  min-height: 90px;
-  overflow: hidden;
-  padding: 8px 4px 14px;
-  width: 100%;
-}
-
-.adsterra-banner-frame iframe {
-  max-width: 100%;
-}
-
-.adsterra-rail-banner {
-  display: none;
-  min-height: 82px;
-  width: 100%;
-}
-
-.adsterra-rail-banner .adsterra-banner-frame {
-  min-height: 50px;
-  padding: 8px 0 12px;
-}
-
-.ad-in-content {
-  margin: 24px 0;
-}
-
-.ad-sidebar {
-  min-height: 250px;
-}
-
-.ad-sidebar .adsbygoogle {
-  min-height: 250px;
-}
-
-.ad-leaderboard {
-  min-height: 90px;
-}
-
-.ad-leaderboard .adsbygoogle {
-  min-height: 90px;
-}
-
 .listing-stack {
   display: grid;
   gap: 14px;
@@ -872,10 +782,6 @@ h3 {
   top: 88px;
   display: grid;
   gap: 18px;
-}
-
-.side-panel .adsterra-rail-banner {
-  display: block;
 }
 
 .filter-bar {
@@ -1656,33 +1562,6 @@ body[data-page="winter-paw-tool"] .page-intro {
 
   .footer-grid {
     grid-template-columns: 1fr;
-  }
-
-  .ad-slot,
-  .ad-slot .adsbygoogle {
-    min-height: 100px;
-  }
-
-  .adsterra-native-slot [id^="container-"] {
-    min-height: 86px;
-  }
-
-  .adsterra-banner-slot {
-    min-height: 282px;
-  }
-
-  .adsterra-banner-frame {
-    min-height: 250px;
-    padding: 8px 0 14px;
-  }
-
-  .side-panel .adsterra-rail-banner {
-    display: none;
-  }
-
-  .ad-sidebar,
-  .ad-sidebar .adsbygoogle {
-    min-height: 250px;
   }
 }
 
