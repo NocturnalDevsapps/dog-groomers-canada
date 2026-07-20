@@ -30,6 +30,7 @@ self.addEventListener("activate", (event) => {
 `;
 const ADSENSE_CLIENT = "ca-pub-2494233247909241";
 const GOOGLE_ANALYTICS_ID = "G-BY1BF23TD7";
+const GROW_SITE_ID = "U2l0ZTo1OTBhOGFjZC1lOTEwLTQ2ZTQtODE3NS02YTVkZTE4MDhhYjM=";
 const ADSENSE_SCRIPT_ROUTES = new Set(["/", "/about/", "/contact/", "/privacy/", "/terms/", "/editorial-policy/", "/dog-grooming/", "/dog-grooming-near-me/", "/mobile-dog-grooming-near-me/", "/dog-grooming-cost/", "/grooming-tools/"]);
 
 const CITY_COST_PAGE_LIMIT = 120;
@@ -4308,8 +4309,15 @@ function googleIntegrationHead(route) {
   gtag("config", "${GOOGLE_ANALYTICS_ID}");
 </script>`);
   }
+  if (GROW_SITE_ID) {
+    scripts.push(growInitializerScript());
+  }
   scripts.push(monetagServiceWorkerCleanupScript());
   return scripts.join("\n  ");
+}
+
+function growInitializerScript() {
+  return `<script data-grow-initializer="">!(function(){window.growMe||((window.growMe=function(e){window.growMe._.push(e);}),(window.growMe._=[]));var e=document.createElement("script");(e.type="text/javascript"),(e.src="https://faves.grow.me/main.js"),(e.defer=!0),e.setAttribute("data-grow-faves-site-id","${GROW_SITE_ID}");var t=document.getElementsByTagName("script")[0];t.parentNode.insertBefore(e,t);})();</script>`;
 }
 
 function monetagServiceWorkerCleanupScript() {
