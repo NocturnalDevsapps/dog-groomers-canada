@@ -209,6 +209,22 @@ button {
   transition: background 160ms ease, color 160ms ease;
 }
 
+.shortlist-nav-button {
+  min-height: 36px;
+  border: 1px solid rgba(230, 75, 55, 0.32);
+  border-radius: 6px;
+  background: #fff6f3;
+  color: var(--ink);
+  padding: 7px 10px;
+  font: inherit;
+  cursor: pointer;
+}
+
+.shortlist-nav-button:hover {
+  border-color: var(--coral);
+  color: var(--coral-2);
+}
+
 .site-nav a:hover,
 .site-nav a[aria-current="page"] {
   background: var(--panel-2);
@@ -666,6 +682,114 @@ h3 {
   font-size: 0.9rem;
 }
 
+button.plain-action {
+  border: 0;
+  background: transparent;
+  padding: 0;
+  text-align: left;
+  cursor: pointer;
+}
+
+.shortlist-toggle.is-saved,
+.shortlist-toggle[aria-pressed="true"] {
+  color: var(--coral-2);
+}
+
+.shortlist-dialog {
+  width: min(760px, calc(100vw - 32px));
+  max-height: min(82vh, 820px);
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  background: #fff;
+  color: var(--ink);
+  padding: 24px;
+  box-shadow: 0 24px 80px rgba(7, 59, 42, 0.28);
+}
+
+.shortlist-dialog::backdrop {
+  background: rgba(7, 29, 22, 0.58);
+}
+
+.shortlist-dialog-head,
+.shortlist-item-head,
+.shortlist-footer,
+.shortlist-item-actions {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.shortlist-dialog-head h2,
+.shortlist-item h3 {
+  margin-bottom: 4px;
+}
+
+.shortlist-close {
+  width: 42px;
+  height: 42px;
+  border: 1px solid var(--line);
+  border-radius: 50%;
+  background: #fff;
+  color: var(--ink);
+  font-size: 1.7rem;
+  line-height: 1;
+  cursor: pointer;
+}
+
+.shortlist-status {
+  min-height: 1.5em;
+  color: var(--green);
+  font-weight: 750;
+}
+
+.shortlist-list {
+  display: grid;
+  gap: 12px;
+  margin: 16px 0;
+}
+
+.shortlist-item {
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: var(--panel-2);
+  padding: 16px;
+}
+
+.shortlist-item h3 a {
+  color: var(--ink);
+  text-decoration: none;
+}
+
+.shortlist-item-head p,
+.shortlist-services {
+  color: var(--muted);
+  margin: 0;
+}
+
+.shortlist-services {
+  padding: 10px 0 14px;
+}
+
+.shortlist-remove {
+  border: 0;
+  background: transparent;
+  color: var(--coral-2);
+  font-weight: 800;
+  cursor: pointer;
+}
+
+.shortlist-item-actions,
+.shortlist-footer {
+  justify-content: flex-start;
+  flex-wrap: wrap;
+}
+
+.shortlist-item-actions .btn {
+  min-height: 42px;
+  padding: 0 14px;
+}
+
 .plain-action svg {
   width: 17px;
   height: 17px;
@@ -1031,6 +1155,31 @@ body[data-page="winter-paw-tool"] .page-intro {
   line-height: 1.72;
 }
 
+.article-tool-card {
+  border: 1px solid rgba(230, 75, 55, 0.28);
+  border-left: 4px solid var(--coral);
+  border-radius: var(--radius);
+  background: linear-gradient(135deg, #fff8f5, #fff);
+  box-shadow: var(--shadow-soft);
+  padding: 20px;
+  margin: 8px 0 34px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 20px;
+}
+
+.article-tool-card h2 {
+  color: var(--green);
+  font-size: 1.35rem;
+  margin: 5px 0 6px;
+}
+
+.article-tool-card p {
+  color: var(--muted);
+  margin: 0;
+}
+
 .check-list {
   display: grid;
   gap: 10px;
@@ -1239,6 +1388,30 @@ body[data-page="winter-paw-tool"] .page-intro {
   padding: 0 12px;
 }
 
+.tool-field input,
+.tool-field textarea {
+  width: 100%;
+  border: 1px solid var(--line);
+  border-radius: 6px;
+  background: #fff;
+  color: var(--ink);
+  padding: 12px;
+  font: inherit;
+  font-weight: 500;
+}
+
+.tool-field input {
+  min-height: 48px;
+}
+
+.tool-field textarea {
+  resize: vertical;
+}
+
+.tool-privacy-note {
+  margin: -4px 0 0;
+}
+
 .tool-result,
 .script-block,
 .correction-panel {
@@ -1254,9 +1427,46 @@ body[data-page="winter-paw-tool"] .page-intro {
 }
 
 .tool-result h2,
-.script-block h2 {
+.script-block h2,
+.script-block h3 {
   color: var(--green);
   font-size: 1.35rem;
+}
+
+.tool-result-actions {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 10px;
+  margin-top: 20px;
+  padding-top: 18px;
+  border-top: 1px solid var(--line);
+}
+
+.tool-action-status {
+  flex: 1 0 100%;
+  min-height: 1.3em;
+  color: var(--green);
+  font-weight: 700;
+}
+
+.booking-brief-grid {
+  display: grid;
+  gap: 20px;
+}
+
+.booking-brief-grid section + section {
+  padding-top: 18px;
+  border-top: 1px solid var(--line);
+}
+
+.booking-brief-grid h3 {
+  color: var(--green);
+  margin-bottom: 0;
+}
+
+.tool-print-sheet {
+  display: none;
 }
 
 .checklist-tool {
@@ -1522,6 +1732,35 @@ body[data-page="winter-paw-tool"] .page-intro {
     flex-direction: column;
   }
 
+  .article-tool-card,
+  .shortlist-dialog-head,
+  .shortlist-item-head {
+    align-items: stretch;
+    flex-direction: column;
+  }
+
+  .article-tool-card .btn,
+  .tool-result-actions .btn,
+  .shortlist-footer .btn {
+    width: 100%;
+  }
+
+  .shortlist-dialog {
+    width: calc(100vw - 20px);
+    max-height: calc(100vh - 20px);
+    padding: 18px;
+  }
+
+  .shortlist-close {
+    position: absolute;
+    top: 14px;
+    right: 14px;
+  }
+
+  .shortlist-dialog-head {
+    padding-right: 48px;
+  }
+
   .listing-card,
   .listing-card.compact {
     grid-template-columns: 104px minmax(0, 1fr);
@@ -1579,6 +1818,23 @@ body[data-page="winter-paw-tool"] .page-intro {
 
   .footer-grid {
     grid-template-columns: 1fr;
+  }
+}
+
+@media print {
+  body.tool-print-active > :not(.tool-print-sheet) {
+    display: none !important;
+  }
+
+  body.tool-print-active .tool-print-sheet {
+    display: block !important;
+    width: 100%;
+  }
+
+  body.tool-print-active .tool-print-sheet .tool-result {
+    margin: 0;
+    border: 0;
+    box-shadow: none;
   }
 }
 

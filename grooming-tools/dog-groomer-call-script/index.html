@@ -36,11 +36,11 @@
   <link rel="icon" href="/assets/favicon-realistic.png" type="image/png">
   <link rel="manifest" href="/assets/site.webmanifest">
 
-  <link rel="preload" href="/assets/site.css?v=202607210027" as="style">
-  <link rel="stylesheet" href="/assets/site.css?v=202607210027">
+  <link rel="preload" href="/assets/site.css?v=202607210106" as="style">
+  <link rel="stylesheet" href="/assets/site.css?v=202607210106">
   <script type="application/ld+json">{"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Home","item":"https://doggroomerscanada.ca/"},{"@type":"ListItem","position":2,"name":"Grooming Tools","item":"https://doggroomerscanada.ca/grooming-tools/"},{"@type":"ListItem","position":3,"name":"Dog Groomer Call Script","item":"https://doggroomerscanada.ca/grooming-tools/dog-groomer-call-script/"}]}</script>
   <script type="application/ld+json">{"@context":"https://schema.org","@type":"WebApplication","name":"Dog Groomer Call Script","url":"https://doggroomerscanada.ca/grooming-tools/dog-groomer-call-script/","applicationCategory":"LifestyleApplication","operatingSystem":"Any","publisher":{"@context":"https://schema.org","@type":"Organization","name":"Dog Groomers Canada","url":"https://doggroomerscanada.ca","logo":{"@type":"ImageObject","url":"https://doggroomerscanada.ca/assets/logo-mark-realistic.png","width":512,"height":512},"image":"https://doggroomerscanada.ca/assets/og-image.svg","contactPoint":{"@type":"ContactPoint","email":"nocturnaldevs@gmail.com","contactType":"customer support","areaServed":"CA","availableLanguage":["English"]}}}</script>
-  <script src="/assets/main.js?v=202607210027" defer></script>
+  <script src="/assets/main.js?v=202607210106" defer></script>
 </head>
 <body >
   <a class="skip-link" href="#main">Skip to content</a>
@@ -64,7 +64,30 @@
     <section class="section">
       <div class="wrap content-layout">
         <main>
-          <div class="script-stack"><section class="script-block"><h2>Start the call</h2><ul class="check-list"><li>Hi, I am looking for a grooming appointment for my dog. Can I ask a few questions before booking?</li><li>My dog is a [breed or mix], about [weight], [age], with a [coat type] coat.</li><li>The last groom was [date], and the main need is [bath, haircut, nails, de-shedding, de-matting, puppy intro, senior comfort groom].</li></ul></section><section class="script-block"><h2>Ask about fit</h2><ul class="check-list"><li>Do you have recent experience with this coat type or breed?</li><li>What would you recommend for the current coat length and condition?</li><li>If you find mats, do you brush them out, clip shorter, or call before changing the plan?</li></ul></section><section class="script-block"><h2>Ask about quote and package</h2><ul class="check-list"><li>What is included in the quoted package?</li><li>What could change the price after you see the dog?</li><li>Are nail grinding, teeth brushing, special shampoo, de-matting, or de-shedding separate add-ons?</li></ul></section><section class="script-block"><h2>Ask about safety and logistics</h2><ul class="check-list"><li>How long does the appointment usually take?</li><li>What are your vaccination, cancellation, late pickup, and new-client policies?</li><li>How do you handle nervous dogs, puppies, senior dogs, or dogs that need breaks?</li></ul></section></div>
+          <form class="tool-panel" data-call-script-tool>
+            <div class="grid-2">
+              <label class="tool-field">Dog's name (optional)<input type="text" name="dogName" maxlength="40" autocomplete="off" placeholder="For example, Maple"></label>
+              <label class="tool-field">Breed or mix (optional)<input type="text" name="breed" maxlength="80" autocomplete="off" placeholder="For example, Golden Retriever mix"></label>
+              <label class="tool-field">Main appointment need<select name="service"><option value="full">Full groom or haircut</option><option value="bath">Bath and brush</option><option value="deshed">De-shedding</option><option value="nails">Nails or paw care</option><option value="puppy">Puppy introduction</option><option value="comfort">Senior or comfort-focused groom</option><option value="unsure">Not sure yet</option></select></label>
+              <label class="tool-field">Coat type<select name="coat"><option value="short">Short or smooth</option><option value="double">Double coat</option><option value="curly">Curly or wool</option><option value="long">Long drop coat</option><option value="wire">Wire or mixed</option><option value="unsure">Not sure</option></select></label>
+              <label class="tool-field">Current coat condition<select name="condition"><option value="maintained">Maintained and combable</option><option value="overdue">Overdue or extra long</option><option value="tangled">Tangled in some areas</option><option value="matted">Matted or packed coat</option><option value="skin">Skin, ear, paw, or medical concern</option><option value="unsure">Not sure</option></select></label>
+              <label class="tool-field">Handling comfort<select name="comfort"><option value="comfortable">Generally comfortable</option><option value="nervous">Nervous or noise-sensitive</option><option value="touch">Sensitive about paws, face, or body</option><option value="senior">Senior or mobility needs</option><option value="puppy">Puppy still learning</option><option value="unknown">Unknown with a new groomer</option></select></label>
+              <label class="tool-field">Approximate weight (optional)<input type="text" name="weight" maxlength="30" autocomplete="off" placeholder="For example, 22 kg / 48 lb"></label>
+              <label class="tool-field">Last groom (optional)<input type="text" name="lastGroom" maxlength="60" autocomplete="off" placeholder="For example, 8 weeks ago"></label>
+            </div>
+            <label class="tool-field">Anything the groomer should know? (optional)<textarea name="notes" maxlength="280" rows="4" placeholder="Mention health guidance, handling triggers, mat locations, preferred haircut, or timing needs."></textarea></label>
+            <p class="muted tool-privacy-note">Your answers stay on this page unless you choose to copy or print the brief.</p>
+            <button class="btn btn-primary" type="submit">Build my booking brief</button>
+          </form>
+          <div class="tool-result" data-call-script-result aria-live="polite" tabindex="-1">
+            <h2>Your personalized booking brief</h2>
+            <p>Add the details you know, then build a concise script, comparison questions, and appointment-preparation notes.</p>
+          </div>
+          <section class="section">
+            <h2>Questions worth asking every groomer</h2>
+            <p>Use the same core questions with each business so you can compare coat experience, package scope, price changes, comfort handling, and appointment policies fairly.</p>
+            <div class="script-stack"><section class="script-block"><h3>Start the call</h3><ul class="check-list"><li>Hi, I am looking for a grooming appointment for my dog. Can I ask a few questions before booking?</li><li>My dog is a [breed or mix], about [weight], [age], with a [coat type] coat.</li><li>The last groom was [date], and the main need is [bath, haircut, nails, de-shedding, de-matting, puppy intro, senior comfort groom].</li></ul></section><section class="script-block"><h3>Ask about fit</h3><ul class="check-list"><li>Do you have recent experience with this coat type or breed?</li><li>What would you recommend for the current coat length and condition?</li><li>If you find mats, do you brush them out, clip shorter, or call before changing the plan?</li></ul></section><section class="script-block"><h3>Ask about quote and package</h3><ul class="check-list"><li>What is included in the quoted package?</li><li>What could change the price after you see the dog?</li><li>Are nail grinding, teeth brushing, special shampoo, de-matting, or de-shedding separate add-ons?</li></ul></section><section class="script-block"><h3>Ask about safety and logistics</h3><ul class="check-list"><li>How long does the appointment usually take?</li><li>What are your vaccination, cancellation, late pickup, and new-client policies?</li><li>How do you handle nervous dogs, puppies, senior dogs, or dogs that need breaks?</li></ul></section></div>
+          </section>
         </main>
         <aside class="side-panel">
           <div class="info-card"><h2>Use with the directory</h2><p>Open a few local profiles, call realistic options, and compare answers in your notes.</p><a class="btn btn-light" href="/cities/">Browse city pages</a></div>

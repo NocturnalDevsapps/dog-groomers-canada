@@ -1018,7 +1018,7 @@ function writeListingPages(context) {
               <h1 class="city-title">${esc(listing.title)}</h1>
               <p class="lead">${esc(listing.description)}</p>
               <div class="meta-line">${ratingLine(listing)}<span>${esc(listing.city)}, ${esc(listing.provinceCode)}</span></div>
-              <div class="tag-cloud" style="margin-top:18px">${listing.phone ? `<a class="btn btn-dark" href="tel:${escAttr(listing.phoneRaw || listing.phone)}">Call ${esc(listing.phone)}</a>` : ""}${listing.website ? `<a class="btn btn-primary" href="${escAttr(listing.website)}" target="_blank" rel="nofollow noopener">Visit Website</a>` : ""}${listing.mapsUrl ? `<a class="btn btn-light" href="${escAttr(listing.mapsUrl)}" target="_blank" rel="nofollow noopener">Open Map</a>` : ""}</div>
+              <div class="tag-cloud" style="margin-top:18px">${listing.phone ? `<a class="btn btn-dark" href="tel:${escAttr(listing.phoneRaw || listing.phone)}">Call ${esc(listing.phone)}</a>` : ""}${listing.website ? `<a class="btn btn-primary" href="${escAttr(listing.website)}" target="_blank" rel="nofollow noopener">Visit Website</a>` : ""}${listing.mapsUrl ? `<a class="btn btn-light" href="${escAttr(listing.mapsUrl)}" target="_blank" rel="nofollow noopener">Open Map</a>` : ""}<button class="btn btn-light shortlist-toggle" type="button" data-shortlist-toggle data-listing-url="${escAttr(listing.url)}" data-listing-name="${escAttr(listing.title)}" aria-label="Save ${escAttr(listing.title)} to compare" aria-pressed="false">☆ Save to compare</button></div>
             </div>
             <div class="profile-photo-wrap"><div class="profile-photo">${listing.image ? `<img src="${escAttr(listing.image)}" alt="${escAttr(listingImageAlt(listing, "profile"))}" loading="eager" referrerpolicy="no-referrer"${sameBusinessFallbackImage(listing) ? ` data-fallback-image="${escAttr(sameBusinessFallbackImage(listing))}" data-fallback-alt="${escAttr(listingImageAlt(listing, "profile"))}"` : ""}>` : imageUnavailable()}</div>${listingImageSourceNote(listing)}</div>
           </div>
@@ -2270,7 +2270,7 @@ function writeUtilityPages(context) {
       "Privacy Policy",
       "Dog Groomers Canada is a directory that uses limited browser features to help visitors search, compare, and find nearby dog grooming pages.",
       `<div class="grid-3">
-        <div class="info-card"><h2>Location tools</h2><p>The near-me feature asks for your browser location only after you press the location button. The coordinates are used in your browser to sort nearby listings and may be saved in local storage for convenience.</p></div>
+        <div class="info-card"><h2>Location and shortlist tools</h2><p>The near-me feature asks for your browser location only after you press the location button. Coordinates are used in your browser to sort nearby listings. Saved groomer shortlists and location preferences are kept in this site's local browser storage for convenience and are not submitted to us.</p></div>
         <div class="info-card"><h2>Analytics</h2><p>We use Google Analytics to understand aggregate site usage, such as page visits and search or navigation patterns. Analytics may use cookies and device, browser, network, and interaction information.</p></div>
         <div class="info-card"><h2>Grow by Mediavine</h2><p>Grow provides reader features such as saving, sharing, subscribing, and recommended content. It may use cookies, local storage, identifiers, and interaction data to provide those features and measure site engagement.</p></div>
       </div>
@@ -2293,7 +2293,7 @@ function writeUtilityPages(context) {
       </section>
       <section class="section">
         <h2>Data choices</h2>
-        <p>You can clear saved location data by clearing this site's browser storage and can block or delete cookies in your browser settings. Some Grow or analytics features may work differently when storage is blocked. Grow users can use Mediavine's privacy request options, and you can contact <a href="mailto:${CONTACT_EMAIL}">${CONTACT_EMAIL}</a> about information sent directly to this site.</p>
+        <p>You can clear saved location and groomer-shortlist data by using the shortlist's clear button or clearing this site's browser storage. You can also block or delete cookies in your browser settings. Some Grow or analytics features may work differently when storage is blocked. Grow users can use Mediavine's privacy request options, and you can contact <a href="mailto:${CONTACT_EMAIL}">${CONTACT_EMAIL}</a> about information sent directly to this site.</p>
         <p class="muted">Last updated July 20, 2026.</p>
       </section>`,
     ),
@@ -2568,6 +2568,7 @@ function listingCard(item, compact = false) {
   const actions = [];
   if (item.phone) actions.push(`<a class="plain-action" href="tel:${escAttr(item.phoneRaw || item.phone)}">${phoneIcon()} ${esc(item.phone)}</a>`);
   if (item.website) actions.push(`<a class="plain-action" href="${escAttr(item.website)}" target="_blank" rel="nofollow noopener">${globeIcon()} Website</a>`);
+  actions.push(`<button class="plain-action shortlist-toggle" type="button" data-shortlist-toggle data-listing-url="${escAttr(item.url)}" data-listing-name="${escAttr(item.title)}" aria-label="Save ${escAttr(item.title)} to compare" aria-pressed="false">☆ Save to compare</button>`);
   actions.push(`<a class="btn btn-primary" href="${item.url}">View Profile</a>`);
 
   return `<article class="listing-card${compact ? " compact" : ""}">
@@ -2728,6 +2729,9 @@ function guideArticleBody(article, context) {
   const category = guideCategoryBySlug(article.category);
   const related = guideRelatedArticles(article).slice(0, 4);
   const serviceLinks = guideRelevantServices(article, context.services);
+  const relevantTool = guideRelevantTool(article);
+  const articleSections = article.sections.map((section, index) => guideArticleSection(section, index));
+  const inlineToolIndex = Math.min(2, articleSections.length);
   const toc = article.sections
     .map((section, index) => `<a href="#${escAttr(guideSectionId(section, index))}">${esc(section.heading)}</a>`)
     .join("");
@@ -2752,13 +2756,16 @@ function guideArticleBody(article, context) {
           <article class="article-content">
             <p class="article-summary">${esc(article.description)}</p>
             ${guideAuthorBox(article)}
-            ${article.sections.map((section, index) => guideArticleSection(section, index)).join("")}
+            ${articleSections.slice(0, inlineToolIndex).join("")}
+            ${guideRelevantToolCard(relevantTool)}
+            ${articleSections.slice(inlineToolIndex).join("")}
             ${guideFaqSection(article)}
             <section class="article-section">
               <h2>Find a groomer for this need</h2>
               <p>Use this guide as preparation, then compare local groomers by city, service signals, rating strength, phone number, website, and profile details. Confirm current services, pricing, appointment length, and coat-specific experience directly with the business before booking.</p>
               <div class="tag-cloud">
                 <a class="btn btn-primary" href="/dog-grooming-near-me/">Find dog grooming near me</a>
+                <a class="btn btn-light" href="/grooming-tools/dog-groomer-call-script/">Build a booking brief</a>
                 <a class="btn btn-light" href="/services/">Browse grooming services</a>
                 <a class="btn btn-light" href="/cities/">Browse city pages</a>
               </div>
@@ -2786,6 +2793,28 @@ function guideArticleBody(article, context) {
         </aside>
       </div>
     </section>`;
+}
+
+function guideRelevantTool(article) {
+  const subject = normalizeKey(`${article.slug} ${article.title}`);
+  const text = normalizeKey(`${article.slug} ${article.title} ${(article.keywords || []).join(" ")}`);
+  let route = "/grooming-tools/coat-maintenance-planner/";
+  if (/\b(?:mat|mats|matted|matting|demat|dematting)\b/.test(text)) route = "/grooming-tools/matting-risk-checklist/";
+  else if (/puppy/.test(text)) route = "/grooming-tools/puppy-first-groom-planner/";
+  else if (/nail/.test(subject)) route = "/grooming-tools/dog-grooming-frequency-calculator/";
+  else if (/cost|price|quote/.test(text)) route = "/grooming-tools/dog-grooming-cost-estimator/";
+  else if (article.slug.includes("winter") || /\b(?:salt|ice|snow)\b/.test(subject)) route = "/grooming-tools/winter-paw-care-checklist/";
+  else if (/compare|appointment|booking|call|mobile|senior|comfort/.test(text)) route = "/grooming-tools/dog-groomer-call-script/";
+  else if (/frequency|schedule|interval|bath|nail/.test(text)) route = "/grooming-tools/dog-grooming-frequency-calculator/";
+  return ownerToolPages().find((tool) => tool.url === route) || ownerToolPages()[0];
+}
+
+function guideRelevantToolCard(tool) {
+  if (!tool) return "";
+  return `<aside class="article-tool-card" aria-label="Recommended interactive tool">
+      <div><span class="guide-card-meta">Try this next · ${esc(tool.kind)}</span><h2>${esc(tool.name)}</h2><p>${esc(tool.summary)}</p></div>
+      <a class="btn btn-primary" href="${escAttr(tool.url)}">Open the free tool</a>
+    </aside>`;
 }
 
 function guideAuthorBox(article) {
@@ -2918,7 +2947,7 @@ function costEstimatorToolBody(context) {
             </div>
             <button class="btn btn-primary" type="submit">Estimate cost range</button>
           </form>
-          <div class="tool-result" data-cost-estimator-result>
+          <div class="tool-result" data-cost-estimator-result aria-live="polite">
             <h2>Estimated planning range</h2>
             <p>Choose your dog's size, coat, service, and add-ons to build a realistic range to discuss with a groomer.</p>
           </div>
@@ -2959,7 +2988,7 @@ function frequencyToolBody(context) {
             </div>
             <button class="btn btn-primary" type="submit">Estimate schedule</button>
           </form>
-          <div class="tool-result" data-frequency-result>
+          <div class="tool-result" data-frequency-result aria-live="polite">
             <h2>Estimated grooming interval</h2>
             <p>Choose your dog's coat and care details to see a recommended professional grooming range and at-home maintenance notes.</p>
           </div>
@@ -3000,7 +3029,7 @@ function coatPlannerToolBody(context) {
             </div>
             <button class="btn btn-primary" type="submit">Build maintenance plan</button>
           </form>
-          <div class="tool-result" data-coat-planner-result>
+          <div class="tool-result" data-coat-planner-result aria-live="polite">
             <h2>Your coat plan</h2>
             <p>Choose the coat and lifestyle details to see brushing frequency, comb-check zones, and appointment notes.</p>
           </div>
@@ -3041,7 +3070,7 @@ function puppyPlannerToolBody(context) {
             </div>
             <button class="btn btn-primary" type="submit">Plan first groom</button>
           </form>
-          <div class="tool-result" data-puppy-planner-result>
+          <div class="tool-result" data-puppy-planner-result aria-live="polite">
             <h2>First groom plan</h2>
             <p>Choose the puppy details to see appointment goals, questions, and home prep steps.</p>
           </div>
@@ -3089,7 +3118,7 @@ function winterPawToolBody(context) {
               )
               .join("")}
           </form>
-          <div class="tool-result" data-winter-paw-result>
+          <div class="tool-result" data-winter-paw-result aria-live="polite">
             <h2>Winter paw risk score: 0</h2>
             <p>Check the items that apply. The result will update automatically.</p>
           </div>
@@ -3137,7 +3166,7 @@ function mattingToolBody(context) {
               )
               .join("")}
           </form>
-          <div class="tool-result" data-matting-result>
+          <div class="tool-result" data-matting-result aria-live="polite">
             <h2>Risk score: 0</h2>
             <p>Check the items that apply to your dog. The result will update automatically.</p>
           </div>
@@ -3173,9 +3202,32 @@ function callScriptToolBody(context) {
     <section class="section">
       <div class="wrap content-layout">
         <main>
-          <div class="script-stack">${blocks
-            .map((block) => `<section class="script-block"><h2>${esc(block.title)}</h2><ul class="check-list">${block.lines.map((line) => `<li>${esc(line)}</li>`).join("")}</ul></section>`)
-            .join("")}</div>
+          <form class="tool-panel" data-call-script-tool>
+            <div class="grid-2">
+              <label class="tool-field">Dog's name (optional)<input type="text" name="dogName" maxlength="40" autocomplete="off" placeholder="For example, Maple"></label>
+              <label class="tool-field">Breed or mix (optional)<input type="text" name="breed" maxlength="80" autocomplete="off" placeholder="For example, Golden Retriever mix"></label>
+              ${toolSelect("service", "Main appointment need", [["full", "Full groom or haircut"], ["bath", "Bath and brush"], ["deshed", "De-shedding"], ["nails", "Nails or paw care"], ["puppy", "Puppy introduction"], ["comfort", "Senior or comfort-focused groom"], ["unsure", "Not sure yet"]])}
+              ${toolSelect("coat", "Coat type", [["short", "Short or smooth"], ["double", "Double coat"], ["curly", "Curly or wool"], ["long", "Long drop coat"], ["wire", "Wire or mixed"], ["unsure", "Not sure"]])}
+              ${toolSelect("condition", "Current coat condition", [["maintained", "Maintained and combable"], ["overdue", "Overdue or extra long"], ["tangled", "Tangled in some areas"], ["matted", "Matted or packed coat"], ["skin", "Skin, ear, paw, or medical concern"], ["unsure", "Not sure"]])}
+              ${toolSelect("comfort", "Handling comfort", [["comfortable", "Generally comfortable"], ["nervous", "Nervous or noise-sensitive"], ["touch", "Sensitive about paws, face, or body"], ["senior", "Senior or mobility needs"], ["puppy", "Puppy still learning"], ["unknown", "Unknown with a new groomer"]])}
+              <label class="tool-field">Approximate weight (optional)<input type="text" name="weight" maxlength="30" autocomplete="off" placeholder="For example, 22 kg / 48 lb"></label>
+              <label class="tool-field">Last groom (optional)<input type="text" name="lastGroom" maxlength="60" autocomplete="off" placeholder="For example, 8 weeks ago"></label>
+            </div>
+            <label class="tool-field">Anything the groomer should know? (optional)<textarea name="notes" maxlength="280" rows="4" placeholder="Mention health guidance, handling triggers, mat locations, preferred haircut, or timing needs."></textarea></label>
+            <p class="muted tool-privacy-note">Your answers stay on this page unless you choose to copy or print the brief.</p>
+            <button class="btn btn-primary" type="submit">Build my booking brief</button>
+          </form>
+          <div class="tool-result" data-call-script-result aria-live="polite" tabindex="-1">
+            <h2>Your personalized booking brief</h2>
+            <p>Add the details you know, then build a concise script, comparison questions, and appointment-preparation notes.</p>
+          </div>
+          <section class="section">
+            <h2>Questions worth asking every groomer</h2>
+            <p>Use the same core questions with each business so you can compare coat experience, package scope, price changes, comfort handling, and appointment policies fairly.</p>
+            <div class="script-stack">${blocks
+              .map((block) => `<section class="script-block"><h3>${esc(block.title)}</h3><ul class="check-list">${block.lines.map((line) => `<li>${esc(line)}</li>`).join("")}</ul></section>`)
+              .join("")}</div>
+          </section>
         </main>
         <aside class="side-panel">
           <div class="info-card"><h2>Use with the directory</h2><p>Open a few local profiles, call realistic options, and compare answers in your notes.</p><a class="btn btn-light" href="/cities/">Browse city pages</a></div>

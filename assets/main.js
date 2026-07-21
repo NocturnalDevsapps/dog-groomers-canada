@@ -3,8 +3,11 @@
 
   const DATA_URL = "/assets/search-index.json";
   const locationKey = "dgc:last-location";
+  const shortlistKey = "dgc:groomer-shortlist:v1";
+  const shortlistLimit = 4;
   const nearbySearchRadiusKm = 35;
   let indexPromise;
+  let shortlistUrls = readShortlistUrls();
 
   const $ = (selector, root = document) => root.querySelector(selector);
   const $$ = (selector, root = document) => Array.from(root.querySelectorAll(selector));
@@ -168,7 +171,8 @@
     const rating = Number(item.rating || 0);
     if (!rating) return "";
     const reviews = Number(item.reviews || 0);
-    return `<span class="rating"><span class="stars" aria-hidden="true">★★★★★</span> ${rating.toFixed(1)}${reviews ? ` (${reviews.toLocaleString()} reviews)` : ""}</span>`;
+    const reviewLabel = reviews === 1 ? "review" : "reviews";
+    return `<span class="rating"><span class="stars" aria-hidden="true">★</span> ${rating.toFixed(1)}${reviews ? ` (${reviews.toLocaleString()} ${reviewLabel})` : ""}</span>`;
   }
 
   function imageMarkup(item) {
@@ -243,6 +247,7 @@
       ? `<a class="plain-action" href="${escapeAttr(item.website)}" rel="nofollow noopener" target="_blank">${globeIcon()} Website</a>`
       : "";
     const phone = item.phone ? `<a class="plain-action" href="tel:${escapeAttr(item.phoneRaw || item.phone)}">${phoneIcon()} ${escapeHtml(item.phone)}</a>` : "";
+    const isSaved = shortlistUrls.includes(item.url);
     return `<article class="listing-card">
       <a class="listing-image" href="${escapeAttr(withBase(item.url))}">${imageMarkup(item)}</a>
       <div class="listing-body">
@@ -254,9 +259,175 @@
       <div class="card-actions">
         ${phone}
         ${website}
+        <button class="plain-action shortlist-toggle" type="button" data-shortlist-toggle data-listing-url="${escapeAttr(item.url)}" data-listing-name="${escapeAttr(item.title)}" aria-label="${isSaved ? "Remove" : "Save"} ${escapeAttr(item.title)} ${isSaved ? "from saved groomers" : "to compare"}" aria-pressed="${isSaved ? "true" : "false"}">${isSaved ? "★ Saved" : "☆ Save to compare"}</button>
         <a class="btn btn-primary" href="${escapeAttr(withBase(item.url))}">View Profile</a>
       </div>
     </article>`;
+  }
+
+  function readShortlistUrls() {
+    try {
+      const saved = JSON.parse(localStorage.getItem(shortlistKey) || "[]");
+      if (!Array.isArray(saved)) return [];
+      return [...new Set(saved.filter((url) => typeof url === "string" && url.startsWith("/groomers/")))].slice(0, shortlistLimit);
+    } catch (error) {
+      return [];
+    }
+  }
+
+  function persistShortlist() {
+    try {
+      if (shortlistUrls.length) localStorage.setItem(shortlistKey, JSON.stringify(shortlistUrls));
+      else localStorage.removeItem(shortlistKey);
+    } catch (error) {
+      // The shortlist still works for this page view when browser storage is blocked.
+    }
+  }
+
+  function updateShortlistControls() {
+    $$('[data-shortlist-toggle]').forEach((button) => {
+      const isSaved = shortlistUrls.includes(button.dataset.listingUrl || "");
+      const name = button.dataset.listingName || "this groomer";
+      button.setAttribute("aria-pressed", isSaved ? "true" : "false");
+      button.setAttribute("aria-label", isSaved ? `Remove ${name} from saved groomers` : `Save ${name} to compare`);
+      button.textContent = isSaved ? "★ Saved" : "☆ Save to compare";
+      button.classList.toggle("is-saved", isSaved);
+    });
+    const openButton = $("[data-shortlist-open]");
+    if (openButton) {
+      openButton.hidden = shortlistUrls.length === 0;
+      openButton.textContent = `Saved (${shortlistUrls.length})`;
+      openButton.setAttribute("aria-label", `Compare ${shortlistUrls.length} saved ${shortlistUrls.length === 1 ? "groomer" : "groomers"}`);
+    }
+  }
+
+  function shortlistListingMarkup(item) {
+    const services = item.services && item.services.length ? item.services.slice(0, 4).join(" · ") : "Services not listed; call to confirm.";
+    const rating = item.rating ? `${Number(item.rating).toFixed(1)} from ${Number(item.reviews || 0).toLocaleString()} ${Number(item.reviews || 0) === 1 ? "review" : "reviews"}` : "Rating not listed";
+    return `<article class="shortlist-item">
+      <div class="shortlist-item-head">
+        <div><h3><a href="${escapeAttr(withBase(item.url))}">${escapeHtml(item.title)}</a></h3><p>${escapeHtml(item.city)}, ${escapeHtml(item.provinceCode || item.province)} · ${escapeHtml(rating)}</p></div>
+        <button class="shortlist-remove" type="button" data-shortlist-remove="${escapeAttr(item.url)}" aria-label="Remove ${escapeAttr(item.title)} from saved groomers">Remove</button>
+      </div>
+      <p class="shortlist-services">${escapeHtml(services)}</p>
+      <div class="shortlist-item-actions">
+        ${item.phone ? `<a class="btn btn-light" href="tel:${escapeAttr(item.phoneRaw || item.phone)}">Call</a>` : ""}
+        ${item.website ? `<a class="btn btn-light" href="${escapeAttr(item.website)}" target="_blank" rel="nofollow noopener">Website</a>` : ""}
+        <a class="btn btn-primary" href="${escapeAttr(withBase(item.url))}">View profile</a>
+      </div>
+    </article>`;
+  }
+
+  async function renderShortlistDialog(message = "") {
+    const list = $("[data-shortlist-list]");
+    const status = $("[data-shortlist-status]");
+    if (!list) return;
+    if (status) status.textContent = message;
+    if (!shortlistUrls.length) {
+      list.innerHTML = '<div class="empty-state"><p>No groomers are saved yet. Use “Save to compare” on a directory card or profile.</p></div>';
+      return;
+    }
+    list.innerHTML = '<div class="empty-state"><p>Loading saved groomers...</p></div>';
+    try {
+      const index = await loadIndex();
+      const byUrl = new Map((index.listings || []).map((item) => [item.url, item]));
+      const items = shortlistUrls.map((url) => byUrl.get(url)).filter(Boolean);
+      list.innerHTML = items.length
+        ? items.map(shortlistListingMarkup).join("")
+        : '<div class="empty-state"><p>These saved profiles are no longer available in the current directory data.</p></div>';
+    } catch (error) {
+      list.innerHTML = '<div class="empty-state"><p>Saved groomers could not load right now. Please try again in a moment.</p></div>';
+    }
+  }
+
+  function openShortlistDialog(message = "") {
+    const dialog = $("[data-shortlist-dialog]");
+    if (!dialog) return;
+    renderShortlistDialog(message);
+    if (typeof dialog.showModal === "function") dialog.showModal();
+    else dialog.setAttribute("open", "");
+  }
+
+  function initShortlist() {
+    const nav = $(".site-nav");
+    if (!nav || $("[data-shortlist-dialog]")) return;
+
+    const openButton = document.createElement("button");
+    openButton.type = "button";
+    openButton.className = "shortlist-nav-button";
+    openButton.dataset.shortlistOpen = "";
+    openButton.hidden = true;
+    nav.appendChild(openButton);
+
+    const dialog = document.createElement("dialog");
+    dialog.className = "shortlist-dialog";
+    dialog.dataset.shortlistDialog = "";
+    dialog.setAttribute("aria-labelledby", "shortlist-dialog-title");
+    dialog.innerHTML = `<div class="shortlist-dialog-head"><div><span class="guide-card-meta">Private on-device list</span><h2 id="shortlist-dialog-title">Compare saved groomers</h2></div><button class="shortlist-close" type="button" data-shortlist-close aria-label="Close saved groomers">×</button></div>
+      <p>Save up to ${shortlistLimit} businesses, then compare location, ratings, listed services, and contact options. Your list stays in this browser.</p>
+      <p class="shortlist-status" data-shortlist-status aria-live="polite"></p>
+      <div class="shortlist-list" data-shortlist-list></div>
+      <div class="shortlist-footer"><a class="btn btn-primary" href="/grooming-tools/dog-groomer-call-script/">Build a booking brief</a><button class="btn btn-light" type="button" data-shortlist-clear>Clear saved list</button></div>`;
+    document.body.appendChild(dialog);
+
+    document.addEventListener("click", (event) => {
+      const toggle = event.target.closest("[data-shortlist-toggle]");
+      if (toggle) {
+        const url = toggle.dataset.listingUrl || "";
+        const existingIndex = shortlistUrls.indexOf(url);
+        if (existingIndex >= 0) {
+          shortlistUrls.splice(existingIndex, 1);
+          persistShortlist();
+          updateShortlistControls();
+          renderShortlistDialog("Removed from your saved groomers.");
+          return;
+        }
+        if (!url.startsWith("/groomers/")) return;
+        if (shortlistUrls.length >= shortlistLimit) {
+          openShortlistDialog(`You can compare up to ${shortlistLimit} groomers. Remove one before adding another.`);
+          return;
+        }
+        shortlistUrls.push(url);
+        persistShortlist();
+        updateShortlistControls();
+        renderShortlistDialog("Saved for comparison.");
+        return;
+      }
+
+      if (event.target.closest("[data-shortlist-open]")) {
+        openShortlistDialog();
+        return;
+      }
+
+      if (event.target.closest("[data-shortlist-close]")) {
+        if (typeof dialog.close === "function") dialog.close();
+        else dialog.removeAttribute("open");
+        return;
+      }
+
+      const remove = event.target.closest("[data-shortlist-remove]");
+      if (remove) {
+        shortlistUrls = shortlistUrls.filter((url) => url !== remove.dataset.shortlistRemove);
+        persistShortlist();
+        updateShortlistControls();
+        renderShortlistDialog("Removed from your saved groomers.");
+        return;
+      }
+
+      if (event.target.closest("[data-shortlist-clear]")) {
+        if (!shortlistUrls.length || window.confirm("Clear all saved groomers from this browser?")) {
+          shortlistUrls = [];
+          persistShortlist();
+          updateShortlistControls();
+          renderShortlistDialog("Your saved groomer list is clear.");
+        }
+      }
+    });
+
+    dialog.addEventListener("click", (event) => {
+      if (event.target === dialog && typeof dialog.close === "function") dialog.close();
+    });
+    updateShortlistControls();
   }
 
   function runSearch(index, query, where, options = {}) {
@@ -467,6 +638,7 @@
         : `${summary}<div class="empty-state"><h2>No exact matches found</h2><p>Try searching by city, province, service, or business name.</p></div>`;
       initLocationButtons();
       initImageFallbacks();
+      updateShortlistControls();
     } catch (error) {
       mount.innerHTML = `<div class="empty-state"><h2>Search data could not load</h2><p>Please try again in a moment, or browse by province from the links below.</p></div>`;
     }
@@ -515,6 +687,8 @@
       : "";
     const emptyMarkup = `<div class="empty-state"><h2>No nearby matches found</h2><p>Try searching by city or province, or contact mobile groomers to confirm their current service area.</p></div>`;
     mount.innerHTML = `${cityMarkup}${listings.length ? `<div class="listing-stack">${listings.map(cardMarkup).join("")}</div>` : emptyMarkup}`;
+    initImageFallbacks();
+    updateShortlistControls();
   }
 
   function nearMeCountText(count, serviceSlug, service) {
@@ -543,6 +717,82 @@
     const listings = $("[data-city-listings]");
     if (!guide || !listings || (guide.compareDocumentPosition(listings) & Node.DOCUMENT_POSITION_FOLLOWING)) return;
     listings.parentNode.insertBefore(guide, listings);
+  }
+
+  function enhanceToolResult(result, options = {}) {
+    if (!result) return;
+    const oldActions = $(".tool-result-actions", result);
+    if (oldActions) oldActions.remove();
+    const actions = document.createElement("div");
+    actions.className = "tool-result-actions";
+    actions.innerHTML = `<button class="btn btn-light" type="button" data-tool-result-copy>Copy result</button>
+      <button class="btn btn-light" type="button" data-tool-result-print>Print result</button>
+      <a class="btn btn-primary" href="${escapeAttr(options.href || "/dog-grooming-near-me/")}">${escapeHtml(options.label || "Find groomers near me")}</a>
+      <span class="tool-action-status" data-tool-action-status aria-live="polite"></span>`;
+    result.appendChild(actions);
+  }
+
+  function toolResultPlainText(result) {
+    const clone = result.cloneNode(true);
+    const actions = $(".tool-result-actions", clone);
+    if (actions) actions.remove();
+    return clone.innerText.trim();
+  }
+
+  async function copyPlainText(text) {
+    if (navigator.clipboard && window.isSecureContext) {
+      await navigator.clipboard.writeText(text);
+      return;
+    }
+    const textarea = document.createElement("textarea");
+    textarea.value = text;
+    textarea.setAttribute("readonly", "");
+    textarea.style.position = "fixed";
+    textarea.style.opacity = "0";
+    document.body.appendChild(textarea);
+    textarea.select();
+    const copied = document.execCommand("copy");
+    textarea.remove();
+    if (!copied) throw new Error("Copy was not available.");
+  }
+
+  function initToolResultActions() {
+    document.addEventListener("click", async (event) => {
+      const copyButton = event.target.closest("[data-tool-result-copy]");
+      if (copyButton) {
+        const result = copyButton.closest(".tool-result");
+        const status = result ? $("[data-tool-action-status]", result) : null;
+        try {
+          await copyPlainText(toolResultPlainText(result));
+          setStatus(status, "Copied to your clipboard.");
+        } catch (error) {
+          setStatus(status, "Copy was blocked. Select the result text and copy it manually.");
+        }
+        return;
+      }
+
+      const printButton = event.target.closest("[data-tool-result-print]");
+      if (!printButton) return;
+      const result = printButton.closest(".tool-result");
+      if (!result) return;
+      const printSheet = document.createElement("section");
+      printSheet.className = "tool-print-sheet";
+      const printResult = result.cloneNode(true);
+      const printActions = $(".tool-result-actions", printResult);
+      if (printActions) printActions.remove();
+      printResult.removeAttribute("aria-live");
+      printResult.removeAttribute("tabindex");
+      printSheet.appendChild(printResult);
+      document.body.appendChild(printSheet);
+      document.body.classList.add("tool-print-active");
+      const cleanup = () => {
+        document.body.classList.remove("tool-print-active");
+        printSheet.remove();
+      };
+      window.addEventListener("afterprint", cleanup, { once: true });
+      window.print();
+      window.setTimeout(cleanup, 1000);
+    });
   }
 
   function initCostEstimatorTool() {
@@ -627,6 +877,7 @@
         <p>Use this range to prepare a quote request. The groomer should confirm the final price after hearing the dog's details or seeing the coat.</p>
         <ul class="check-list">${notes.slice(0, 5).map((note) => `<li>${escapeHtml(note)}</li>`).join("")}</ul>
         <p class="muted">Ask what is included in the package, what add-ons cost extra, and what could change after check-in.</p>`;
+      enhanceToolResult(result, { label: "Compare nearby groomers" });
     }
 
     form.addEventListener("submit", (event) => {
@@ -696,6 +947,7 @@
         <p>${homeCare}</p>
         <ul class="check-list">${notes.slice(0, 4).map((note) => `<li>${escapeHtml(note)}</li>`).join("")}</ul>
         <p class="muted">Ask a groomer to adjust this after seeing your dog's coat, skin, nails, behavior, and haircut goals.</p>`;
+      enhanceToolResult(result, { label: "Find a groomer for this schedule" });
     }
 
     form.addEventListener("submit", (event) => {
@@ -724,6 +976,7 @@
       result.innerHTML = `<h2>Risk score: ${score} (${level})</h2>
         <p>${escapeHtml(advice)}</p>
         <p class="muted">If mats are tight, close to the skin, painful, damp, or pelted, ask a professional groomer or veterinarian for guidance.</p>`;
+      enhanceToolResult(result, { href: "/services/dematting/", label: "Compare de-matting services" });
     }
 
     form.addEventListener("change", update);
@@ -766,6 +1019,7 @@
         <p>${escapeHtml(frequency)}</p>
         <ul class="check-list">${notes.slice(0, 6).map((note) => `<li>${escapeHtml(note)}</li>`).join("")}</ul>
         <p class="muted">If the comb catches near the skin, book earlier and avoid bathing until the coat is assessed.</p>`;
+      enhanceToolResult(result, { label: "Find coat-care help" });
     }
 
     form.addEventListener("submit", (event) => {
@@ -808,6 +1062,7 @@
         <p>${escapeHtml(appointment)}</p>
         <ul class="check-list">${notes.slice(0, 6).map((note) => `<li>${escapeHtml(note)}</li>`).join("")}</ul>
         <p class="muted">The first visit should build trust. A perfect haircut can wait if the puppy needs a shorter, calmer appointment.</p>`;
+      enhanceToolResult(result, { href: "/services/puppy-grooming/", label: "Compare puppy groomers" });
     }
 
     form.addEventListener("submit", (event) => {
@@ -836,10 +1091,91 @@
       result.innerHTML = `<h2>Winter paw risk score: ${score} (${level})</h2>
         <p>${escapeHtml(advice)}</p>
         <p class="muted">Avoid cutting mats or paw hair tightly with scissors at home. Ask a groomer if ice balls, salt, or coat friction keep returning.</p>`;
+      enhanceToolResult(result, { href: "/services/nail-trimming/", label: "Find paw and nail care" });
     }
 
     form.addEventListener("change", update);
     update();
+  }
+
+  function initCallScriptTool() {
+    const form = $("[data-call-script-tool]");
+    const result = $("[data-call-script-result]");
+    if (!form || !result) return;
+
+    function selectedLabel(name) {
+      const select = form.elements.namedItem(name);
+      return select && select.selectedOptions && select.selectedOptions[0] ? select.selectedOptions[0].textContent.trim() : "";
+    }
+
+    function listMarkup(items) {
+      return `<ul class="check-list">${items.map((item) => `<li>${escapeHtml(item)}</li>`).join("")}</ul>`;
+    }
+
+    function buildBrief() {
+      const dogName = fieldValue(form, "dogName").trim();
+      const breed = fieldValue(form, "breed").trim();
+      const weight = fieldValue(form, "weight").trim();
+      const lastGroom = fieldValue(form, "lastGroom").trim();
+      const notesValue = fieldValue(form, "notes").trim();
+      const service = fieldValue(form, "service");
+      const coat = fieldValue(form, "coat");
+      const condition = fieldValue(form, "condition");
+      const comfort = fieldValue(form, "comfort");
+      const subject = dogName || "my dog";
+      const share = [`I am looking for ${selectedLabel("service").toLowerCase()} for ${subject}.`];
+      const questions = [
+        "What is included in the package, and which add-ons cost extra?",
+        "What could change the quote after you see the coat or meet the dog?",
+        `Do you have recent experience with ${selectedLabel("coat").toLowerCase()} coats and this type of appointment?`,
+        "How long should I plan for drop-off, the appointment, and pickup?",
+        "What are your vaccination, cancellation, late-pickup, and new-client policies?",
+      ];
+      const prep = [
+        "Take a current coat photo and, for a haircut, save one realistic finish photo.",
+        "Confirm the address or mobile service area, arrival instructions, and best contact number.",
+        "Share coat, behavior, mobility, skin, medication, or veterinarian guidance before the appointment begins.",
+      ];
+
+      if (breed) share.push(`${subject} is a ${breed}.`);
+      if (weight) share.push(`Approximate weight: ${weight}.`);
+      share.push(`Coat: ${selectedLabel("coat")}. Current condition: ${selectedLabel("condition")}.`);
+      share.push(`Handling comfort: ${selectedLabel("comfort")}.`);
+      if (lastGroom) share.push(`Last groom: ${lastGroom}.`);
+      if (notesValue) share.push(`Additional note: ${notesValue}`);
+
+      if (service === "full") questions.push("Is the requested length realistic for the current coat, or would a shorter comfort trim be safer?");
+      if (service === "deshed" || coat === "double") questions.push("How do you remove loose undercoat without shaving or damaging a healthy double coat?");
+      if (service === "nails") questions.push("Do you offer grinding as well as clipping, and how do you handle paw sensitivity?");
+      if (service === "puppy" || comfort === "puppy") questions.push("Can the first visit be a shorter introduction with breaks instead of a long full groom?");
+      if (service === "comfort" || comfort === "senior") questions.push("Can you adapt the appointment for standing limits, mobility, rest breaks, or a quieter schedule?");
+      if (condition === "tangled" || condition === "matted") {
+        questions.push("If the tangles cannot be removed comfortably, will you call before changing the haircut plan?");
+        prep.push("Do not cut tight mats with scissors or bathe a matted coat; ask the groomer for a comfort-first assessment.");
+      }
+      if (condition === "skin") questions.push("What information from my veterinarian do you need before working around the concern?");
+      if (comfort === "nervous" || comfort === "touch") {
+        questions.push("How do you handle fear or touch sensitivity, and can you use shorter sessions or breaks?");
+        prep.push("Describe known triggers and helpful handling cues before drop-off; do not surprise the groomer at check-in.");
+      }
+      if (service === "unsure" || coat === "unsure" || condition === "unsure") questions.push("Can you assess what is realistic and confirm the plan and price before work begins?");
+
+      result.innerHTML = `<h2>${dogName ? `${escapeHtml(dogName)}'s` : "Your"} groomer-ready booking brief</h2>
+        <div class="booking-brief-grid">
+          <section><h3>What to say first</h3>${listMarkup(share)}</section>
+          <section><h3>Questions to compare</h3>${listMarkup(questions)}</section>
+          <section><h3>Before the appointment</h3>${listMarkup(prep)}</section>
+        </div>
+        <p class="muted">This brief helps with booking and comparison. A groomer or veterinarian should assess pain, infection, severe matting, or medical concerns.</p>`;
+      enhanceToolResult(result, { label: "Find groomers to contact" });
+      result.focus({ preventScroll: true });
+    }
+
+    form.addEventListener("submit", (event) => {
+      event.preventDefault();
+      buildBrief();
+      result.scrollIntoView({ behavior: "smooth", block: "start" });
+    });
   }
 
   function initResultsHashScroll() {
@@ -892,17 +1228,20 @@
     initNav();
     initSearchForms();
     initLocationButtons();
+    initShortlist();
     initSearchPage();
     initNearMePage();
     initNearbyHint();
     initLocationResultLayout();
     initImageFallbacks();
+    initToolResultActions();
     initCostEstimatorTool();
     initFrequencyTool();
     initMattingTool();
     initCoatPlannerTool();
     initPuppyPlannerTool();
     initWinterPawTool();
+    initCallScriptTool();
     initResultsHashScroll();
   });
 })();
