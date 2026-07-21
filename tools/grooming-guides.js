@@ -489,7 +489,7 @@ function section(heading, paragraphs, bullets) {
 function defaultFaqs(spec) {
   return [
     {
-      question: `How often should I use this ${spec.category.replace(/-/g, " ")} advice?`,
+      question: "How often should I follow this guidance?",
       answer:
         "Use it as a planning starting point, then ask a professional groomer to adjust the schedule based on your dog's coat, skin, nails, age, behavior, lifestyle, and season.",
     },

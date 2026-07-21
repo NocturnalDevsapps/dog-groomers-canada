@@ -1005,6 +1005,12 @@ body[data-page="winter-paw-tool"] .page-intro {
   margin: 4px 0 0;
 }
 
+.author-links {
+  display: grid;
+  gap: 6px;
+  min-width: max-content;
+}
+
 .article-section {
   padding: 34px 0;
   border-top: 1px solid var(--line);
@@ -1103,6 +1109,10 @@ body[data-page="winter-paw-tool"] .page-intro {
   align-items: start;
 }
 
+.profile-photo-wrap {
+  min-width: 0;
+}
+
 .profile-photo {
   border-radius: var(--radius);
   overflow: hidden;
@@ -1130,6 +1140,13 @@ body[data-page="winter-paw-tool"] .page-intro {
 .profile-photo svg {
   width: 92px;
   height: 92px;
+}
+
+.image-source-note {
+  color: var(--muted);
+  font-size: 0.82rem;
+  line-height: 1.45;
+  margin: 10px 2px 0;
 }
 
 .detail-list {

@@ -9,8 +9,8 @@
   "icons": [
     {
       "src": "/assets/logo-mark-realistic.png",
-      "sizes": "any",
-      "type": "image/svg+xml"
+      "sizes": "512x512",
+      "type": "image/png"
     }
   ]
 }

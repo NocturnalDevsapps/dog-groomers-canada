@@ -21,15 +21,15 @@ Static, GitHub Pages-ready dog grooming directory for [Dog Groomers Canada](http
 - Search and near-me pages enhanced with JavaScript
 - `sitemap.xml`, HTML sitemap, `robots.txt`, `CNAME`, `.nojekyll`, and `404.html`
 
-## AdSense review posture
+## Journey review posture
 
-The AdSense account meta tag remains in the site head, and `ads.txt` is generated at the domain root. Display ad slots are disabled in `tools/build-site.js` while the site is under review, and the AdSense script is limited to core trust/content pages, original guide pages, and grooming-tool pages so generated directory pages do not show empty ad surfaces before approval.
+Grow by Mediavine is installed sitewide while the Journey application is under review. Previous programmatic ad-network scripts, account tags, seller entries, ad slots, and empty ad placeholders are not generated. The root `ads.txt` remains accessible but empty until Journey provides the approved seller records during onboarding.
 
 All generated profile pages remain `index,follow` and stay in `sitemap.xml`. The high-value review strategy is to improve the site with original guides, richer city pages, correction/claim signals, cost and booking content, Canadian grooming price references, and interactive owner tools under `/grooming-tools/`.
 
 The current generated build includes 7,330 crawlable URLs, including 133 dog grooming cost pages and 8 grooming-tool pages. The cost pages use planning ranges and quote questions instead of fixed price claims, because real prices depend on dog size, coat condition, matting, handling, add-ons, mobile route needs, and local availability.
 
-Before resubmitting to AdSense, deploy the generated site, inspect Search Console indexing for the homepage, guide hub, tools hub, several city pages, and several guide articles, then resubmit only after Google has crawled the new high-value pages.
+Before any major release, inspect Search Console indexing for the homepage, guide hub, tools hub, several city pages, and several guide articles. Preserve established URLs, canonicals, titles, and sitemap membership while improving original value and reader trust.
 
 ## Rebuild from the CSV
 
