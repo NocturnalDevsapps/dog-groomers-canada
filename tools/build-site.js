@@ -11,10 +11,10 @@ const SITE_URL = "https://doggroomerscanada.ca";
 const CSV_FILE =
   process.argv[2] ||
   path.join(ROOT, "Apify Google Maps Scraper jJzJjRpnTviQKBwns - dog grooming only.csv");
-const BUILD_DATE = new Date().toISOString().slice(0, 10);
+const BUILD_DATE = process.env.BUILD_DATE || new Date().toISOString().slice(0, 10);
 // Update this only when the published directory/guides are materially reviewed.
 const CONTENT_UPDATED_DATE = "2026-07-20";
-const ASSET_VERSION = new Date().toISOString().replace(/[-:T.Z]/g, "").slice(0, 12);
+const ASSET_VERSION = process.env.ASSET_VERSION || new Date().toISOString().replace(/[-:T.Z]/g, "").slice(0, 12);
 const BRAND_NAME = "Dog Groomers Canada";
 const THEME_COLOR = "#073b2a";
 const CONTACT_EMAIL = "nocturnaldevs@gmail.com";
@@ -25,6 +25,7 @@ const OG_IMAGE_PATH = "/assets/og-image.svg";
 const PHOTO_HERO_PATH = "/assets/dgc-photo-hero-grooming.jpg";
 const IMAGE_OVERRIDES_FILE = path.join(ROOT, "data", "listing-image-overrides.json");
 const BROKEN_IMAGE_URLS_FILE = path.join(ROOT, "data", "broken-image-urls.json");
+const LISTING_CORRECTIONS_FILE = path.join(ROOT, "data", "listing-corrections.json");
 const LEGACY_AD_SERVICE_WORKER_TOMBSTONE = `self.addEventListener("install", () => self.skipWaiting());
 self.addEventListener("activate", (event) => {
   event.waitUntil(self.registration.unregister());
@@ -226,7 +227,8 @@ function main() {
   cleanGeneratedFiles();
 
   const rawListings = loadListings(CSV_FILE);
-  const listings = removeBrokenListingImages(applyImageOverrides(buildListingUrls(rawListings), loadImageOverrides()), loadBrokenImageUrls());
+  const correctedListings = applyListingCorrections(buildListingUrls(rawListings), loadListingCorrections());
+  const listings = removeBrokenListingImages(applyImageOverrides(correctedListings.listings, loadImageOverrides()), loadBrokenImageUrls());
   const provinceGroups = groupProvinces(listings);
   const cityGroups = groupCities(listings);
   const serviceGroups = groupServices(listings);
@@ -236,6 +238,7 @@ function main() {
     provinces: provinceGroups,
     cities: cityGroups,
     services: serviceGroups,
+    listingRedirects: correctedListings.redirects,
     stats: {
       listings: listings.length,
       provinces: provinceGroups.length,
@@ -253,6 +256,7 @@ function main() {
   writeProvincePages(context);
   writeCityPages(context);
   writeListingPages(context);
+  writeListingRedirects(context.listingRedirects);
   writeServicePages(context);
   writeCostPages(context);
   writeGuidePages(context);
@@ -435,6 +439,40 @@ function buildListingUrls(listings) {
       url: `/groomers/${cityPath}/${slug}/`,
     };
   });
+}
+
+function loadListingCorrections() {
+  if (!fs.existsSync(LISTING_CORRECTIONS_FILE)) return [];
+  const raw = JSON.parse(fs.readFileSync(LISTING_CORRECTIONS_FILE, "utf8"));
+  return Array.isArray(raw) ? raw : raw.listings || [];
+}
+
+function applyListingCorrections(listings, corrections) {
+  const byUrl = new Map(corrections.filter((item) => item && item.url).map((item) => [item.url, item]));
+  const corrected = [];
+  const redirects = [];
+  const allowedFields = ["title", "address", "street", "postalCode", "phone", "phoneRaw", "website", "mapsUrl", "temporarilyClosed"];
+
+  for (const listing of listings) {
+    const correction = byUrl.get(listing.url);
+    if (!correction) {
+      corrected.push(listing);
+      continue;
+    }
+    if (correction.exclude) {
+      if (correction.redirectTo) redirects.push({ from: listing.url, to: correction.redirectTo });
+      continue;
+    }
+
+    const fields = correction.fields || {};
+    const updates = Object.fromEntries(allowedFields.filter((field) => Object.hasOwn(fields, field)).map((field) => [field, fields[field]]));
+    const updated = { ...listing, ...updates };
+    updated.description = buildListingDescription(updated);
+    updated.score = qualityScore(updated);
+    corrected.push(updated);
+  }
+
+  return { listings: corrected, redirects };
 }
 
 function loadImageOverrides() {
@@ -1082,6 +1120,29 @@ function writeListingPages(context) {
       localBusinessSchema(listing),
     ];
     writePage(context, listing.url, `${listing.title} | Dog Grooming in ${listing.city}, ${listing.provinceCode}`, listingMetaDescription(listing), body, schema);
+  }
+}
+
+function writeListingRedirects(redirects) {
+  for (const redirect of redirects) {
+    const target = path.join(ROOT, trimSlashes(redirect.from), "index.html");
+    const destination = absoluteUrl(redirect.to);
+    const html = `<!doctype html>
+<html lang="en-CA">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta http-equiv="refresh" content="0; url=${escAttr(redirect.to)}">
+  <link rel="canonical" href="${escAttr(destination)}">
+  <meta name="robots" content="noindex, follow">
+  <title>Listing moved | ${BRAND_NAME}</title>
+</head>
+<body>
+  <p>This listing has moved to <a href="${escAttr(redirect.to)}">the current business profile</a>.</p>
+</body>
+</html>`;
+    fs.mkdirSync(path.dirname(target), { recursive: true });
+    fs.writeFileSync(target, cleanGeneratedHtml(html));
   }
 }
 

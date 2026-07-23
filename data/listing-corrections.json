@@ -1,0 +1,36 @@
+{
+  "listings": [
+    {
+      "url": "/groomers/ontario/grimsby/paws-with-us-grimsby-grimsby-on-7d7c9fb1/",
+      "note": "Owner-provided update received July 2026.",
+      "fields": {
+        "title": "Paws With Us - Grimsby",
+        "address": "391 Winston Rd, Unit 32-33, Grimsby, ON L3M 0J2, Canada",
+        "street": "391 Winston Rd, Unit 32-33",
+        "postalCode": "L3M 0J2",
+        "phone": "+1 289-235-9100",
+        "phoneRaw": "+12892359100",
+        "website": "https://www.pawswithus.ca/"
+      }
+    },
+    {
+      "url": "/groomers/ontario/oakville/paws-with-us-pet-grooming-oakville-on-74a7dc3f/",
+      "note": "Owner-provided update received July 2026.",
+      "fields": {
+        "title": "Paws With Us - Oakville",
+        "address": "1026 Speers Rd, Unit 4, Oakville, ON L6L 2X4, Canada",
+        "street": "1026 Speers Rd, Unit 4",
+        "postalCode": "L6L 2X4",
+        "phone": "+1 905-847-2317",
+        "phoneRaw": "+19058472317",
+        "website": "https://www.pawswithus.ca/"
+      }
+    },
+    {
+      "url": "/groomers/ontario/oakville/paws-with-us-oakville-on-d290ccd2/",
+      "note": "Obsolete duplicate at the former McPherson Road address.",
+      "exclude": true,
+      "redirectTo": "/groomers/ontario/oakville/paws-with-us-pet-grooming-oakville-on-74a7dc3f/"
+    }
+  ]
+}
