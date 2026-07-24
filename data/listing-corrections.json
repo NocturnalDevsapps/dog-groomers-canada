@@ -31,6 +31,17 @@
       "note": "Obsolete duplicate at the former McPherson Road address.",
       "exclude": true,
       "redirectTo": "/groomers/ontario/oakville/paws-with-us-pet-grooming-oakville-on-74a7dc3f/"
+    },
+    {
+      "url": "/groomers/alberta/edmonton/kateryna-s-tails-edmonton-ab-f67b8bc7/",
+      "note": "Owner-provided update confirmed by the business contact page in July 2026.",
+      "fields": {
+        "title": "Kateryna's Tails",
+        "address": "2003 Rabbit Hill Rd NW, Edmonton, AB T6R 0R7, Canada",
+        "street": "2003 Rabbit Hill Rd NW",
+        "postalCode": "T6R 0R7",
+        "website": "https://katerynastails.ca/"
+      }
     }
   ]
 }
