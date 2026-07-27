@@ -1,0 +1,55 @@
+{
+  "listings": [
+    {
+      "id": "groomarts-academy-edmonton",
+      "title": "GroomArts Academy",
+      "category": "Dog grooming school and student grooming service",
+      "address": "6465 Cartmell Place SW, Edmonton, AB T6W 4V4, Canada",
+      "street": "6465 Cartmell Place SW",
+      "postalCode": "T6W 4V4",
+      "city": "Edmonton",
+      "province": "Alberta",
+      "provinceCode": "AB",
+      "countryCode": "CA",
+      "phone": "+1 780-695-5866",
+      "phoneRaw": "+17806955866",
+      "email": "info@groomartsacademy.com",
+      "website": "https://groomartsacademy.com/",
+      "mapsUrl": "https://www.google.com/maps/search/?api=1&query=6465%20Cartmell%20Place%20SW%2C%20Edmonton%2C%20AB%20T6W%204V4",
+      "description": "GroomArts Academy is a dog grooming school in southwest Edmonton that provides hands-on, salon-style training with instructors supervising students as they work with pets. Customers who choose a student groom receive 50% off the academy's regular grooming rates, giving pet owners a lower-cost option while students build practical experience. The published curriculum covers bathing, brushing, blow-drying, de-shedding, nail trimming, ear cleaning, sanitary care, clipping, scissoring, styling, safe handling, coat health, and breed-specific coat types. Contact GroomArts Academy to confirm current appointment availability, eligible services, the regular price before the discount, and how the groom will be supervised.",
+      "services": [
+        "Student grooming",
+        "Bath and brush",
+        "Haircuts and styling",
+        "Nail trimming",
+        "Ear cleaning",
+        "De-shedding",
+        "Sanitary care",
+        "De-matting"
+      ],
+      "hours": [
+        { "day": "Monday", "hours": "9:00 AM-5:00 PM" },
+        { "day": "Tuesday", "hours": "9:00 AM-5:00 PM" },
+        { "day": "Wednesday", "hours": "9:00 AM-5:00 PM" },
+        { "day": "Thursday", "hours": "9:00 AM-5:00 PM" },
+        { "day": "Friday", "hours": "9:00 AM-5:00 PM" },
+        { "day": "Saturday", "hours": "Closed" },
+        { "day": "Sunday", "hours": "Closed" }
+      ],
+      "image": "/assets/listings/groomarts-academy-groomed-dog.jpg",
+      "photos": [
+        "/assets/listings/groomarts-academy-groomed-dog.jpg",
+        "/assets/listings/groomarts-academy-logo.jpg"
+      ],
+      "imageCredit": "Images published by GroomArts Academy and included with the business owner's permission.",
+      "imageSourceUrl": "https://groomartsacademy.com/",
+      "offer": {
+        "label": "Student grooming offer",
+        "title": "50% off regular grooming rates",
+        "description": "Customers who choose a trained and supervised student groom receive 50% off regular rates. Contact the academy to confirm current availability, eligible services, and the regular price before the discount.",
+        "sourceUrl": "https://groomartsacademy.com/"
+      },
+      "updatedAt": "2026-07-27"
+    }
+  ]
+}

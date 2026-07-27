@@ -1291,6 +1291,35 @@ body[data-page="winter-paw-tool"] .page-intro {
   height: 92px;
 }
 
+.profile-offer {
+  border-block: 1px solid #efd99f;
+  border-left: 4px solid var(--gold);
+  background: #fffaf0;
+  padding: 20px 22px;
+}
+
+.profile-offer .offer-label {
+  color: var(--green-2);
+  font-size: 0.82rem;
+  font-weight: 800;
+  margin: 0 0 4px;
+  text-transform: uppercase;
+}
+
+.profile-offer h2 {
+  margin: 0 0 6px;
+}
+
+.profile-offer p {
+  margin: 0;
+}
+
+.profile-offer .offer-source {
+  font-size: 0.9rem;
+  font-weight: 700;
+  margin-top: 10px;
+}
+
 .image-source-note {
   color: var(--muted);
   font-size: 0.82rem;

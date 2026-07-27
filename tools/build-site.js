@@ -26,6 +26,7 @@ const PHOTO_HERO_PATH = "/assets/dgc-photo-hero-grooming.jpg";
 const IMAGE_OVERRIDES_FILE = path.join(ROOT, "data", "listing-image-overrides.json");
 const BROKEN_IMAGE_URLS_FILE = path.join(ROOT, "data", "broken-image-urls.json");
 const LISTING_CORRECTIONS_FILE = path.join(ROOT, "data", "listing-corrections.json");
+const MANUAL_LISTINGS_FILE = path.join(ROOT, "data", "manual-listings.json");
 const LEGACY_AD_SERVICE_WORKER_TOMBSTONE = `self.addEventListener("install", () => self.skipWaiting());
 self.addEventListener("activate", (event) => {
   event.waitUntil(self.registration.unregister());
@@ -226,7 +227,7 @@ function main() {
 
   cleanGeneratedFiles();
 
-  const rawListings = loadListings(CSV_FILE);
+  const rawListings = [...loadListings(CSV_FILE), ...loadManualListings()];
   const correctedListings = applyListingCorrections(buildListingUrls(rawListings), loadListingCorrections());
   const listings = removeBrokenListingImages(applyImageOverrides(correctedListings.listings, loadImageOverrides()), loadBrokenImageUrls());
   const provinceGroups = groupProvinces(listings);
@@ -373,6 +374,84 @@ function loadListings(file) {
   });
 
   return listings.sort((a, b) => b.score - a.score || a.title.localeCompare(b.title));
+}
+
+function loadManualListings() {
+  if (!fs.existsSync(MANUAL_LISTINGS_FILE)) return [];
+  const raw = JSON.parse(fs.readFileSync(MANUAL_LISTINGS_FILE, "utf8"));
+  const entries = Array.isArray(raw) ? raw : raw.listings || [];
+
+  return entries.map((item, index) => {
+    const title = clean(item.title);
+    const address = clean(item.address);
+    const province = normalizeProvince(item.provinceCode || item.province, address);
+    const city = clean(item.city) || inferCity(address, province.code) || "Canada";
+    if (!title) throw new Error(`Manual listing ${index + 1} is missing a title.`);
+
+    const phone = clean(item.phone);
+    const website = sanitizeBusinessWebsite(clean(item.website));
+    const services = unique((Array.isArray(item.services) ? item.services : []).map(clean)).filter(Boolean).slice(0, 8);
+    const hours = (Array.isArray(item.hours) ? item.hours : [])
+      .map((entry) => ({ day: clean(entry.day), hours: clean(entry.hours) }))
+      .filter((entry) => entry.day && entry.hours)
+      .slice(0, 7);
+    const sourcePhotos = (Array.isArray(item.photos) ? item.photos : []).map(normalizeListingImageUrl).filter(Boolean);
+    const image = normalizeListingImageUrl(item.image || sourcePhotos[0]);
+    const photos = unique([image, ...sourcePhotos]).filter(Boolean).slice(0, 8);
+    const offerTitle = clean(item.offer && item.offer.title);
+    const offerDescription = clean(item.offer && item.offer.description);
+    const offer = offerTitle && offerDescription
+      ? {
+          label: clean(item.offer.label) || "Special offer",
+          title: offerTitle,
+          description: offerDescription,
+          sourceUrl: sanitizeBusinessWebsite(clean(item.offer.sourceUrl)),
+        }
+      : null;
+    const listing = {
+      id: shortHash(clean(item.id) || website || `${title}-${address}-${index + 1}`),
+      title,
+      category: clean(item.category) || "Pet groomer",
+      address,
+      street: clean(item.street),
+      postalCode: clean(item.postalCode) || extractPostalCode(address),
+      city,
+      province: province.name,
+      provinceCode: province.code,
+      provinceSlug: province.slug,
+      citySlug: slugify(city),
+      countryCode: clean(item.countryCode) || "CA",
+      phone,
+      phoneRaw: clean(item.phoneRaw) || phone.replace(/[^\d+]/g, ""),
+      email: clean(item.email),
+      website,
+      mapsUrl: clean(item.mapsUrl),
+      rating: numberOrNull(item.rating),
+      reviews: integerOrZero(item.reviews),
+      lat: numberOrNull(item.lat),
+      lng: numberOrNull(item.lng),
+      image,
+      photos,
+      imageCredit: clean(item.imageCredit),
+      imageSourceUrl: sanitizeBusinessWebsite(clean(item.imageSourceUrl)),
+      hours,
+      services,
+      serviceText: clean(item.serviceText) || services.join("; "),
+      websiteServiceText: clean(item.websiteServiceText),
+      websiteConvenienceText: clean(item.websiteConvenienceText),
+      convenienceText: clean(item.convenienceText),
+      reviewCommentCount: 0,
+      reviewThemes: [],
+      description: "",
+      offer,
+      temporarilyClosed: Boolean(item.temporarilyClosed),
+      scrapedAt: clean(item.updatedAt),
+      score: 0,
+    };
+    listing.description = clean(item.description) || buildListingDescription(listing);
+    listing.score = qualityScore(listing);
+    return listing;
+  });
 }
 
 function parseCsvRows(text, onRow) {
@@ -1035,7 +1114,8 @@ function writeListingPages(context) {
       : `<p class="muted">Call ahead to confirm bath, haircut, nail trim, de-shedding, puppy groom, de-matting, and breed-specific services.</p>`;
     const contact = `
       <dl class="detail-list">
-        ${detailRow("Phone", listing.phone ? `<a href="tel:${escAttr(listing.phoneRaw || listing.phone)}">${esc(listing.phone)}</a>` : "Call to confirm")}
+        ${detailRow("Phone", listing.phone ? `<a href="tel:${escAttr(listing.phoneRaw || listing.phone)}">${esc(listing.phone)}</a>` : "Call to confirm")}${listing.email ? `
+        ${detailRow("Email", `<a href="mailto:${escAttr(listing.email)}">${esc(listing.email)}</a>`)}` : ""}
         ${detailRow("Website", listing.website ? `<a href="${escAttr(listing.website)}" target="_blank" rel="nofollow noopener">${esc(cleanDisplayUrl(listing.website))}</a>` : "Not listed")}
         ${detailRow("Address", listing.address ? esc(listing.address) : `${esc(listing.city)}, ${esc(listing.province)}`)}
         ${detailRow("Maps", listing.mapsUrl ? `<a href="${escAttr(listing.mapsUrl)}" target="_blank" rel="nofollow noopener">Open in Google Maps</a>` : "Map link not listed")}
@@ -1069,7 +1149,8 @@ function writeListingPages(context) {
             <section>
               <h2>Business details</h2>
               ${contact}
-            </section>
+            </section>${listing.offer ? `
+            ${listingOfferSection(listing)}` : ""}
             <section class="section">
               <h2>Services mentioned</h2>
               ${services}
@@ -3801,6 +3882,19 @@ function detailRow(label, value) {
   return `<div class="detail-row"><dt>${esc(label)}</dt><dd>${value}</dd></div>`;
 }
 
+function listingOfferSection(listing) {
+  if (!listing.offer) return "";
+  const source = listing.offer.sourceUrl
+    ? `<p class="offer-source"><a href="${escAttr(listing.offer.sourceUrl)}" target="_blank" rel="nofollow noopener">Confirm offer with the business</a></p>`
+    : "";
+  return `<section class="section profile-offer" aria-label="${escAttr(listing.offer.label)}">
+    <p class="offer-label">${esc(listing.offer.label)}</p>
+    <h2>${esc(listing.offer.title)}</h2>
+    <p>${esc(listing.offer.description)}</p>
+    ${source}
+  </section>`;
+}
+
 function homeMetaDescription(context) {
   return metaDescription(
     `Find dog grooming near you in Canada and read original grooming guides for coat care, seasonal care, breed needs, costs, services, ratings, phone, website, and maps.`,
@@ -3828,6 +3922,7 @@ function cityMetaDescription(city) {
 function listingMetaDescription(listing) {
   const pieces = [`${shortText(listing.title, 54)} dog grooming in ${listing.city}, ${listing.provinceCode}`];
   if (listing.rating && listing.reviews) pieces.push(`${listing.rating.toFixed(1)} stars from ${countLabel(listing.reviews, "review")}`);
+  if (listing.offer) pieces.push(listing.offer.title);
   if (listing.services.length) pieces.push(listing.services.slice(0, 2).join(" and "));
   const street = clean(listing.street || listing.address.split(",")[0]);
   if (street && street.length < 50) pieces.push(street);
@@ -3974,7 +4069,8 @@ function localBusinessSchema(listing) {
     url: absoluteUrl(listing.url),
     description: listing.description,
     telephone: listing.phone || undefined,
-    image: listing.photos.length ? listing.photos : undefined,
+    email: listing.email || undefined,
+    image: listing.photos.length ? listing.photos.map(absoluteUrl) : undefined,
     address: {
       "@type": "PostalAddress",
       streetAddress: listing.street || listing.address,
@@ -3993,6 +4089,14 @@ function localBusinessSchema(listing) {
         : undefined,
     openingHours: listing.hours.length ? listing.hours.map((item) => `${item.day} ${item.hours}`) : undefined,
     sameAs: listing.website ? [listing.website] : undefined,
+    makesOffer: listing.offer
+      ? {
+          "@type": "Offer",
+          name: listing.offer.title,
+          description: listing.offer.description,
+          url: listing.offer.sourceUrl || listing.website || undefined,
+        }
+      : undefined,
   };
   return prune(schema);
 }
@@ -4378,6 +4482,7 @@ function haversineKm(a, b) {
 }
 
 function absoluteUrl(route) {
+  if (/^https?:\/\//i.test(route)) return route;
   if (route === "/") return `${SITE_URL}/`;
   if (route === "/404.html") return `${SITE_URL}/404.html`;
   return `${SITE_URL}${route}`;
@@ -4549,6 +4654,12 @@ function listingImageAlt(listing, context = "card") {
 
 function listingImageSourceNote(listing, scope = "image") {
   if (!listing.image) return "";
+  if (listing.imageCredit) {
+    const sourceLink = listing.imageSourceUrl
+      ? ` <a href="${escAttr(listing.imageSourceUrl)}" target="_blank" rel="nofollow noopener">View the source website</a>.`
+      : "";
+    return `<p class="image-source-note">${esc(listing.imageCredit)}${sourceLink} <a href="${escAttr(correctionMailto(listing))}">Request an image correction or removal</a>.</p>`;
+  }
   const label = scope === "photos" ? "These images were" : "This image was";
   const sourceLink = listing.mapsUrl
     ? ` <a href="${escAttr(listing.mapsUrl)}" target="_blank" rel="nofollow noopener">View the source listing</a>.`
