@@ -784,6 +784,7 @@ function writeHomePage(context) {
           <h2>Easy ways to browse</h2>
           <p>Browse by province, city, service, or business profile, or use the HTML sitemap for a complete directory index.</p>
           <a class="btn btn-light" href="/provinces/">Browse provinces</a>
+          <p><a class="link-arrow" href="https://doggroomersus.com/">In the United States? Visit Dog Groomers US -&gt;</a></p>
         </div>
         <div class="info-card">
           <h2>Helpful before booking</h2>
@@ -2233,6 +2234,10 @@ function writeUtilityPages(context) {
       <h2>Who maintains the site</h2>
       <p>Dog Groomers Canada is independently maintained. The publisher reviews correction requests, maintains the directory tools, and writes the site's comparison and booking guidance. The site does not claim veterinary or professional grooming certification, and health or safety concerns should be discussed with a qualified veterinarian or groomer.</p>
       <p>Questions, corrections, removal requests, and source updates can be sent to <a href="mailto:${CONTACT_EMAIL}">${CONTACT_EMAIL}</a>.</p>
+    </section>
+    <section class="section">
+      <h2>Looking for a groomer in the United States?</h2>
+      <p>Our sister directory, <a href="https://doggroomersus.com/">Dog Groomers US</a>, helps dog owners browse grooming businesses by state and city, compare documented service and access details, and use free appointment-planning tools.</p>
     </section>`,
   );
   writePage(context, "/about/", "About Dog Groomers Canada", "About Dog Groomers Canada, a Canadian dog grooming directory with city, service, profile, correction, and booking guidance.", aboutBody, [
