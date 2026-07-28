@@ -1351,6 +1351,38 @@ body[data-page="winter-paw-tool"] .page-intro {
   min-width: 0;
 }
 
+.profile-signal-list {
+  display: grid;
+  margin: 20px 0 0;
+}
+
+.profile-signal-row {
+  display: grid;
+  grid-template-columns: minmax(130px, 0.28fr) minmax(0, 1fr);
+  gap: 18px;
+  border-top: 1px solid var(--line);
+  padding: 13px 0;
+}
+
+.profile-signal-row:last-child {
+  border-bottom: 1px solid var(--line);
+}
+
+.profile-signal-row dt {
+  color: var(--ink);
+  font-weight: 800;
+}
+
+.profile-signal-row dd {
+  min-width: 0;
+  margin: 0;
+}
+
+.signal-qualifier {
+  color: var(--muted);
+  font-size: 0.9rem;
+}
+
 .hours-list {
   display: grid;
   gap: 5px;
@@ -1831,6 +1863,11 @@ body[data-page="winter-paw-tool"] .page-intro {
   }
 
   .detail-row {
+    grid-template-columns: 1fr;
+    gap: 4px;
+  }
+
+  .profile-signal-row {
     grid-template-columns: 1fr;
     gap: 4px;
   }

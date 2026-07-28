@@ -218,6 +218,23 @@ const REVIEW_THEME_DEFINITIONS = Object.freeze([
   },
 ]);
 
+const PROFILE_ACCESSIBILITY_SIGNALS = Object.freeze([
+  ["Assistive hearing loop", "Assistive hearing loop"],
+  ["Wheelchair accessible entrance", "Wheelchair-accessible entrance"],
+  ["Wheelchair accessible parking lot", "Wheelchair-accessible parking"],
+  ["Wheelchair accessible restroom", "Wheelchair-accessible restroom"],
+  ["Wheelchair accessible seating", "Wheelchair-accessible seating"],
+]);
+
+const PROFILE_AMENITY_SIGNALS = Object.freeze([
+  ["Online scheduling", "Online scheduling"],
+  ["Free parking", "Free parking"],
+  ["Paid parking", "Paid parking"],
+  ["Gender-neutral restroom", "Gender-neutral restroom"],
+  ["Public restroom", "Public restroom"],
+  ["Restroom", "Restroom"],
+]);
+
 const GROOMING_COMMENT_PATTERN = /\b(?:groom(?:er|ers|ed|ing|s)?|haircuts?|trim(?:med|ming)?|bath(?:ed|ing)?|brush(?:ed|ing)?|coat|nails?|mat(?:s|ted|ting)?|shed(?:ding)?|clean(?:ed|ing)?|teeth|tooth|fur|clip(?:ped|ping)?|style|stylist|paws?)\b/i;
 
 function main() {
@@ -315,19 +332,9 @@ function loadListings(file) {
     const services = getServices(get);
     const reviewComments = getReviewTexts(get);
     const reviewThemes = buildReviewThemes(category, reviewComments);
-    const description = buildListingDescription({
-      title,
-      city,
-      province: province.name,
-      provinceCode: province.code,
-      category,
-      rating,
-      reviews,
-      services,
-      phone,
-      website,
-      hours,
-    });
+    const bookingLinks = getBookingLinks(get);
+    const websiteSignals = getWebsiteSignals(get);
+    const profileAttributes = getProfileAttributes(get);
     const idSeed =
       clean(get("cid")) ||
       clean(get("fid")) ||
@@ -362,13 +369,25 @@ function loadListings(file) {
       websiteServiceText: clean(get("websiteServicesFound")),
       websiteConvenienceText: clean(get("websiteConvenienceFound")),
       convenienceText: clean(get("convenientLocationOrMobileService")),
+      websiteCrawlStatus: clean(get("websiteCrawlStatus")),
+      websiteCrawlSource: safeHttpUrl(get("websiteCrawlSource")),
+      websiteServices: websiteSignals.services,
+      websiteConvenience: websiteSignals.convenience,
+      websiteCredentials: websiteSignals.credentials,
+      websiteBreedExperience: websiteSignals.breedExperience,
+      websitePricingAvailable: websiteSignals.pricingAvailable,
+      bookingLinks,
+      accessibility: profileAttributes.accessibility,
+      amenities: profileAttributes.amenities,
+      ownerUpdateCount: getOwnerUpdateCount(get),
       reviewCommentCount: reviewComments.length,
       reviewThemes,
-      description,
+      description: "",
       temporarilyClosed: isTruthy(get("temporarilyClosed")),
       scrapedAt: clean(get("scrapedAt")),
       score: 0,
     };
+    listing.description = buildListingDescription(listing);
     listing.score = qualityScore(listing);
     listings.push(listing);
   });
@@ -440,6 +459,17 @@ function loadManualListings() {
       websiteServiceText: clean(item.websiteServiceText),
       websiteConvenienceText: clean(item.websiteConvenienceText),
       convenienceText: clean(item.convenienceText),
+      websiteCrawlStatus: clean(item.websiteCrawlStatus) || (website ? "owner_provided" : ""),
+      websiteCrawlSource: safeHttpUrl(item.websiteCrawlSource || website),
+      websiteServices: cleanSignalArray(item.websiteServices),
+      websiteConvenience: cleanSignalArray(item.websiteConvenience).map(friendlyWebsiteSignal),
+      websiteCredentials: cleanSignalArray(item.websiteCredentials).map(friendlyWebsiteSignal),
+      websiteBreedExperience: cleanSignalArray(item.websiteBreedExperience),
+      websitePricingAvailable: Boolean(item.websitePricingAvailable || (item.offer && item.offer.title)),
+      bookingLinks: normalizeBookingLinks(item.bookingLinks),
+      accessibility: cleanSignalArray(item.accessibility),
+      amenities: cleanSignalArray(item.amenities),
+      ownerUpdateCount: integerOrZero(item.ownerUpdateCount),
       reviewCommentCount: 0,
       reviewThemes: [],
       description: "",
@@ -1109,8 +1139,9 @@ function writeListingPages(context) {
           .map((item) => `<li><strong>${esc(item.day)}</strong><span>${esc(item.hours)}</span></li>`)
           .join("")}</ul></section>`
       : "";
-    const services = listing.services.length
-      ? `<div class="tag-cloud">${listing.services.map((item) => `<span class="tag">${esc(item)}</span>`).join("")}</div>`
+    const profileServices = listingProfileServices(listing);
+    const services = profileServices.length
+      ? `<div class="tag-cloud">${profileServices.map((item) => `<span class="tag">${esc(item)}</span>`).join("")}</div>`
       : `<p class="muted">Call ahead to confirm bath, haircut, nail trim, de-shedding, puppy groom, de-matting, and breed-specific services.</p>`;
     const contact = `
       <dl class="detail-list">
@@ -1156,6 +1187,7 @@ function writeListingPages(context) {
               ${services}
               <p class="muted" style="margin-top:14px">Service information is summarized from available listing data and may not be complete. Confirm current services and prices directly with the groomer.</p>
             </section>
+            ${listingSpecificSignalsSection(listing)}
             ${listingReviewThemesSection(listing)}
             ${listingGuidanceSection(listing)}
             ${profileCostAndQuoteSection(listing, city, province, costMap)}
@@ -3651,6 +3683,80 @@ function cityQualitySection(city, services, nearby) {
     </section>`;
 }
 
+function listingSpecificSignalsSection(listing) {
+  const rows = [];
+  const profileServices = listingProfileServices(listing);
+  const listedFocus = profileServices.length
+    ? `${listing.category || "Pet groomer"}; services named include ${joinWithAnd(profileServices.slice(0, 6))}.`
+    : `${listing.category || "Pet groomer"}; the source did not include a complete service menu.`;
+  rows.push(profileSignalRow("Listed focus", esc(listedFocus)));
+
+  const reputation = listing.rating
+    ? `${listing.rating.toFixed(1)} stars${listing.reviews ? ` from ${countLabel(listing.reviews, "review")}` : ""} in the public listing snapshot.`
+    : "No public rating was included in the source snapshot.";
+  rows.push(profileSignalRow("Reputation", esc(reputation)));
+
+  const contactSignals = listingContactSignals(listing);
+  rows.push(profileSignalRow(
+    "Contact paths",
+    esc(contactSignals.length ? `${joinWithAnd(contactSignals)} are included on this profile.` : "No direct contact path was included in the source snapshot."),
+  ));
+
+  if (listing.websiteServices && listing.websiteServices.length) {
+    rows.push(profileSignalRow("Website services", esc(joinWithAnd(listing.websiteServices.slice(0, 8)))));
+  }
+  if (listing.websiteConvenience && listing.websiteConvenience.length) {
+    rows.push(profileSignalRow("Website access", esc(joinWithAnd(listing.websiteConvenience.slice(0, 5)))));
+  }
+  if (listing.websiteCredentials && listing.websiteCredentials.length) {
+    rows.push(profileSignalRow("Website policies", esc(joinWithAnd(listing.websiteCredentials.slice(0, 5)))));
+  }
+  if (listing.websiteBreedExperience && listing.websiteBreedExperience.length) {
+    rows.push(profileSignalRow("Breed experience", `${esc(joinWithAnd(listing.websiteBreedExperience.slice(0, 6)))} <span class="signal-qualifier">mentioned on the business website</span>`));
+  }
+  if (listing.websitePricingAvailable) {
+    const pricingSignal = listing.websiteCrawlStatus === "owner_provided" && listing.offer
+      ? "The owner-provided offer includes pricing or discount information. Confirm eligibility, current rates, and package scope directly."
+      : "The business website crawl found published grooming price information. Confirm current rates and package scope directly.";
+    rows.push(profileSignalRow("Pricing signal", pricingSignal));
+  }
+
+  const bookingLink = preferredBookingLink(listing);
+  if (bookingLink) {
+    rows.push(profileSignalRow(
+      "Appointments",
+      `<a href="${escAttr(bookingLink.url)}" target="_blank" rel="nofollow noopener">${esc(bookingLink.name)}</a> <span class="signal-qualifier">link included in the source listing</span>`,
+    ));
+  }
+  if (listing.accessibility && listing.accessibility.length) {
+    rows.push(profileSignalRow("Accessibility", esc(joinWithAnd(listing.accessibility))));
+  }
+  if (listing.amenities && listing.amenities.length) {
+    rows.push(profileSignalRow("Amenities", esc(joinWithAnd(listing.amenities))));
+  }
+  if (listing.ownerUpdateCount) {
+    rows.push(profileSignalRow("Business updates", `${esc(countLabel(listing.ownerUpdateCount, "owner update"))} appeared in the public listing snapshot.`));
+  }
+
+  const snapshot = profileSnapshotLabel(listing.scrapedAt);
+  const sourceLabel = listing.websiteCrawlStatus === "owner_provided" ? "Owner-provided profile details" : "Public listing details";
+  const sourceDate = snapshot ? ` gathered in ${snapshot}` : "";
+  const websiteSource = listing.websiteCrawlStatus === "website_crawled" && listing.websiteCrawlSource
+    ? ` Website findings came from <a href="${escAttr(listing.websiteCrawlSource)}" target="_blank" rel="nofollow noopener">the business website page crawled for this profile</a>.`
+    : "";
+  rows.push(profileSignalRow("Source timing", `${esc(sourceLabel)}${esc(sourceDate)}.${websiteSource}`));
+
+  return `<section class="section profile-signals" data-profile-signals>
+      <h2>Business-specific signals</h2>
+      <p>These details separate core profile data from findings on a business website when website evidence is available. They support comparison, but they are not an endorsement or a guarantee that every detail is still current.</p>
+      <dl class="profile-signal-list">${rows.join("")}</dl>
+    </section>`;
+}
+
+function profileSignalRow(label, value) {
+  return `<div class="profile-signal-row"><dt>${esc(label)}</dt><dd>${value}</dd></div>`;
+}
+
 function listingReviewThemesSection(listing) {
   if (!listing.reviewThemes || !listing.reviewThemes.length) return "";
   const currentReviews = listing.mapsUrl
@@ -3664,7 +3770,8 @@ function listingReviewThemesSection(listing) {
 }
 
 function listingGuidanceSection(listing) {
-  const serviceText = listing.services.length ? listing.services.slice(0, 5).join(", ") : "bath, haircut, nail trim, de-shedding, de-matting, and puppy grooming";
+  const profileServices = listingProfileServices(listing);
+  const serviceText = profileServices.length ? profileServices.slice(0, 5).join(", ") : "bath, haircut, nail trim, de-shedding, de-matting, and puppy grooming";
   return `<section class="section">
       <h2>Before you contact ${esc(listing.title)}</h2>
       <p>This profile is a starting point for comparing ${esc(listing.city)} grooming options. Confirm current availability, exact services, pricing, vaccination requirements, appointment length, and whether the groomer has recent experience with your dog's coat and temperament.</p>
@@ -3678,7 +3785,8 @@ function listingGuidanceSection(listing) {
 
 function profileCostAndQuoteSection(listing, city, province, costMap) {
   const costUrl = costGuideUrlForCity(city, province, costMap);
-  const serviceText = listing.services.length ? listing.services.slice(0, 4).join(", ") : "the grooming services you need";
+  const profileServices = listingProfileServices(listing);
+  const serviceText = profileServices.length ? profileServices.slice(0, 4).join(", ") : "the grooming services you need";
   const ratingText = listing.rating
     ? `${listing.rating.toFixed(1)} stars${listing.reviews ? ` from ${countLabel(listing.reviews, "review")}` : ""}`
     : "rating not listed in the source data";
@@ -4297,6 +4405,115 @@ function getServices(get) {
   return unique(values).slice(0, 8);
 }
 
+function getWebsiteSignals(get) {
+  return {
+    services: cleanSignalArray(get("websiteServicesFound")),
+    convenience: unique(cleanSignalArray(get("websiteConvenienceFound")).map(friendlyWebsiteSignal)).filter(Boolean),
+    credentials: unique(cleanSignalArray(get("websiteCredentialsFound")).map(friendlyWebsiteSignal)).filter(Boolean),
+    breedExperience: cleanSignalArray(get("websiteBreedExperienceFound")),
+    pricingAvailable: hasMeaningfulWebsitePricing(get("websitePricesFound")),
+  };
+}
+
+function getBookingLinks(get) {
+  const links = [];
+  for (let i = 0; i <= 2; i += 1) {
+    const url = safeHttpUrl(get(`bookingLinks/${i}/url`));
+    if (!url) continue;
+    links.push({
+      name: clean(get(`bookingLinks/${i}/name`)) || "Appointment link",
+      url,
+    });
+  }
+  return uniqueBy(links, (link) => link.url).slice(0, 3);
+}
+
+function normalizeBookingLinks(value) {
+  if (!Array.isArray(value)) return [];
+  return uniqueBy(
+    value
+      .map((link) => ({
+        name: clean(link && link.name) || "Appointment link",
+        url: safeHttpUrl(link && link.url),
+      }))
+      .filter((link) => link.url),
+    (link) => link.url,
+  ).slice(0, 3);
+}
+
+function preferredBookingLink(listing) {
+  const links = listing.bookingLinks || [];
+  return links.find((link) => /book|appoint|schedul|reserve/i.test(`${link.name} ${link.url}`)) || links[0] || null;
+}
+
+function getProfileAttributes(get) {
+  const accessibility = getAdditionalInfoSignals(get, "Accessibility", PROFILE_ACCESSIBILITY_SIGNALS, 4);
+  let amenities = getAdditionalInfoSignals(get, "Amenities", PROFILE_AMENITY_SIGNALS, 5);
+  if (amenities.includes("Public restroom")) amenities = amenities.filter((item) => item !== "Restroom");
+  return { accessibility, amenities };
+}
+
+function getAdditionalInfoSignals(get, group, definitions, maxIndex) {
+  const found = [];
+  for (const [field, label] of definitions) {
+    for (let i = 0; i <= maxIndex; i += 1) {
+      if (!isTruthy(get(`additionalInfo/${group}/${i}/${field}`))) continue;
+      found.push(label);
+      break;
+    }
+  }
+  return unique(found);
+}
+
+function getOwnerUpdateCount(get) {
+  let count = 0;
+  for (let i = 0; i <= 9; i += 1) {
+    if (firstPresent([
+      get(`ownerUpdates/${i}/text`),
+      get(`ownerUpdates/${i}/date`),
+      get(`ownerUpdates/${i}/imageUrl`),
+      get(`ownerUpdates/${i}/buttonLink`),
+    ])) count += 1;
+  }
+  return count;
+}
+
+function cleanSignalArray(value) {
+  const values = Array.isArray(value) ? value : String(value || "").split(/[;|]/);
+  return unique(values.map(clean).filter((item) => item && item.length <= 120)).slice(0, 12);
+}
+
+function friendlyWebsiteSignal(value) {
+  const labels = {
+    "mobile grooming": "Mobile grooming",
+    "online booking": "Online booking",
+    "pickup/drop-off flow": "Pickup or drop-off details",
+    "certification/license mentioned": "Certification or licensing information",
+    "insured/first-aid mentioned": "Insurance or pet first-aid information",
+    "professional policies mentioned": "Professional policies",
+  };
+  const cleaned = clean(value);
+  return labels[cleaned.toLowerCase()] || cleaned;
+}
+
+function hasMeaningfulWebsitePricing(value) {
+  const text = clean(value);
+  if (!text || /^(?:no|none)\b/i.test(text) || /not found|not available|no grooming-specific/i.test(text)) return false;
+  return /\$\s?\d|\b(?:prices?|pricing|rates?|starting at|starts at)\b/i.test(text);
+}
+
+function safeHttpUrl(value) {
+  const cleaned = clean(value);
+  if (!cleaned) return "";
+  const candidate = /^www\./i.test(cleaned) ? `https://${cleaned}` : cleaned;
+  try {
+    const url = new URL(candidate);
+    return ["http:", "https:"].includes(url.protocol) ? url.href : "";
+  } catch (error) {
+    return "";
+  }
+}
+
 function getReviewTexts(get) {
   const comments = [];
   for (let i = 0; i <= 9; i += 1) {
@@ -4329,20 +4546,100 @@ function getRange(get, prefix, from, to) {
 
 function buildListingDescription(listing) {
   const category = listing.category && /groom|pet|dog|cat/i.test(listing.category) ? listing.category.toLowerCase() : "dog grooming business";
-  const pieces = [`${listing.title} is listed as a ${category} in ${listing.city}, ${listing.province}`];
+  const profileServices = listingProfileServices(listing);
+  const street = clean(listing.street || String(listing.address || "").split(",")[0]);
+  const locationDetail = street && !normalizeKey(street).includes(normalizeKey(listing.city)) ? ` at ${street}` : "";
+  const pieces = [
+    `${listing.title} is listed as ${indefiniteArticle(category)} ${category} in ${profileLocationText(listing)}${locationDetail}`,
+  ];
   if (listing.rating) {
-    pieces.push(`It has a listed ${listing.rating.toFixed(1)} star rating${listing.reviews ? ` from ${countLabel(listing.reviews, "review")}` : ""}`);
+    pieces.push(`The public listing snapshot reports a ${listing.rating.toFixed(1)} star rating${listing.reviews ? ` from ${countLabel(listing.reviews, "review")}` : ""}`);
   }
-  if (listing.services.length) {
-    pieces.push(`Service signals include ${listing.services.slice(0, 4).join(", ")}`);
+  if (profileServices.length) {
+    pieces.push(`Available source data names ${joinWithAnd(profileServices.slice(0, 4))}`);
   }
-  const contactSignals = [];
-  if (listing.phone) contactSignals.push("phone");
-  if (listing.website) contactSignals.push("website");
-  if (listing.hours.length) contactSignals.push("listed hours");
-  if (contactSignals.length) pieces.push(`The directory includes ${joinWithAnd(contactSignals)} for follow-up`);
-  pieces.push("Confirm current services, prices, availability, and coat-specific needs directly before booking");
+  const websiteEvidence = listingWebsiteEvidence(listing);
+  if (websiteEvidence.length) {
+    pieces.push(`A crawl of the business website found ${websiteEvidence.slice(0, 3).join("; ")}`);
+  }
+  if (listing.reviewThemes && listing.reviewThemes.length) {
+    pieces.push(`Across ${countLabel(listing.reviewCommentCount, "written comment")} sampled for this profile, recurring topics include ${joinTopics(listing.reviewThemes)}`);
+  }
+  const contactSignals = listingContactSignals(listing);
+  const hasDeepEvidence = websiteEvidence.length && listing.reviewThemes && listing.reviewThemes.length;
+  if (contactSignals.length && !hasDeepEvidence) {
+    pieces.push(`The profile provides ${joinWithAnd(contactSignals.slice(0, 5))} for comparison and follow-up`);
+  }
+  const snapshot = profileSnapshotLabel(listing.scrapedAt);
+  if (snapshot) pieces.push(`Source details were gathered in ${snapshot}`);
+  pieces.push("Confirm current services, prices, availability, and coat-specific needs directly with the business before booking");
   return `${pieces.join(". ")}.`;
+}
+
+function listingProfileServices(listing) {
+  return (listing.services || []).filter((item) => !/^(?:confirm|call|contact|ask|check)\b/i.test(item));
+}
+
+function listingWebsiteEvidence(listing) {
+  const evidence = [];
+  if (listing.websiteServices && listing.websiteServices.length) {
+    evidence.push(`service information for ${joinWithAnd(listing.websiteServices.slice(0, 3))}`);
+  }
+  if (listing.websiteConvenience && listing.websiteConvenience.length) {
+    evidence.push(`references to ${joinWithAnd(listing.websiteConvenience.slice(0, 2).map(lowerFirst))}`);
+  }
+  if (listing.websiteCredentials && listing.websiteCredentials.length) {
+    evidence.push(joinWithAnd(listing.websiteCredentials.slice(0, 2).map(lowerFirst)));
+  }
+  if (listing.websiteBreedExperience && listing.websiteBreedExperience.length) {
+    evidence.push(`breed-experience information for ${joinWithAnd(listing.websiteBreedExperience.slice(0, 3))}`);
+  }
+  if (listing.websitePricingAvailable) evidence.push("published grooming price information");
+  return evidence;
+}
+
+function listingContactSignals(listing) {
+  return [
+    listing.phone ? "a phone number" : "",
+    listing.website ? "a business website" : "",
+    preferredBookingLink(listing) ? "an appointment link" : "",
+    listing.hours && listing.hours.length ? "listed hours" : "",
+    listing.mapsUrl ? "a map link" : "",
+    listing.photos && listing.photos.length ? "source photos" : "",
+  ].filter(Boolean);
+}
+
+function profileSnapshotLabel(value) {
+  const match = String(value || "").match(/^(\d{4})-(\d{2})/);
+  if (!match) return "";
+  const month = Number(match[2]);
+  if (month < 1 || month > 12) return "";
+  const monthName = new Intl.DateTimeFormat("en-CA", { month: "long", timeZone: "UTC" }).format(new Date(Date.UTC(2000, month - 1, 1)));
+  return `${monthName} ${match[1]}`;
+}
+
+function profileLocationText(listing) {
+  const city = clean(listing.city);
+  const province = clean(listing.province);
+  if (listing.provinceCode === "CA" || normalizeKey(province) === "canada") {
+    return city && normalizeKey(city) !== "canada" ? `${city}, Canada` : "Canada";
+  }
+  if (!city) return province || "Canada";
+  return `${city}, ${province}`;
+}
+
+function joinTopics(values) {
+  if (values.length <= 2) return joinWithAnd(values);
+  return `${values.slice(0, -1).join("; ")}; and ${values[values.length - 1]}`;
+}
+
+function indefiniteArticle(value) {
+  return /^[aeiou]/i.test(clean(value)) ? "an" : "a";
+}
+
+function lowerFirst(value) {
+  const text = clean(value);
+  return text ? `${text[0].toLowerCase()}${text.slice(1)}` : "";
 }
 
 function qualityScore(listing) {
