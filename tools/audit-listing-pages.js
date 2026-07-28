@@ -25,6 +25,8 @@ const coverage = {
   reviewThemes: 0,
   websiteLocations: 0,
   officialWebsiteEnrichment: 0,
+  directHtmlResearch: 0,
+  crawl4aiResearch: 0,
   editorialReviews: 0,
   businessSubmissions: 0,
   imageRightsProfiles: 0,
@@ -115,7 +117,7 @@ for (const file of files) {
   for (const [key, label] of Object.entries({
     websiteServices: "Website services",
     websiteAccess: "Website access",
-    websitePolicies: "Website policies",
+    websitePolicies: "Website credentials and policies",
     breedMentions: "Breed and coat mentions",
     pricing: "Pricing signal",
     appointments: "Appointments",
@@ -129,6 +131,19 @@ for (const file of files) {
     coverage.officialWebsiteEnrichment += 1;
     officialWebsiteRoutes.add(expectedRoute);
     if (!/the official business website/i.test(signalBlock)) fail(relative, "enriched profile is missing official-website attribution");
+    if (!/>Official sources</i.test(signalBlock) || !/class="signal-source-link"/.test(signalBlock)) {
+      fail(relative, "enriched profile is missing visible official source links");
+    }
+    if (!/Official website facts checked \d{4}-\d{2}-\d{2}/.test(html)) {
+      fail(relative, "enriched profile is missing its dated provenance label");
+    }
+  }
+  const researchMethod = (signalBlock.match(/data-website-research-method="([^"]+)"/) || [null, ""])[1];
+  if (researchMethod === "direct_html") coverage.directHtmlResearch += 1;
+  else if (researchMethod === "crawl4ai_browser") coverage.crawl4aiResearch += 1;
+  else if (researchMethod) fail(relative, `unsupported website research method ${researchMethod}`);
+  if (researchMethod && !signalBlock.includes("data-official-website-enrichment")) {
+    fail(relative, "website research method appears without official-site enrichment");
   }
   if (signalBlock.includes(">Business-submitted details<")) coverage.businessSubmissions += 1;
   const editorialMatches = [...html.matchAll(/data-editorial-profile-review/g)];
@@ -193,7 +208,7 @@ for (const file of files) {
 reportDuplicates("description", descriptions);
 reportDuplicates("meta description", metaDescriptions);
 auditSitemap(crawlableRoutes);
-auditWebsiteEnrichment(officialWebsiteRoutes);
+auditWebsiteEnrichment(officialWebsiteRoutes, editorialReviewRoutes);
 auditEditorialProfileReviews(editorialReviewRoutes);
 auditProfileIndexOverrides(crawlableRoutes);
 auditSearchIndexImageRights();
@@ -210,6 +225,9 @@ console.log(
 );
 console.log(
   `Sparse-profile support: ${coverage.officialWebsiteEnrichment.toLocaleString()} official-site enrichments, ${coverage.websiteLocations.toLocaleString()} structured website locations, ${coverage.limitedInformationContext.toLocaleString()} limited-information decision sections`,
+);
+console.log(
+  `Website research methods: ${coverage.directHtmlResearch.toLocaleString()} direct HTML, ${coverage.crawl4aiResearch.toLocaleString()} Crawl4AI browser`,
 );
 console.log(
   `Provenance coverage: ${coverage.editorialReviews.toLocaleString()} editorial source reviews, ${coverage.businessSubmissions.toLocaleString()} business-submitted profiles, ${coverage.imageRightsProfiles.toLocaleString()} profiles with authorized images`,
@@ -257,7 +275,7 @@ function auditSitemap(routes) {
   for (const route of sitemapRoutes) if (!routes.has(route)) fail(route, "sitemap profile has no crawlable file");
 }
 
-function auditWebsiteEnrichment(renderedRoutes) {
+function auditWebsiteEnrichment(renderedRoutes, supersededRoutes) {
   const file = path.join(ROOT, "data", "thin-listing-enrichment.json");
   if (!fs.existsSync(file)) return;
   let raw;
@@ -268,10 +286,108 @@ function auditWebsiteEnrichment(renderedRoutes) {
     return;
   }
   const entries = raw && raw.listings && typeof raw.listings === "object" ? raw.listings : {};
+  const rejectedHosts = new Set([
+    "411sante.com",
+    "catop.net",
+    "dogv.net",
+    "facebook.com",
+    "fb.me",
+    "findnl.ca",
+    "instagram.com",
+    "linktr.ee",
+    "localcanada.net",
+    "mewm.net",
+    "okpet.net",
+    "pagesjaunes.ca",
+    "petnu.net",
+    "tiktok.com",
+    "twitter.com",
+    "x.com",
+    "yellowpages.ca",
+    "yelp.ca",
+    "yelp.com",
+  ]);
+  const allowedSignals = {
+    services: new Set([
+      "Bath or bath-and-brush",
+      "Cat grooming",
+      "Creative grooming",
+      "De-matting",
+      "De-shedding",
+      "Ear cleaning",
+      "Full groom or haircut",
+      "Hand stripping",
+      "Nail trim or grinding",
+      "Puppy grooming",
+      "Sanitary trim",
+      "Self-service dog wash",
+      "Teeth cleaning",
+    ]),
+    convenience: new Set([
+      "Cage-free appointments",
+      "In-home grooming",
+      "Mobile grooming",
+      "One-on-one appointments",
+      "Online booking",
+      "Pickup or drop-off details",
+    ]),
+    credentials: new Set([
+      "Certification or licensing information",
+      "Fear Free training or handling information",
+      "Insurance information",
+      "Pet first-aid or CPR information",
+      "Professional policies",
+    ]),
+    breedExperience: new Set(["Doodles", "Double-coated breeds", "Poodles", "Schnauzers", "Spaniels", "Terriers"]),
+  };
   for (const [route, entry] of Object.entries(entries)) {
-    if (!renderedRoutes.has(route)) fail(route, "enrichment data was not rendered on its profile");
-    if (!entry || !Array.isArray(entry.sourcePages) || !entry.sourcePages.length) fail(route, "enrichment entry has no source pages");
+    if (!renderedRoutes.has(route) && !supersededRoutes.has(route)) fail(route, "enrichment data was not rendered on its profile");
+    if (!entry || !entry.businessName || !/^https?:\/\//.test(entry.website || "")) fail(route, "enrichment entry has no valid business identity or website");
+    const sources = entry && Array.isArray(entry.sourcePages) ? entry.sourcePages : [];
+    if (!sources.length || sources.length > 3) fail(route, "enrichment entry must have one to three source pages");
+    if (new Set(sources).size !== sources.length) fail(route, "enrichment source pages are duplicated");
+    if (sources.some((url) => !/^https?:\/\//.test(url))) fail(route, "enrichment source page is not an HTTP URL");
+    if ([entry && entry.website, ...sources].filter(Boolean).some((url) => {
+      try {
+        const host = new URL(url).hostname.toLowerCase().replace(/^www\./, "");
+        return [...rejectedHosts].some((rejected) => host === rejected || host.endsWith(`.${rejected}`));
+      } catch (error) {
+        return true;
+      }
+    })) fail(route, "enrichment uses a social or third-party directory source");
+    if (sources.some((url) => {
+      try {
+        const path = new URL(url).pathname.replace(/[^a-z0-9]+/gi, " ");
+        const isCatalog = /\b(?:collections?|products?|shop|catalog|search)\b/i.test(path);
+        const isGroomingOffer = /\b(?:groom\w*|toilettage).{0,40}\b(?:appointment|booking|package|service|session|rendez vous|forfait)s?\b|\b(?:appointment|booking|package|service|session|rendez vous|forfait)s?\b.{0,40}\b(?:groom\w*|toilettage)/i.test(path);
+        return isCatalog && !isGroomingOffer;
+      } catch (error) {
+        return true;
+      }
+    })) {
+      fail(route, "retail catalog URL was stored as an enrichment source");
+    }
+    if (sources.some((url) => /\/(?:author|category|tag)\/|\/20\d{2}\/(?:0?[1-9]|1[0-2])(?:\/|$)/i.test(new URL(url).pathname))) {
+      fail(route, "editorial archive URL was stored as an enrichment source");
+    }
+    if (entry && entry.crawlStatus !== "official_website_enriched") fail(route, "enrichment entry has an unsupported crawl status");
+    if (entry && !/^\d{4}-\d{2}-\d{2}$/.test(entry.crawledAt || "")) fail(route, "enrichment entry has no valid crawl date");
+    if (entry && !["direct_html", "crawl4ai_browser"].includes(entry.researchMethod)) fail(route, "enrichment entry has an unsupported research method");
     if (entry && Object.hasOwn(entry, "priceAmounts")) fail(route, "enrichment entry must not store price amounts");
+    if (/(?:\$\s?\d|\d(?:[.,]\d{2})?\s?\$)/.test(JSON.stringify(entry))) fail(route, "enrichment entry contains a copied price amount");
+    for (const forbidden of ["description", "summary", "marketingCopy", "pageText", "html"]) {
+      if (entry && Object.hasOwn(entry, forbidden)) fail(route, `enrichment entry must not store copied ${forbidden}`);
+    }
+    for (const [field, allowed] of Object.entries(allowedSignals)) {
+      const values = entry && Array.isArray(entry[field]) ? entry[field] : [];
+      if (!entry || !Array.isArray(entry[field]) || values.some((value) => !allowed.has(value))) {
+        fail(route, `enrichment ${field} contains a non-normalized value`);
+      }
+    }
+    const bookings = entry && Array.isArray(entry.bookingLinks) ? entry.bookingLinks : [];
+    if (bookings.length > 1 || bookings.some((booking) =>
+      !booking || !["Book an appointment", "Request an appointment"].includes(booking.name) || !/^https?:\/\//.test(booking.url || "")
+    )) fail(route, "enrichment booking link is not normalized");
   }
   for (const route of renderedRoutes) if (!Object.hasOwn(entries, route)) fail(route, "rendered enrichment has no source-data entry");
 }

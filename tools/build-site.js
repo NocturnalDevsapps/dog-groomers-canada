@@ -274,6 +274,7 @@ function main() {
       withPhones: listings.filter((item) => item.phone).length,
       withWebsites: listings.filter((item) => item.website).length,
       indexableListings: listings.filter(shouldIndexListing).length,
+      officialWebsiteEnrichedListings: listings.filter((item) => item.websiteCrawlStatus === "official_website_enriched").length,
       reviewedListings: listings.filter((item) => item.editorialReview).length,
       businessSubmittedListings: listings.filter((item) => item.businessSubmission).length,
       imageRightsListings: listings.filter(hasDocumentedImageRights).length,
@@ -629,6 +630,7 @@ function applyThinListingEnrichment(listings, enrichment) {
       websiteCrawlStatus: clean(entry.crawlStatus) || "official_website_enriched",
       websiteCrawlSource: sourcePages[0] || listing.websiteCrawlSource || listing.website,
       websiteResearchPages: sourcePages,
+      websiteResearchMethod: clean(entry.researchMethod),
       websiteEnrichedAt: clean(entry.crawledAt),
       websiteLocation: clean(entry.websiteLocation).slice(0, 180),
       websiteServices: unique([...(listing.websiteServices || []), ...cleanSignalArray(entry.services).map(friendlyWebsiteService)]).slice(0, 12),
@@ -686,6 +688,7 @@ function applyEditorialProfileReviews(listings, reviews) {
       websiteCrawlStatus: "editorially_reviewed",
       websiteCrawlSource: sourcePages[0],
       websiteResearchPages: sourcePages,
+      websiteResearchMethod: "",
       websiteEnrichedAt: reviewedAt,
       websiteServices: unique([...(listing.websiteServices || []), ...cleanSignalArray(entry.services).map(friendlyWebsiteService)]).slice(0, 12),
       websiteConvenience: unique([...(listing.websiteConvenience || []), ...cleanSignalArray(entry.convenience).map(friendlyWebsiteSignal)]).slice(0, 12),
@@ -2595,15 +2598,16 @@ function writeUtilityPages(context) {
     </section>
     <section class="section">
       <h2>Automation and human review</h2>
-      <p>Automated tools, including language-assisted drafting and validation, help normalize public listing fields, identify missing information, and prepare first-pass profile summaries at directory scale. Automation is not treated as business testimony or independent verification.</p>
-      <p>Profiles checked against first-party source pages are visibly labelled with the review date and linked evidence. Business-submitted changes are labelled separately. High-traffic profiles and correction requests receive priority for source review, while records with too little useful evidence are kept out of search indexing until their source coverage improves.</p>
+      <p>Automated tools, including language-assisted drafting and validation, help normalize public listing fields, identify missing information, and prepare first-pass profile summaries at directory scale. Direct HTML checks and browser-rendered Crawl4AI checks may recover narrowly defined facts from a linked first-party website. Automation is not treated as business testimony, individual reporting, or independent verification.</p>
+      <p>An <strong>Official website facts checked</strong> label identifies structured facts recovered from linked first-party pages on the displayed date. A separate <strong>Official source reviewed</strong> label is reserved for profiles whose source material received a manual editorial synthesis. Business-submitted changes are labelled separately. Records with too little useful evidence are kept out of search indexing until their source coverage improves.</p>
+      <p>In the current build, ${context.stats.officialWebsiteEnrichedListings.toLocaleString()} profiles include normalized first-party website facts, ${context.stats.reviewedListings.toLocaleString()} include a manual official-source review, and ${context.stats.businessSubmittedListings.toLocaleString()} include a business-submitted update. These categories may overlap when a later editorial or owner update supersedes automated research.</p>
       <p>In the current build, ${context.stats.indexableListings.toLocaleString()} of ${context.stats.listings.toLocaleString()} business profiles meet the indexable quality gate. The remaining ${(context.stats.listings - context.stats.indexableListings).toLocaleString()} records remain accessible for corrections and discovery links but use <code>noindex,follow</code> until their evidence improves.</p>
     </section>
     <section class="section">
       <h2>Review and updates</h2>
       <p>Directory pages are updated when listing data or editorial content changes. Correction requests should include the page URL, business name, city, requested change, and a source such as the business website or official social profile when available.</p>
       <p>When enough written comments are available in the source snapshot, profile pages may paraphrase themes that recur across multiple comments. These summaries never reproduce review text, are clearly identified as customer opinion, and are not treated as independently verified facts or endorsements.</p>
-      <p>A business-submitted update label records where a change came from; it does not mean the business paid for placement or received a certification. An official-source review label means the listed source pages were checked on the displayed date.</p>
+      <p>A business-submitted update label records where a change came from; it does not mean the business paid for placement or received a certification. An official-source review label means an editor synthesized the linked source pages on the displayed date. Automated official-website checks use their own label and retain links to the pages used.</p>
     </section>
     <section class="section">
       <h2>Advertising and independence</h2>
@@ -3892,6 +3896,9 @@ function photoPermissionMailto(listing) {
 function profileProvenanceLine(listing) {
   const items = ["Directory record"];
   if (listing.editorialReview) items.push(`Official source reviewed ${listing.editorialReview.reviewedAt}`);
+  else if (listing.websiteCrawlStatus === "official_website_enriched" && listing.websiteEnrichedAt) {
+    items.push(`Official website facts checked ${listing.websiteEnrichedAt}`);
+  }
   if (listing.businessSubmission) items.push(`${listing.businessSubmission.label} received ${listing.businessSubmission.receivedAt}`);
   if (hasDocumentedImageRights(listing)) items.push("Photo permission documented");
   return `<p class="profile-provenance" aria-label="Profile provenance">${items.map((item) => `<span>${esc(item)}</span>`).join("")}</p>`;
@@ -3980,7 +3987,7 @@ function listingSpecificSignalsSection(listing) {
     rows.push(profileSignalRow("Website access", esc(joinWithAnd(listing.websiteConvenience.slice(0, 5)))));
   }
   if (listing.websiteCredentials && listing.websiteCredentials.length) {
-    rows.push(profileSignalRow("Website policies", esc(joinWithAnd(listing.websiteCredentials.slice(0, 5)))));
+    rows.push(profileSignalRow("Website credentials and policies", esc(joinWithAnd(listing.websiteCredentials.slice(0, 5)))));
   }
   if (listing.websiteBreedExperience && listing.websiteBreedExperience.length) {
     rows.push(profileSignalRow("Breed and coat mentions", `${esc(joinWithAnd(listing.websiteBreedExperience.slice(0, 6)))} <span class="signal-qualifier">mentioned on the business website</span>`));
@@ -4029,15 +4036,27 @@ function listingSpecificSignalsSection(listing) {
   const hasSupplementalWebsiteEnrichment = ["official_website_enriched", "editorially_reviewed"].includes(listing.websiteCrawlStatus);
   const hasThinWebsiteEnrichment = listing.websiteCrawlStatus === "official_website_enriched";
   const websiteResearchDate = profileSnapshotLabel(listing.websiteEnrichedAt);
-  const websitePageCount = listing.websiteResearchPages && listing.websiteResearchPages.length;
+  const websiteResearchPages = unique((listing.websiteResearchPages || []).map(safeHttpUrl).filter(Boolean)).slice(0, 3);
+  const websitePageCount = websiteResearchPages.length;
+  const websiteResearchMethod = ["direct_html", "crawl4ai_browser"].includes(listing.websiteResearchMethod)
+    ? listing.websiteResearchMethod
+    : "";
   const websiteSource = hasSupplementalWebsiteEnrichment && listing.websiteCrawlSource
-    ? ` Website findings came from <a href="${escAttr(listing.websiteCrawlSource)}" target="_blank" rel="nofollow noopener">the official business website</a>${websitePageCount ? ` and ${countLabel(websitePageCount, "relevant page")} were reviewed` : ""}${websiteResearchDate ? ` in ${websiteResearchDate}` : ""}.`
+    ? ` Website findings came from <a href="${escAttr(listing.websiteCrawlSource)}" target="_blank" rel="nofollow noopener">the official business website</a>${websitePageCount ? ` using ${countLabel(websitePageCount, "relevant page")}` : ""}${websiteResearchDate ? ` checked in ${websiteResearchDate}` : ""}.`
     : listing.websiteCrawlStatus === "website_crawled" && listing.websiteCrawlSource
       ? ` Website findings came from <a href="${escAttr(listing.websiteCrawlSource)}" target="_blank" rel="nofollow noopener">the business website page crawled for this profile</a>.`
       : "";
   rows.push(profileSignalRow("Source timing", `${esc(sourceLabel)}${esc(sourceDate)}.${websiteSource}`));
+  if (hasSupplementalWebsiteEnrichment && websiteResearchPages.length) {
+    rows.push(profileSignalRow(
+      "Official sources",
+      websiteResearchPages
+        .map((url, index) => `<a class="signal-source-link" href="${escAttr(url)}" target="_blank" rel="nofollow noopener">${index ? `Official source ${index + 1}` : "Official website"}</a>`)
+        .join("; "),
+    ));
+  }
 
-  return `<section class="section profile-signals" data-profile-signals${hasThinWebsiteEnrichment ? " data-official-website-enrichment" : ""}>
+  return `<section class="section profile-signals" data-profile-signals${hasThinWebsiteEnrichment ? " data-official-website-enrichment" : ""}${websiteResearchMethod ? ` data-website-research-method="${escAttr(websiteResearchMethod)}"` : ""}>
       <h2>Business-specific signals</h2>
       <p>These details separate core profile data from findings on a business website when website evidence is available. They support comparison, but they are not an endorsement or a guarantee that every detail is still current.</p>
       <dl class="profile-signal-list">${rows.join("")}</dl>

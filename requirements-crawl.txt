@@ -1,0 +1,2 @@
+# Optional first-party profile research tooling. Python 3.10+ is required.
+crawl4ai==0.7.4
