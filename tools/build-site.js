@@ -36,6 +36,8 @@ self.addEventListener("activate", (event) => {
 });
 `;
 const GOOGLE_ANALYTICS_ID = "G-BY1BF23TD7";
+const ADSENSE_CLIENT_ID = "ca-pub-2494233247909241";
+const ADSENSE_SELLER_RECORD = "google.com, pub-2494233247909241, DIRECT, f08c47fec0942fa0";
 const GROW_SITE_ID = "U2l0ZTo1OTBhOGFjZC1lOTEwLTQ2ZTQtODE3NS02YTVkZTE4MDhhYjM=";
 const DOCUMENTED_IMAGE_RIGHTS = new Set(["owner_permission", "licensed", "public_domain"]);
 
@@ -2687,6 +2689,11 @@ function writeUtilityPages(context) {
         <p>Google Analytics helps us measure aggregate traffic and understand which directory, guide, and tool pages are useful. Google may process cookies, IP addresses, device and browser information, page URLs, and interaction events for this purpose. Learn more about <a href="https://policies.google.com/technologies/partner-sites" rel="nofollow noopener" target="_blank">how Google uses information from sites that use its services</a>.</p>
       </section>
       <section class="section">
+        <h2>Google AdSense</h2>
+        <p>Google AdSense code is used to verify this site and may provide advertising after Google approves it for ad serving. Google and its advertising partners may use cookies, device identifiers, IP addresses, page information, and interaction data to deliver, limit, personalize, and measure advertising.</p>
+        <p>Visitors in the European Economic Area, United Kingdom, and Switzerland are shown Google's published European regulations message so they can manage consent choices before eligible advertising is served. Learn more about <a href="https://policies.google.com/technologies/ads" rel="nofollow noopener" target="_blank">Google's advertising technologies</a>.</p>
+      </section>
+      <section class="section">
         <h2>Directory information</h2>
         <p>Business profile pages include public listing facts such as business name, city, contact details, services, ratings, hours, websites, and map links when available. We do not republish review text, reviewer names, or reviewer profiles. When enough comments are present, a profile may show a neutral summary of topics repeated across several comments. Businesses can request updates or corrections by contacting <a href="mailto:${CONTACT_EMAIL}">${CONTACT_EMAIL}</a>.</p>
       </section>
@@ -2696,8 +2703,8 @@ function writeUtilityPages(context) {
       </section>
       <section class="section">
         <h2>Data choices</h2>
-        <p>You can clear saved location and groomer-shortlist data by using the shortlist's clear button or clearing this site's browser storage. You can also block or delete cookies in your browser settings. Some Grow or analytics features may work differently when storage is blocked. Grow users can use Mediavine's privacy request options, and you can contact <a href="mailto:${CONTACT_EMAIL}">${CONTACT_EMAIL}</a> about information sent directly to this site.</p>
-        <p class="muted">Last updated July 20, 2026.</p>
+        <p>You can clear saved location and groomer-shortlist data by using the shortlist's clear button or clearing this site's browser storage. You can also block or delete cookies in your browser settings and use an available Google privacy message to manage advertising consent choices. Some Grow, analytics, or advertising features may work differently when storage is blocked. Grow users can use Mediavine's privacy request options, and you can contact <a href="mailto:${CONTACT_EMAIL}">${CONTACT_EMAIL}</a> about information sent directly to this site.</p>
+        <p class="muted">Last updated July 28, 2026.</p>
       </section>`,
     ),
     breadcrumbSchema([{ label: "Home", url: "/" }, { label: "Privacy", url: "/privacy/" }]),
@@ -2842,7 +2849,7 @@ function writeSitemap(context) {
 
 function writeRobotsAndDomain() {
   fs.writeFileSync(path.join(ROOT, "robots.txt"), `User-agent: *\nAllow: /\nSitemap: ${SITE_URL}/sitemap.xml\n`);
-  fs.writeFileSync(path.join(ROOT, "ads.txt"), "");
+  fs.writeFileSync(path.join(ROOT, "ads.txt"), `${ADSENSE_SELLER_RECORD}\n`);
   fs.writeFileSync(path.join(ROOT, "sw.js"), LEGACY_AD_SERVICE_WORKER_TOMBSTONE);
   fs.writeFileSync(path.join(ROOT, "CNAME"), "doggroomerscanada.ca\n");
   fs.writeFileSync(path.join(ROOT, ".nojekyll"), "");
@@ -2869,6 +2876,7 @@ function pageHtml(route, title, description, body, schema = [], options = {}) {
   const canonical = options.canonicalUrl || absoluteUrl(options.canonicalRoute || routePath);
   const meta = metaDescription(description);
   const robotsContent = options.robotsContent || "index,follow,max-image-preview:large";
+  const includeAdsense = routePath !== "/404.html" && !robotsContent.toLowerCase().includes("noindex");
   const schemaItems = Array.isArray(schema) ? schema.filter(Boolean) : [schema].filter(Boolean);
   const pageContainerTag = /<main(?:\s|>)/i.test(body) ? "div" : "main";
   return `<!doctype html>
@@ -2878,7 +2886,7 @@ function pageHtml(route, title, description, body, schema = [], options = {}) {
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="dgc-base-path" content="">
   <meta name="theme-color" content="${THEME_COLOR}">
-  ${googleIntegrationHead()}
+  ${googleIntegrationHead({ includeAdsense })}
   <title>${esc(title)}</title>
   <meta name="description" content="${escAttr(meta)}">
   <link rel="canonical" href="${escAttr(canonical)}">
@@ -5328,7 +5336,7 @@ function siteManifest() {
   )}\n`;
 }
 
-function googleIntegrationHead() {
+function googleIntegrationHead({ includeAdsense = true } = {}) {
   const scripts = [];
   if (GOOGLE_ANALYTICS_ID) {
     scripts.push(`<script async src="https://www.googletagmanager.com/gtag/js?id=${GOOGLE_ANALYTICS_ID}"></script>`);
@@ -5339,11 +5347,18 @@ function googleIntegrationHead() {
   gtag("config", "${GOOGLE_ANALYTICS_ID}");
 </script>`);
   }
+  if (includeAdsense && ADSENSE_CLIENT_ID) {
+    scripts.push(adsenseInitializerScript());
+  }
   if (GROW_SITE_ID) {
     scripts.push(growInitializerScript());
   }
   scripts.push(legacyAdServiceWorkerCleanupScript());
   return scripts.join("\n  ");
+}
+
+function adsenseInitializerScript() {
+  return `<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=${ADSENSE_CLIENT_ID}" crossorigin="anonymous"></script>`;
 }
 
 function growInitializerScript() {

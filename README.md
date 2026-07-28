@@ -23,7 +23,7 @@ Static, GitHub Pages-ready dog grooming directory for [Dog Groomers Canada](http
 
 ## Journey review posture
 
-Grow by Mediavine is installed sitewide while the Journey application is under review. Previous programmatic ad-network scripts, account tags, seller entries, ad slots, and empty ad placeholders are not generated. The root `ads.txt` remains accessible but empty until Journey provides the approved seller records during onboarding.
+Grow by Mediavine remains installed sitewide while the Journey application is under review. The Google AdSense verification script is generated on indexable pages and the root `ads.txt` contains the exact Google seller record supplied by the publisher account. AdSense ad slots are not manually inserted, and Google should not serve ads until the site's AdSense status is approved. Previous Adsterra, Monetag, and Propeller scripts, account tags, ad slots, and empty ad placeholders are not generated.
 
 Generated profiles are visibly labelled as directory records. Profiles with normalized facts recovered from linked first-party websites receive an `Official website facts checked` label; this is source-backed automated extraction, not a claim of individual reporting. Manually synthesized source reviews and records updated directly by a business receive separate provenance labels. The generator keeps useful profiles `index,follow`, but applies `noindex,follow` and removes sitemap membership when a profile has the lowest information-depth score and no editorial review, business submission, documented image rights, or keep-index exception. Keep-index exceptions protect limited profiles with demonstrated organic visits; private Search Console metrics are not stored in the repository.
 
