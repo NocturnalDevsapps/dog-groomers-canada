@@ -25,9 +25,11 @@ Static, GitHub Pages-ready dog grooming directory for [Dog Groomers Canada](http
 
 Grow by Mediavine is installed sitewide while the Journey application is under review. Previous programmatic ad-network scripts, account tags, seller entries, ad slots, and empty ad placeholders are not generated. The root `ads.txt` remains accessible but empty until Journey provides the approved seller records during onboarding.
 
-All generated profile pages remain `index,follow` and stay in `sitemap.xml`. The high-value review strategy is to improve the site with original guides, richer city pages, correction/claim signals, cost and booking content, Canadian grooming price references, and interactive owner tools under `/grooming-tools/`.
+Generated profiles are visibly labelled as directory records. Profiles reviewed against first-party pages and records updated directly by a business receive separate provenance labels. The generator keeps useful profiles `index,follow`, but applies `noindex,follow` and removes sitemap membership when a profile has the lowest information-depth score and no editorial review, business submission, documented image rights, or keep-index exception. Keep-index exceptions protect limited profiles with demonstrated organic visits; private Search Console metrics are not stored in the repository.
 
-The current generated build includes 7,330 crawlable URLs, including 133 dog grooming cost pages and 8 grooming-tool pages. The cost pages use planning ranges and quote questions instead of fixed price claims, because real prices depend on dog size, coat condition, matting, handling, add-ons, mobile route needs, and local availability.
+Business-specific images render only when `imageRights` records owner permission, a reusable licence, or a public-domain basis. Public availability, attribution, and source links are not treated as permission. The current build displays the approved GroomArts Academy gallery and uses a site-owned placeholder elsewhere, with an authorization flow for businesses that want to submit photos.
+
+The current generated build includes 7,240 crawlable URLs, including 5,638 crawlable business profiles, 91 accessible profile quality holds, 133 dog grooming cost pages, and 8 grooming-tool pages. The cost pages use planning ranges and quote questions instead of fixed price claims, because real prices depend on dog size, coat condition, matting, handling, add-ons, mobile route needs, and local availability.
 
 Before any major release, inspect Search Console indexing for the homepage, guide hub, tools hub, several city pages, and several guide articles. Preserve established URLs, canonicals, titles, and sitemap membership while improving original value and reader trust.
 

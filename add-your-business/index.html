@@ -36,10 +36,10 @@
   <link rel="icon" href="/assets/favicon-realistic.png" type="image/png">
   <link rel="manifest" href="/assets/site.webmanifest">
 
-  <link rel="preload" href="/assets/site.css?v=202607210106" as="style">
-  <link rel="stylesheet" href="/assets/site.css?v=202607210106">
+  <link rel="preload" href="/assets/site.css?v=202607281330" as="style">
+  <link rel="stylesheet" href="/assets/site.css?v=202607281330">
   <script type="application/ld+json">{"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Home","item":"https://doggroomerscanada.ca/"},{"@type":"ListItem","position":2,"name":"Add Your Business","item":"https://doggroomerscanada.ca/add-your-business/"}]}</script>
-  <script src="/assets/main.js?v=202607210106" defer></script>
+  <script src="/assets/main.js?v=202607281330" defer></script>
 </head>
 <body >
   <a class="skip-link" href="#main">Skip to content</a>
@@ -57,14 +57,18 @@
         <label>Business name<input required name="business" class="input-shell" style="width:100%;margin-top:6px;padding:12px" placeholder="Business name"></label>
         <label>City / Province<input required name="location" class="input-shell" style="width:100%;margin-top:6px;padding:12px" placeholder="City, province"></label>
       </div>
+      <label style="display:block;margin-top:12px">Business email<input type="email" name="email" class="input-shell" style="width:100%;margin-top:6px;padding:12px" placeholder="name@business.ca"></label>
       <label style="display:block;margin-top:12px">Details<textarea name="details" class="input-shell" style="width:100%;min-height:120px;margin-top:6px;padding:12px" placeholder="Website, phone, services, hours, notes"></textarea></label>
+      <label class="check-option" style="margin-top:12px"><input type="checkbox" name="photoRights" value="yes"><span>I plan to attach photos that I own or have permission from the rights holder to authorize for this profile.</span></label>
+      <p class="muted">After your email opens, attach the original photo files and include the photographer or requested credit. Photos are optional.</p>
       <button class="btn btn-primary" type="submit" style="margin-top:12px">Prepare Email</button>
     </form>
     <script>
       document.getElementById("add-business-form").addEventListener("submit", function (event) {
         event.preventDefault();
         var data = new FormData(event.currentTarget);
-        var body = "Business: " + (data.get("business") || "") + "\nLocation: " + (data.get("location") || "") + "\nDetails: " + (data.get("details") || "");
+        var photoStatement = data.get("photoRights") ? "\n\nPhoto authorization: I confirm that I own the attached images or have permission from the rights holder, and I authorize Dog Groomers Canada to display them on this business profile and related directory cards.\nPhoto credit / source:" : "";
+        var body = "Business: " + (data.get("business") || "") + "\nLocation: " + (data.get("location") || "") + "\nBusiness email: " + (data.get("email") || "") + "\nDetails: " + (data.get("details") || "") + photoStatement;
         window.location.href = "mailto:nocturnaldevs@gmail.com?subject=Dog%20Groomers%20Canada%20listing%20update&body=" + encodeURIComponent(body);
       });
     </script></div></section></main>

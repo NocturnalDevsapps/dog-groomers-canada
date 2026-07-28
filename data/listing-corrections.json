@@ -3,6 +3,11 @@
     {
       "url": "/groomers/ontario/grimsby/paws-with-us-grimsby-grimsby-on-7d7c9fb1/",
       "note": "Owner-provided update received July 2026.",
+      "businessSubmission": {
+        "receivedAt": "2026-07-27",
+        "label": "Business-submitted update",
+        "source": "Address, phone number, and website supplied directly to Dog Groomers Canada"
+      },
       "fields": {
         "title": "Paws With Us - Grimsby",
         "address": "391 Winston Rd, Unit 32-33, Grimsby, ON L3M 0J2, Canada",
@@ -16,6 +21,11 @@
     {
       "url": "/groomers/ontario/oakville/paws-with-us-pet-grooming-oakville-on-74a7dc3f/",
       "note": "Owner-provided update received July 2026.",
+      "businessSubmission": {
+        "receivedAt": "2026-07-27",
+        "label": "Business-submitted update",
+        "source": "Address, phone number, and website supplied directly to Dog Groomers Canada"
+      },
       "fields": {
         "title": "Paws With Us - Oakville",
         "address": "1026 Speers Rd, Unit 4, Oakville, ON L6L 2X4, Canada",
@@ -35,12 +45,37 @@
     {
       "url": "/groomers/alberta/edmonton/kateryna-s-tails-edmonton-ab-f67b8bc7/",
       "note": "Owner-provided update confirmed by the business contact page in July 2026.",
+      "businessSubmission": {
+        "receivedAt": "2026-07-27",
+        "label": "Business-submitted correction",
+        "source": "Address and website supplied directly and checked against the business contact page"
+      },
       "fields": {
         "title": "Kateryna's Tails",
         "address": "2003 Rabbit Hill Rd NW, Edmonton, AB T6R 0R7, Canada",
         "street": "2003 Rabbit Hill Rd NW",
         "postalCode": "T6R 0R7",
         "website": "https://katerynastails.ca/"
+      }
+    },
+    {
+      "url": "/groomers/british-columbia/kamloops/the-paw-spa-kamloops-bc-ab3f5603/",
+      "note": "Contact and location checked against Valleyview Veterinary Clinic's official grooming page on July 28, 2026.",
+      "fields": {
+        "address": "1662 Valleyview Dr, Kamloops, BC V2C 4B5, Canada",
+        "street": "1662 Valleyview Dr",
+        "postalCode": "V2C 4B5",
+        "website": "https://valleyviewvet.ca/services/grooming/"
+      }
+    },
+    {
+      "url": "/groomers/nova-scotia/falmouth/the-barkshire-club-falmouth-ns-fdbe0246/",
+      "note": "Website, contact details, and postal code checked against The Barkshire Club's official site on July 28, 2026.",
+      "fields": {
+        "address": "2037 Evangeline Trl, Falmouth, NS B0N 0B9, Canada",
+        "street": "2037 Evangeline Trl",
+        "postalCode": "B0N 0B9",
+        "website": "https://thebarkshireclub.com/"
       }
     }
   ]

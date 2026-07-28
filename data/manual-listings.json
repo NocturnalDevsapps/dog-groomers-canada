@@ -43,6 +43,17 @@
       ],
       "imageCredit": "Images published by GroomArts Academy and included with the business owner's permission.",
       "imageSourceUrl": "https://groomartsacademy.com/",
+      "imageRights": {
+        "status": "owner_permission",
+        "grantedAt": "2026-07-27",
+        "credit": "Images supplied by GroomArts Academy and used with the business owner's permission.",
+        "sourceUrl": "https://groomartsacademy.com/"
+      },
+      "businessSubmission": {
+        "receivedAt": "2026-07-27",
+        "label": "Business-submitted listing",
+        "source": "Business details and images supplied directly to Dog Groomers Canada"
+      },
       "offer": {
         "label": "Student grooming offer",
         "title": "50% off regular grooming rates",

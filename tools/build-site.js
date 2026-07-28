@@ -28,6 +28,8 @@ const BROKEN_IMAGE_URLS_FILE = path.join(ROOT, "data", "broken-image-urls.json")
 const LISTING_CORRECTIONS_FILE = path.join(ROOT, "data", "listing-corrections.json");
 const MANUAL_LISTINGS_FILE = path.join(ROOT, "data", "manual-listings.json");
 const THIN_LISTING_ENRICHMENT_FILE = path.join(ROOT, "data", "thin-listing-enrichment.json");
+const EDITORIAL_PROFILE_REVIEWS_FILE = path.join(ROOT, "data", "editorial-profile-reviews.json");
+const PROFILE_INDEX_OVERRIDES_FILE = path.join(ROOT, "data", "profile-index-overrides.json");
 const LEGACY_AD_SERVICE_WORKER_TOMBSTONE = `self.addEventListener("install", () => self.skipWaiting());
 self.addEventListener("activate", (event) => {
   event.waitUntil(self.registration.unregister());
@@ -35,6 +37,7 @@ self.addEventListener("activate", (event) => {
 `;
 const GOOGLE_ANALYTICS_ID = "G-BY1BF23TD7";
 const GROW_SITE_ID = "U2l0ZTo1OTBhOGFjZC1lOTEwLTQ2ZTQtODE3NS02YTVkZTE4MDhhYjM=";
+const DOCUMENTED_IMAGE_RIGHTS = new Set(["owner_permission", "licensed", "public_domain"]);
 
 const CITY_COST_PAGE_LIMIT = 120;
 const CITY_COST_MIN_LISTINGS = 8;
@@ -248,7 +251,12 @@ function main() {
   const rawListings = [...loadListings(CSV_FILE), ...loadManualListings()];
   const correctedListings = applyListingCorrections(buildListingUrls(rawListings), loadListingCorrections());
   const enrichedListings = applyThinListingEnrichment(correctedListings.listings, loadThinListingEnrichment());
-  const listings = removeBrokenListingImages(applyImageOverrides(enrichedListings, loadImageOverrides()), loadBrokenImageUrls());
+  const reviewedListings = applyEditorialProfileReviews(enrichedListings, loadEditorialProfileReviews());
+  const imageSafeListings = enforceListingImageRights(applyImageOverrides(reviewedListings, loadImageOverrides()));
+  const listings = applyProfileIndexOverrides(
+    removeBrokenListingImages(imageSafeListings, loadBrokenImageUrls()),
+    loadProfileIndexOverrides(),
+  );
   const provinceGroups = groupProvinces(listings);
   const cityGroups = groupCities(listings);
   const serviceGroups = groupServices(listings);
@@ -265,6 +273,10 @@ function main() {
       cities: cityGroups.length,
       withPhones: listings.filter((item) => item.phone).length,
       withWebsites: listings.filter((item) => item.website).length,
+      indexableListings: listings.filter(shouldIndexListing).length,
+      reviewedListings: listings.filter((item) => item.editorialReview).length,
+      businessSubmittedListings: listings.filter((item) => item.businessSubmission).length,
+      imageRightsListings: listings.filter(hasDocumentedImageRights).length,
     },
     pages: [],
   };
@@ -365,6 +377,7 @@ function loadListings(file) {
       lng,
       image: sourceImage,
       photos,
+      imageRights: null,
       hours,
       services,
       serviceText: clean(get("servicesOffered")),
@@ -386,6 +399,9 @@ function loadListings(file) {
       reviewThemes,
       description: "",
       descriptionIsCustom: false,
+      editorialReview: null,
+      businessSubmission: null,
+      keepIndexed: false,
       temporarilyClosed: isTruthy(get("temporarilyClosed")),
       scrapedAt: clean(get("scrapedAt")),
       score: 0,
@@ -420,6 +436,7 @@ function loadManualListings() {
     const sourcePhotos = (Array.isArray(item.photos) ? item.photos : []).map(normalizeListingImageUrl).filter(Boolean);
     const image = normalizeListingImageUrl(item.image || sourcePhotos[0]);
     const photos = unique([image, ...sourcePhotos]).filter(Boolean).slice(0, 8);
+    const imageRights = normalizeImageRights(item.imageRights, item.imageCredit, item.imageSourceUrl);
     const offerTitle = clean(item.offer && item.offer.title);
     const offerDescription = clean(item.offer && item.offer.description);
     const offer = offerTitle && offerDescription
@@ -454,6 +471,7 @@ function loadManualListings() {
       lng: numberOrNull(item.lng),
       image,
       photos,
+      imageRights,
       imageCredit: clean(item.imageCredit),
       imageSourceUrl: sanitizeBusinessWebsite(clean(item.imageSourceUrl)),
       hours,
@@ -477,6 +495,9 @@ function loadManualListings() {
       reviewThemes: [],
       description: "",
       descriptionIsCustom: Boolean(clean(item.description)),
+      editorialReview: null,
+      businessSubmission: normalizeBusinessSubmission(item.businessSubmission),
+      keepIndexed: false,
       offer,
       temporarilyClosed: Boolean(item.temporarilyClosed),
       scrapedAt: clean(item.updatedAt),
@@ -580,6 +601,7 @@ function applyListingCorrections(listings, corrections) {
     const fields = correction.fields || {};
     const updates = Object.fromEntries(allowedFields.filter((field) => Object.hasOwn(fields, field)).map((field) => [field, fields[field]]));
     const updated = { ...listing, ...updates };
+    updated.businessSubmission = normalizeBusinessSubmission(correction.businessSubmission) || listing.businessSubmission;
     updated.description = updated.descriptionIsCustom ? listing.description : buildListingDescription(updated);
     updated.score = qualityScore(updated);
     corrected.push(updated);
@@ -621,6 +643,87 @@ function applyThinListingEnrichment(listings, enrichment) {
   });
 }
 
+function loadEditorialProfileReviews() {
+  if (!fs.existsSync(EDITORIAL_PROFILE_REVIEWS_FILE)) return new Map();
+  const raw = JSON.parse(fs.readFileSync(EDITORIAL_PROFILE_REVIEWS_FILE, "utf8"));
+  const entries = raw && raw.profiles && typeof raw.profiles === "object" ? raw.profiles : {};
+  return new Map(Object.entries(entries).filter(([url, value]) => url.startsWith("/groomers/") && value && typeof value === "object"));
+}
+
+function applyEditorialProfileReviews(listings, reviews) {
+  if (!reviews.size) return listings;
+  return listings.map((listing) => {
+    const entry = reviews.get(listing.url);
+    if (!entry) return listing;
+
+    const sourcePages = unique((Array.isArray(entry.sourcePages) ? entry.sourcePages : []).map(safeHttpUrl).filter(Boolean)).slice(0, 6);
+    const facts = (Array.isArray(entry.facts) ? entry.facts : [])
+      .map((fact) => ({
+        label: clean(fact && fact.label).slice(0, 80),
+        value: clean(fact && fact.value).slice(0, 500),
+        sourceUrl: safeHttpUrl(fact && fact.sourceUrl),
+      }))
+      .filter((fact) => fact.label && fact.value && fact.sourceUrl)
+      .slice(0, 8);
+    const lead = clean(entry.lead);
+    const summary = clean(entry.summary);
+    const reviewedAt = clean(entry.reviewedAt);
+    if (!sourcePages.length || !facts.length || !summary || !reviewedAt) {
+      throw new Error(`Editorial profile review is incomplete: ${listing.url}`);
+    }
+    if (lead && lead.split(/\s+/).filter(Boolean).length < 55) {
+      throw new Error(`Editorial profile lead is too short: ${listing.url}`);
+    }
+
+    const updated = {
+      ...listing,
+      editorialReview: {
+        reviewedAt,
+        summary,
+        sourcePages,
+        facts,
+      },
+      websiteCrawlStatus: "editorially_reviewed",
+      websiteCrawlSource: sourcePages[0],
+      websiteResearchPages: sourcePages,
+      websiteEnrichedAt: reviewedAt,
+      websiteServices: unique([...(listing.websiteServices || []), ...cleanSignalArray(entry.services).map(friendlyWebsiteService)]).slice(0, 12),
+      websiteConvenience: unique([...(listing.websiteConvenience || []), ...cleanSignalArray(entry.convenience).map(friendlyWebsiteSignal)]).slice(0, 12),
+      websiteCredentials: unique([...(listing.websiteCredentials || []), ...cleanSignalArray(entry.credentials).map(friendlyWebsiteSignal)]).slice(0, 12),
+      websiteBreedExperience: unique([...(listing.websiteBreedExperience || []), ...cleanSignalArray(entry.breedExperience)]).slice(0, 12),
+      websitePricingAvailable: Boolean(listing.websitePricingAvailable || entry.pricingAvailable),
+    };
+    if (lead) {
+      updated.description = lead;
+      updated.descriptionIsCustom = true;
+    }
+    updated.score = qualityScore(updated);
+    return updated;
+  });
+}
+
+function loadProfileIndexOverrides() {
+  if (!fs.existsSync(PROFILE_INDEX_OVERRIDES_FILE)) return new Set();
+  const raw = JSON.parse(fs.readFileSync(PROFILE_INDEX_OVERRIDES_FILE, "utf8"));
+  const entries = Array.isArray(raw) ? raw : raw.keepIndexed || [];
+  return new Set(entries.filter((url) => typeof url === "string" && url.startsWith("/groomers/")));
+}
+
+function applyProfileIndexOverrides(listings, overrides) {
+  return listings.map((listing) => ({ ...listing, keepIndexed: overrides.has(listing.url) }));
+}
+
+function normalizeBusinessSubmission(value) {
+  if (!value || typeof value !== "object") return null;
+  const receivedAt = clean(value.receivedAt);
+  if (!receivedAt) return null;
+  return {
+    receivedAt,
+    label: clean(value.label) || "Business-submitted update",
+    source: clean(value.source) || "Details supplied directly to Dog Groomers Canada",
+  };
+}
+
 function websiteHostname(value) {
   try {
     return new URL(value).hostname.toLowerCase().replace(/^www\./, "");
@@ -648,6 +751,8 @@ function applyImageOverrides(listings, overrides) {
   return listings.map((listing) => {
     const override = overrides.get(listing.url);
     if (!override) return listing;
+    const imageRights = normalizeImageRights(override.imageRights, override.imageCredit, override.source || override.sourcePage);
+    if (!imageRights) return listing;
     const image = normalizeListingImageUrl(override.image);
     if (!image) return listing;
     const photos = unique([image, ...listing.photos]).slice(0, 8);
@@ -655,7 +760,46 @@ function applyImageOverrides(listings, overrides) {
       ...listing,
       image,
       photos,
+      imageRights,
+      imageCredit: imageRights.credit,
+      imageSourceUrl: imageRights.sourceUrl,
       imageSource: clean(override.source || override.sourcePage || "verified business source"),
+    };
+  });
+}
+
+function normalizeImageRights(value, fallbackCredit = "", fallbackSourceUrl = "") {
+  const entry = typeof value === "string" ? { status: value } : value && typeof value === "object" ? value : null;
+  if (!entry) return null;
+  const status = clean(entry.status).toLowerCase();
+  if (!DOCUMENTED_IMAGE_RIGHTS.has(status)) return null;
+  const rights = {
+    status,
+    grantedAt: clean(entry.grantedAt),
+    credit: clean(entry.credit || fallbackCredit),
+    sourceUrl: safeHttpUrl(entry.sourceUrl || fallbackSourceUrl),
+    license: clean(entry.license),
+  };
+  if (status === "owner_permission" && (!rights.grantedAt || !rights.credit)) return null;
+  if (status !== "owner_permission" && (!rights.sourceUrl || !rights.license)) return null;
+  return rights;
+}
+
+function hasDocumentedImageRights(listing) {
+  return Boolean(listing && listing.imageRights && DOCUMENTED_IMAGE_RIGHTS.has(listing.imageRights.status));
+}
+
+function enforceListingImageRights(listings) {
+  return listings.map((listing) => {
+    if (hasDocumentedImageRights(listing)) return listing;
+    return {
+      ...listing,
+      image: "",
+      photos: [],
+      imageRights: null,
+      imageCredit: "",
+      imageSourceUrl: "",
+      imageSource: "",
     };
   });
 }
@@ -841,6 +985,7 @@ function writeStaticAssets(context) {
         image: listing.image,
         fallbackImage: sameBusinessFallbackImage(listing),
         imageSource: listing.imageSource || "",
+        imageRights: listing.imageRights ? listing.imageRights.status : "",
         services: listing.services,
         serviceSlugs: matchedServiceSlugs(listing),
         url: listing.url,
@@ -1170,12 +1315,14 @@ function writeListingPages(context) {
     const province = context.provinces.find((item) => item.slug === listing.provinceSlug);
     const related = relatedListings(listing, context.listings).slice(0, 6);
     const correctionUrl = correctionMailto(listing);
+    const photoPermissionUrl = photoPermissionMailto(listing);
     const costGuideUrl = costGuideUrlForCity(city, province, costMap);
+    const indexable = shouldIndexListing(listing);
     const photos = listing.photos.length
       ? `<section class="section"><h2>Photos</h2><div class="photo-grid">${listing.photos
           .map((photo) => {
             const fallbackImage = sameBusinessFallbackImage(listing, photo);
-            return `<a href="${escAttr(photo)}" target="_blank" rel="noopener nofollow"><img src="${escAttr(photo)}" alt="${escAttr(listing.title)} photo" loading="lazy" referrerpolicy="no-referrer"${fallbackImage ? ` data-fallback-image="${escAttr(fallbackImage)}" data-fallback-alt="${escAttr(listingImageAlt(listing, "profile"))}"` : ""}></a>`;
+            return `<a href="${escAttr(photo)}" target="_blank" rel="noopener nofollow"><img src="${escAttr(photo)}" alt="${escAttr(listing.title)} photo" loading="lazy" referrerpolicy="no-referrer"${listingImageRightsAttr(listing)}${fallbackImage ? ` data-fallback-image="${escAttr(fallbackImage)}" data-fallback-alt="${escAttr(listingImageAlt(listing, "profile"))}"` : ""}></a>`;
           })
           .join("")}</div>${listingImageSourceNote(listing, "photos")}</section>`
       : "";
@@ -1211,11 +1358,12 @@ function writeListingPages(context) {
           <div class="profile-hero">
             <div>
               <h1 class="city-title">${esc(listing.title)}</h1>
+              ${profileProvenanceLine(listing)}
               <p class="lead">${esc(listing.description)}</p>
               <div class="meta-line">${ratingLine(listing)}<span>${esc(listing.city)}, ${esc(listing.provinceCode)}</span></div>
               <div class="tag-cloud" style="margin-top:18px">${listing.phone ? `<a class="btn btn-dark" href="tel:${escAttr(listing.phoneRaw || listing.phone)}">Call ${esc(listing.phone)}</a>` : ""}${listing.website ? `<a class="btn btn-primary" href="${escAttr(listing.website)}" target="_blank" rel="nofollow noopener">Visit Website</a>` : ""}${listing.mapsUrl ? `<a class="btn btn-light" href="${escAttr(listing.mapsUrl)}" target="_blank" rel="nofollow noopener">Open Map</a>` : ""}<button class="btn btn-light shortlist-toggle" type="button" data-shortlist-toggle data-listing-url="${escAttr(listing.url)}" data-listing-name="${escAttr(listing.title)}" aria-label="Save ${escAttr(listing.title)} to compare" aria-pressed="false">☆ Save to compare</button></div>
             </div>
-            <div class="profile-photo-wrap"><div class="profile-photo">${listing.image ? `<img src="${escAttr(listing.image)}" alt="${escAttr(listingImageAlt(listing, "profile"))}" loading="eager" referrerpolicy="no-referrer"${sameBusinessFallbackImage(listing) ? ` data-fallback-image="${escAttr(sameBusinessFallbackImage(listing))}" data-fallback-alt="${escAttr(listingImageAlt(listing, "profile"))}"` : ""}>` : imageUnavailable()}</div>${listingImageSourceNote(listing)}</div>
+            <div class="profile-photo-wrap"><div class="profile-photo">${listing.image ? `<img src="${escAttr(listing.image)}" alt="${escAttr(listingImageAlt(listing, "profile"))}" loading="eager" referrerpolicy="no-referrer"${listingImageRightsAttr(listing)}${sameBusinessFallbackImage(listing) ? ` data-fallback-image="${escAttr(sameBusinessFallbackImage(listing))}" data-fallback-alt="${escAttr(listingImageAlt(listing, "profile"))}"` : ""}>` : imageUnavailable(listing, "profile")}</div>${listingImageSourceNote(listing)}</div>
           </div>
         </div>
       </section>
@@ -1233,11 +1381,12 @@ function writeListingPages(context) {
               <p class="muted" style="margin-top:14px">Service information is summarized from available listing data and may not be complete. Confirm current services and prices directly with the groomer.</p>
             </section>
             ${listingSpecificSignalsSection(listing)}
+            ${editorialProfileReviewSection(listing)}
             ${listingReviewThemesSection(listing)}
             ${listingGuidanceSection(listing, related, correctionUrl)}
             ${profileCostAndQuoteSection(listing, city, province, costMap)}
             ${profileQuestionsSection(listing)}
-            ${profileCorrectionSection(listing, correctionUrl)}
+            ${profileCorrectionSection(listing, correctionUrl, photoPermissionUrl)}
             ${hours}
             ${photos}
             <section class="section">
@@ -1278,7 +1427,19 @@ function writeListingPages(context) {
       ]),
       localBusinessSchema(listing),
     ];
-    writePage(context, listing.url, `${listing.title} | Dog Grooming in ${listing.city}, ${listing.provinceCode}`, listingMetaDescription(listing), body, schema);
+    writePage(
+      context,
+      listing.url,
+      `${listing.title} | Dog Grooming in ${listing.city}, ${listing.provinceCode}`,
+      listingMetaDescription(listing),
+      body,
+      schema,
+      {
+        noSitemap: !indexable,
+        robotsContent: indexable ? "index,follow,max-image-preview:large" : "noindex,follow",
+        bodyAttrs: `data-content-type="directory-record" data-profile-depth="${listingInformationDepth(listing)}" data-profile-index-status="${indexable ? "index" : "noindex"}"`,
+      },
+    );
   }
 }
 
@@ -2423,7 +2584,7 @@ function writeUtilityPages(context) {
     "Editorial Policy",
     "Dog Groomers Canada is built to help people compare grooming options with clear navigation, source transparency, and original booking guidance.",
     `<div class="grid-3">
-      <div class="info-card"><h2>Directory data</h2><p>Profiles use business listing facts such as name, city, address, phone, website, rating, hours, services mentioned, and map links when available. We do not republish customer review text.</p></div>
+      <div class="info-card"><h2>Directory records</h2><p>Profiles organize structured business facts such as name, city, address, phone, website, rating, hours, services mentioned, and map links. They are labelled as directory records rather than individually reported articles.</p></div>
       <div class="info-card"><h2>Original guidance</h2><p>City, service, profile, guide, and tool pages add practical comparison notes so visitors know what to confirm before booking a grooming appointment.</p></div>
       <div class="info-card"><h2>Corrections</h2><p>Businesses and visitors can request updates, removals, or corrections by email. Changed details are reviewed before the directory is updated.</p></div>
     </div>
@@ -2433,9 +2594,16 @@ function writeUtilityPages(context) {
       <p>We avoid presenting directory listings as endorsements. Ratings, maps, websites, photos, and service notes are treated as comparison signals, not guarantees. Visitors should confirm current details directly with the business before booking.</p>
     </section>
     <section class="section">
+      <h2>Automation and human review</h2>
+      <p>Automated tools, including language-assisted drafting and validation, help normalize public listing fields, identify missing information, and prepare first-pass profile summaries at directory scale. Automation is not treated as business testimony or independent verification.</p>
+      <p>Profiles checked against first-party source pages are visibly labelled with the review date and linked evidence. Business-submitted changes are labelled separately. High-traffic profiles and correction requests receive priority for source review, while records with too little useful evidence are kept out of search indexing until their source coverage improves.</p>
+      <p>In the current build, ${context.stats.indexableListings.toLocaleString()} of ${context.stats.listings.toLocaleString()} business profiles meet the indexable quality gate. The remaining ${(context.stats.listings - context.stats.indexableListings).toLocaleString()} records remain accessible for corrections and discovery links but use <code>noindex,follow</code> until their evidence improves.</p>
+    </section>
+    <section class="section">
       <h2>Review and updates</h2>
       <p>Directory pages are updated when listing data or editorial content changes. Correction requests should include the page URL, business name, city, requested change, and a source such as the business website or official social profile when available.</p>
       <p>When enough written comments are available in the source snapshot, profile pages may paraphrase themes that recur across multiple comments. These summaries never reproduce review text, are clearly identified as customer opinion, and are not treated as independently verified facts or endorsements.</p>
+      <p>A business-submitted update label records where a change came from; it does not mean the business paid for placement or received a certification. An official-source review label means the listed source pages were checked on the displayed date.</p>
     </section>
     <section class="section">
       <h2>Advertising and independence</h2>
@@ -2444,7 +2612,9 @@ function writeUtilityPages(context) {
     </section>
     <section class="section">
       <h2>Images and copyrighted material</h2>
-      <p>Some business profiles display images included in the source business-listing snapshot, while a site-owned illustrated placeholder is used when no image is available. Profile pages link to the source listing and provide a direct image correction or removal option. Inclusion does not transfer image ownership or imply an endorsement.</p>
+      <p>Business-specific photos are displayed only when Dog Groomers Canada has documented owner permission, a reusable licence, or a public-domain basis. A public listing, source link, or credit by itself is not treated as permission. Profiles without documented rights use a site-owned placeholder.</p>
+      <p>Business owners and authorized representatives can submit original files with an explicit display authorization and requested credit. Every approved image includes a visible rights note and a direct correction or removal option.</p>
+      <p class="muted">Last updated July 28, 2026.</p>
     </section>`,
   );
   writePage(context, "/editorial-policy/", "Editorial Policy | Dog Groomers Canada", "Editorial policy for Dog Groomers Canada, including listing data, corrections, advertising independence, and business profile image handling.", editorialBody, breadcrumbSchema([{ label: "Home", url: "/" }, { label: "Editorial Policy", url: "/editorial-policy/" }]));
@@ -2457,14 +2627,18 @@ function writeUtilityPages(context) {
         <label>Business name<input required name="business" class="input-shell" style="width:100%;margin-top:6px;padding:12px" placeholder="Business name"></label>
         <label>City / Province<input required name="location" class="input-shell" style="width:100%;margin-top:6px;padding:12px" placeholder="City, province"></label>
       </div>
+      <label style="display:block;margin-top:12px">Business email<input type="email" name="email" class="input-shell" style="width:100%;margin-top:6px;padding:12px" placeholder="name@business.ca"></label>
       <label style="display:block;margin-top:12px">Details<textarea name="details" class="input-shell" style="width:100%;min-height:120px;margin-top:6px;padding:12px" placeholder="Website, phone, services, hours, notes"></textarea></label>
+      <label class="check-option" style="margin-top:12px"><input type="checkbox" name="photoRights" value="yes"><span>I plan to attach photos that I own or have permission from the rights holder to authorize for this profile.</span></label>
+      <p class="muted">After your email opens, attach the original photo files and include the photographer or requested credit. Photos are optional.</p>
       <button class="btn btn-primary" type="submit" style="margin-top:12px">Prepare Email</button>
     </form>
     <script>
       document.getElementById("add-business-form").addEventListener("submit", function (event) {
         event.preventDefault();
         var data = new FormData(event.currentTarget);
-        var body = "Business: " + (data.get("business") || "") + "\\nLocation: " + (data.get("location") || "") + "\\nDetails: " + (data.get("details") || "");
+        var photoStatement = data.get("photoRights") ? "\\n\\nPhoto authorization: I confirm that I own the attached images or have permission from the rights holder, and I authorize Dog Groomers Canada to display them on this business profile and related directory cards.\\nPhoto credit / source:" : "";
+        var body = "Business: " + (data.get("business") || "") + "\\nLocation: " + (data.get("location") || "") + "\\nBusiness email: " + (data.get("email") || "") + "\\nDetails: " + (data.get("details") || "") + photoStatement;
         window.location.href = "mailto:${CONTACT_EMAIL}?subject=Dog%20Groomers%20Canada%20listing%20update&body=" + encodeURIComponent(body);
       });
     </script>`,
@@ -2479,8 +2653,9 @@ function writeUtilityPages(context) {
     simpleContentPage(
       "For Dog Grooming Businesses",
       "Dog Groomers Canada is a directory designed to help pet owners find local grooming options. Businesses can request listing updates, service corrections, website changes, and contact detail updates.",
-      `<div class="grid-3"><div class="info-card"><h2>Update details</h2><p>Keep phone numbers, websites, service notes, and hours accurate so customers can contact you quickly.</p></div><div class="info-card"><h2>Improve trust</h2><p>A clear website, current address, and service details help owners decide whether your grooming style fits their dog.</p></div><div class="info-card"><h2>Request removal</h2><p>If your business should not appear, send the profile URL and verification source so the listing can be reviewed.</p></div></div>
-      <section class="section"><h2>What owners can update</h2><p>Business owners can request corrections for business name, phone number, website, address, city placement, opening hours, services, profile images, business status, and duplicate listings.</p><p><a class="btn btn-primary" href="mailto:${CONTACT_EMAIL}?subject=Dog%20Groomers%20Canada%20business%20profile%20update">Email a business update</a></p></section>`,
+      `<div class="grid-3"><div class="info-card"><h2>Update details</h2><p>Keep phone numbers, websites, service notes, and hours accurate so customers can contact you quickly.</p></div><div class="info-card"><h2>Document the source</h2><p>Business-submitted changes are labelled on the profile so readers can distinguish them from public listing snapshots and official-site reviews.</p></div><div class="info-card"><h2>Request removal</h2><p>If your business should not appear, send the profile URL and verification source so the listing can be reviewed.</p></div></div>
+      <section class="section"><h2>What businesses can update</h2><p>Business owners and authorized representatives can request corrections for business name, phone number, website, address, city placement, opening hours, services, business status, and duplicate listings.</p><p><a class="btn btn-primary" href="mailto:${CONTACT_EMAIL}?subject=Dog%20Groomers%20Canada%20business%20profile%20update">Email a business update</a></p></section>
+      <section class="section"><h2>Submit profile photos</h2><p>Attach original files only when you own the images or have permission from the rights holder. Include the profile URL, photographer or requested credit, and the statement: “I authorize Dog Groomers Canada to display these images on this business profile and related directory cards.” Public availability or a source link alone is not enough.</p><p><a class="btn btn-light" href="mailto:${CONTACT_EMAIL}?subject=Authorized%20business%20profile%20photos&body=Profile%20URL%3A%0ABusiness%3A%0APhoto%20credit%20%2F%20source%3A%0A%0AI%20confirm%20that%20I%20own%20the%20attached%20images%20or%20have%20permission%20from%20the%20rights%20holder%2C%20and%20I%20authorize%20Dog%20Groomers%20Canada%20to%20display%20them%20on%20this%20business%20profile%20and%20related%20directory%20cards.">Submit authorized photos</a></p></section>`,
     ),
     breadcrumbSchema([{ label: "Home", url: "/" }, { label: "For Businesses", url: "/for-businesses/" }]),
   );
@@ -2689,6 +2864,7 @@ function pageHtml(route, title, description, body, schema = [], options = {}) {
   const routePath = route === "/404.html" ? "/404.html" : route;
   const canonical = options.canonicalUrl || absoluteUrl(options.canonicalRoute || routePath);
   const meta = metaDescription(description);
+  const robotsContent = options.robotsContent || "index,follow,max-image-preview:large";
   const schemaItems = Array.isArray(schema) ? schema.filter(Boolean) : [schema].filter(Boolean);
   const pageContainerTag = /<main(?:\s|>)/i.test(body) ? "div" : "main";
   return `<!doctype html>
@@ -2702,7 +2878,7 @@ function pageHtml(route, title, description, body, schema = [], options = {}) {
   <title>${esc(title)}</title>
   <meta name="description" content="${escAttr(meta)}">
   <link rel="canonical" href="${escAttr(canonical)}">
-  <meta name="robots" content="index,follow,max-image-preview:large">
+  <meta name="robots" content="${escAttr(robotsContent)}">
   <meta property="og:type" content="website">
   <meta property="og:locale" content="en_CA">
   <meta property="og:site_name" content="${BRAND_NAME}">
@@ -2796,7 +2972,7 @@ function listingCard(item, compact = false) {
   actions.push(`<a class="btn btn-primary" href="${item.url}">View Profile</a>`);
 
   return `<article class="listing-card${compact ? " compact" : ""}">
-    <a class="listing-image" href="${item.url}">${item.image ? `<img src="${escAttr(item.image)}" alt="${escAttr(listingImageAlt(item, "card"))}" loading="lazy" referrerpolicy="no-referrer"${sameBusinessFallbackImage(item) ? ` data-fallback-image="${escAttr(sameBusinessFallbackImage(item))}" data-fallback-alt="${escAttr(listingImageAlt(item, "card"))}"` : ""}>` : imageUnavailable()}</a>
+    <a class="listing-image" href="${item.url}">${item.image ? `<img src="${escAttr(item.image)}" alt="${escAttr(listingImageAlt(item, "card"))}" loading="lazy" referrerpolicy="no-referrer"${listingImageRightsAttr(item)}${sameBusinessFallbackImage(item) ? ` data-fallback-image="${escAttr(sameBusinessFallbackImage(item))}" data-fallback-alt="${escAttr(listingImageAlt(item, "card"))}"` : ""}>` : imageUnavailable(item)}</a>
     <div class="listing-body">
       <h3><a class="listing-title" href="${item.url}">${esc(item.title)}</a></h3>
       <div class="meta-line">${ratingLine(item)}<span>${esc(item.city)}, ${esc(item.provinceCode)}</span></div>
@@ -3664,12 +3840,13 @@ function regionalSeasonalCare(provinceCode) {
   return profiles.central;
 }
 
-function profileCorrectionSection(listing, correctionUrl) {
+function profileCorrectionSection(listing, correctionUrl, photoPermissionUrl) {
   return `<section class="section correction-panel">
       <h2>Help keep this listing accurate</h2>
-      <p>Dog grooming business details can change quickly. If you own this business or spot outdated information, send the profile URL and the corrected phone number, website, address, hours, image, service notes, or business status.</p>
+      <p>Dog grooming business details can change quickly. If you own this business or spot outdated information, send the profile URL and the corrected phone number, website, address, hours, service notes, or business status. Business-specific photos are displayed only after permission or a reusable licence is documented.</p>
       <div class="tag-cloud">
         <a class="btn btn-primary" href="${escAttr(correctionUrl)}">Send a correction</a>
+        <a class="btn btn-light" href="${escAttr(photoPermissionUrl)}">Submit authorized photos</a>
         <a class="btn btn-light" href="/editorial-policy/">Review our editorial policy</a>
       </div>
     </section>`;
@@ -3689,6 +3866,55 @@ function correctionMailto(listing) {
     ].join("\n"),
   );
   return `mailto:${CONTACT_EMAIL}?subject=${subject}&body=${body}`;
+}
+
+function photoPermissionMailto(listing) {
+  const subject = encodeURIComponent(`Authorized profile photos: ${listing.title}`);
+  const body = encodeURIComponent(
+    [
+      `Profile: ${absoluteUrl(listing.url)}`,
+      `Business: ${listing.title}`,
+      `City: ${listing.city}, ${listing.provinceCode}`,
+      "",
+      "Please attach the original photo files to this email.",
+      "Photo credit:",
+      "Source or photographer:",
+      "",
+      "Permission statement:",
+      "I confirm that I own these images or have permission from the rights holder, and I authorize Dog Groomers Canada to display them on this business profile and related directory cards.",
+      "",
+      "Name and relationship to the business:",
+    ].join("\n"),
+  );
+  return `mailto:${CONTACT_EMAIL}?subject=${subject}&body=${body}`;
+}
+
+function profileProvenanceLine(listing) {
+  const items = ["Directory record"];
+  if (listing.editorialReview) items.push(`Official source reviewed ${listing.editorialReview.reviewedAt}`);
+  if (listing.businessSubmission) items.push(`${listing.businessSubmission.label} received ${listing.businessSubmission.receivedAt}`);
+  if (hasDocumentedImageRights(listing)) items.push("Photo permission documented");
+  return `<p class="profile-provenance" aria-label="Profile provenance">${items.map((item) => `<span>${esc(item)}</span>`).join("")}</p>`;
+}
+
+function editorialProfileReviewSection(listing) {
+  const review = listing.editorialReview;
+  if (!review) return "";
+  const facts = review.facts
+    .map(
+      (fact) =>
+        profileSignalRow(
+          fact.label,
+          `${esc(fact.value)} <a class="signal-source-link" href="${escAttr(fact.sourceUrl)}" target="_blank" rel="nofollow noopener">Official source</a>`,
+        ),
+    )
+    .join("");
+  return `<section class="section editorial-profile-review" data-editorial-profile-review>
+      <h2>Official-source profile review</h2>
+      <p>${esc(review.summary)}</p>
+      <dl class="profile-signal-list">${facts}</dl>
+      <p class="muted">Reviewed ${esc(review.reviewedAt)} against ${countLabel(review.sourcePages.length, "first-party source page")}. This is an editorial synthesis of the linked source material, not an endorsement.</p>
+    </section>`;
 }
 
 function directoryMethodSection(context) {
@@ -3782,6 +4008,12 @@ function listingSpecificSignalsSection(listing) {
   if (listing.ownerUpdateCount) {
     rows.push(profileSignalRow("Business updates", `${esc(countLabel(listing.ownerUpdateCount, "owner update"))} appeared in the public listing snapshot.`));
   }
+  if (listing.businessSubmission) {
+    rows.push(profileSignalRow(
+      "Business-submitted details",
+      `${esc(listing.businessSubmission.source)}. Received ${esc(listing.businessSubmission.receivedAt)}; this label records provenance and does not imply paid placement or third-party certification.`,
+    ));
+  }
   if (listing.websiteLocation) {
     rows.push(profileSignalRow(
       "Website location",
@@ -3790,9 +4022,12 @@ function listingSpecificSignalsSection(listing) {
   }
 
   const snapshot = profileSnapshotLabel(listing.scrapedAt);
-  const sourceLabel = listing.websiteCrawlStatus === "owner_provided" ? "Owner-provided profile details" : "Public listing details";
+  const sourceLabel = listing.businessSubmission || listing.websiteCrawlStatus === "owner_provided"
+    ? "Business-submitted profile details"
+    : "Public listing details";
   const sourceDate = snapshot ? ` gathered in ${snapshot}` : "";
-  const hasSupplementalWebsiteEnrichment = listing.websiteCrawlStatus === "official_website_enriched";
+  const hasSupplementalWebsiteEnrichment = ["official_website_enriched", "editorially_reviewed"].includes(listing.websiteCrawlStatus);
+  const hasThinWebsiteEnrichment = listing.websiteCrawlStatus === "official_website_enriched";
   const websiteResearchDate = profileSnapshotLabel(listing.websiteEnrichedAt);
   const websitePageCount = listing.websiteResearchPages && listing.websiteResearchPages.length;
   const websiteSource = hasSupplementalWebsiteEnrichment && listing.websiteCrawlSource
@@ -3802,7 +4037,7 @@ function listingSpecificSignalsSection(listing) {
       : "";
   rows.push(profileSignalRow("Source timing", `${esc(sourceLabel)}${esc(sourceDate)}.${websiteSource}`));
 
-  return `<section class="section profile-signals" data-profile-signals${hasSupplementalWebsiteEnrichment ? " data-official-website-enrichment" : ""}>
+  return `<section class="section profile-signals" data-profile-signals${hasThinWebsiteEnrichment ? " data-official-website-enrichment" : ""}>
       <h2>Business-specific signals</h2>
       <p>These details separate core profile data from findings on a business website when website evidence is available. They support comparison, but they are not an endorsement or a guarantee that every detail is still current.</p>
       <dl class="profile-signal-list">${rows.join("")}</dl>
@@ -3897,7 +4132,20 @@ function listingInformationDepth(listing) {
   if (listing.reviews) depth += 1;
   if (listing.descriptionIsCustom) depth += 2;
   if (listing.offer) depth += 1;
+  if (listing.editorialReview) depth += 4;
+  if (listing.businessSubmission) depth += 2;
+  if (hasDocumentedImageRights(listing)) depth += 1;
   return depth;
+}
+
+function shouldIndexListing(listing) {
+  return Boolean(
+    listing.keepIndexed ||
+      listing.editorialReview ||
+      listing.businessSubmission ||
+      hasDocumentedImageRights(listing) ||
+      listingInformationDepth(listing) > 1
+  );
 }
 
 function isLimitedInformationListing(listing) {
@@ -5091,7 +5339,10 @@ function dogLogo() {
   return `<svg viewBox="0 0 64 64" aria-hidden="true"><path fill="currentColor" d="M20 17c-4.8 0-8.9 2.9-10.8 7.3L5.7 33c-.6 1.4.4 3 1.9 3H12v12.2c0 1 .8 1.8 1.8 1.8h4.4c1 0 1.8-.8 1.8-1.8V42h20v6.2c0 1 .8 1.8 1.8 1.8h4.4c1 0 1.8-.8 1.8-1.8V34l5.7-3.8c1.4-.9 1.6-2.9.4-4.1l-5.9-5.9c-.7-.7-1.6-1-2.5-1H38l-3.8-5.1c-.5-.7-1.2-1-2-1H25l-5 3.9Zm-.2 9.2c0-1.2 1-2.2 2.2-2.2s2.2 1 2.2 2.2-1 2.2-2.2 2.2-2.2-1-2.2-2.2Zm24.8 0c0-1.2 1-2.2 2.2-2.2s2.2 1 2.2 2.2-1 2.2-2.2 2.2-2.2-1-2.2-2.2Z"/></svg>`;
 }
 
-function imageUnavailable() {
+function imageUnavailable(listing = null, context = "card") {
+  if (context === "profile" && listing) {
+    return `<span class="fallback image-unavailable profile-image-unavailable">${dogLogo()}<span class="fallback-copy"><strong>Photo not displayed</strong><span>Business photos appear only when usage permission or a reusable licence is documented.</span><a href="${escAttr(photoPermissionMailto(listing))}">Submit authorized photos</a></span></span>`;
+  }
   return `<span class="fallback image-unavailable" aria-hidden="true">${dogLogo()}</span>`;
 }
 
@@ -5103,19 +5354,20 @@ function listingImageAlt(listing, context = "card") {
   return context === "profile" ? `${listing.title} listing photo` : `${listing.title} dog grooming listing photo`;
 }
 
+function listingImageRightsAttr(listing) {
+  return hasDocumentedImageRights(listing) ? ` data-image-rights="${escAttr(listing.imageRights.status)}"` : "";
+}
+
 function listingImageSourceNote(listing, scope = "image") {
-  if (!listing.image) return "";
-  if (listing.imageCredit) {
-    const sourceLink = listing.imageSourceUrl
-      ? ` <a href="${escAttr(listing.imageSourceUrl)}" target="_blank" rel="nofollow noopener">View the source website</a>.`
-      : "";
-    return `<p class="image-source-note">${esc(listing.imageCredit)}${sourceLink} <a href="${escAttr(correctionMailto(listing))}">Request an image correction or removal</a>.</p>`;
-  }
-  const label = scope === "photos" ? "These images were" : "This image was";
-  const sourceLink = listing.mapsUrl
-    ? ` <a href="${escAttr(listing.mapsUrl)}" target="_blank" rel="nofollow noopener">View the source listing</a>.`
+  if (!listing.image || !hasDocumentedImageRights(listing)) return "";
+  const rights = listing.imageRights;
+  const sourceLink = rights.sourceUrl
+    ? ` <a href="${escAttr(rights.sourceUrl)}" target="_blank" rel="nofollow noopener">View the source website</a>.`
     : "";
-  return `<p class="image-source-note">${label} included with the public business listing.${sourceLink} <a href="${escAttr(correctionMailto(listing))}">Request an image correction or removal</a>.</p>`;
+  const rightsLabel = rights.status === "owner_permission"
+    ? `Permission documented ${rights.grantedAt}.`
+    : `${esc(rights.license)} usage basis documented.`;
+  return `<p class="image-source-note" data-image-rights-note="${escAttr(rights.status)}">${esc(rights.credit)} ${rightsLabel}${sourceLink} <a href="${escAttr(correctionMailto(listing))}">Request an image correction or removal</a>.</p>`;
 }
 
 function searchIcon() {

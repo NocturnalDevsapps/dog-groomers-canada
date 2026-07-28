@@ -1,0 +1,15 @@
+{
+  "reviewedAt": "2026-07-28",
+  "note": "Keep-index exceptions for limited-information profiles with demonstrated organic visits in Search Console. Metrics remain outside the repository.",
+  "keepIndexed": [
+    "/groomers/british-columbia/kamloops/the-paw-spa-kamloops-bc-ab3f5603/",
+    "/groomers/new-brunswick/rexton/audrey-s-all-for-paws-rexton-nb-46e574b5/",
+    "/groomers/quebec/drummondville/une-patte-a-la-fois-toilettage-comportemental-drummondville-qc-90fd7589/",
+    "/groomers/ontario/thunder-bay/heads-n-tails-by-carrie-randle-thunder-bay-on-113f90d0/",
+    "/groomers/canada/le-beau-et-la-bete-toilettage-canada-ca-0def396b/",
+    "/groomers/british-columbia/fernie/annies-awesome-animals-fernie-bc-7200022d/",
+    "/groomers/quebec/saint-agapit/le-spa-canin-saint-agapit-qc-b9d6f4d9/",
+    "/groomers/quebec/sainte-martine/salon-de-toilettage-la-belle-and-les-betes-sainte-martine-qc-d8a7dd34/",
+    "/groomers/quebec/gatineau/toilettage-namaste-gatineau-qc-9f5bde2b/"
+  ]
+}

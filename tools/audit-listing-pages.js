@@ -12,6 +12,7 @@ const descriptions = new Map();
 const metaDescriptions = new Map();
 const wordCounts = [];
 const officialWebsiteRoutes = new Set();
+const editorialReviewRoutes = new Set();
 const coverage = {
   websiteServices: 0,
   websiteAccess: 0,
@@ -24,36 +25,59 @@ const coverage = {
   reviewThemes: 0,
   websiteLocations: 0,
   officialWebsiteEnrichment: 0,
+  editorialReviews: 0,
+  businessSubmissions: 0,
+  imageRightsProfiles: 0,
   limitedInformationContext: 0,
 };
 
 const files = findIndexFiles(GROOMERS_DIR);
+let profileCount = 0;
 let crawlableCount = 0;
+let noindexProfileCount = 0;
 let redirectCount = 0;
 const crawlableRoutes = new Set();
 
 for (const file of files) {
   const html = fs.readFileSync(file, "utf8");
   const relative = path.relative(ROOT, file).split(path.sep).join("/");
+  const expectedRoute = `/${relative.replace(/index\.html$/, "")}`;
   const isNoindex = /<meta\s+name="robots"\s+content="[^"]*noindex/i.test(html);
-  if (isNoindex) {
+  const isRedirect = isNoindex && /<meta\s+http-equiv="refresh"/i.test(html);
+  if (isRedirect) {
     redirectCount += 1;
-    if (!/<meta\s+http-equiv="refresh"/i.test(html)) fail(relative, "noindex page is not a redirect");
     continue;
   }
 
-  crawlableCount += 1;
-  const expectedRoute = `/${relative.replace(/index\.html$/, "")}`;
-  crawlableRoutes.add(expectedRoute);
+  profileCount += 1;
+  if (isNoindex) {
+    noindexProfileCount += 1;
+  } else {
+    crawlableCount += 1;
+    crawlableRoutes.add(expectedRoute);
+  }
   const h1Matches = [...html.matchAll(/<h1\b[^>]*>([\s\S]*?)<\/h1>/gi)];
   const canonicalMatches = [...html.matchAll(/<link\s+rel="canonical"\s+href="([^"]+)"/gi)];
   const leadMatches = [...html.matchAll(/<p\s+class="lead">([\s\S]*?)<\/p>/gi)];
   const signalSections = [...html.matchAll(/data-profile-signals/g)];
+  const provenanceSections = [...html.matchAll(/class="profile-provenance"/g)];
 
   if (h1Matches.length !== 1) fail(relative, `expected one H1, found ${h1Matches.length}`);
   if (canonicalMatches.length !== 1) fail(relative, `expected one canonical, found ${canonicalMatches.length}`);
   if (leadMatches.length !== 1) fail(relative, `expected one profile lead, found ${leadMatches.length}`);
   if (signalSections.length !== 1) fail(relative, `expected one business-specific signal section, found ${signalSections.length}`);
+  if (provenanceSections.length !== 1) fail(relative, `expected one profile provenance line, found ${provenanceSections.length}`);
+  if (!/data-content-type="directory-record"/.test(html)) fail(relative, "profile is not labelled as a directory record");
+  if (isNoindex) {
+    if (!/data-profile-index-status="noindex"/.test(html)) fail(relative, "noindex profile is missing its body status");
+    const depth = Number((html.match(/data-profile-depth="(\d+)"/) || [null, ""])[1]);
+    if (!Number.isFinite(depth) || depth > 1) fail(relative, `noindex profile has unsupported depth ${depth}`);
+    if (/data-editorial-profile-review|Business-submitted (?:update|listing|correction)|data-image-rights-note/.test(html)) {
+      fail(relative, "reviewed, submitted, or image-authorized profile was noindexed");
+    }
+  } else if (!/data-profile-index-status="index"/.test(html)) {
+    fail(relative, "crawlable profile is missing its body status");
+  }
   if (canonicalMatches.length === 1) {
     try {
       const canonical = new URL(decodeHtml(canonicalMatches[0][1]));
@@ -106,7 +130,40 @@ for (const file of files) {
     officialWebsiteRoutes.add(expectedRoute);
     if (!/the official business website/i.test(signalBlock)) fail(relative, "enriched profile is missing official-website attribution");
   }
+  if (signalBlock.includes(">Business-submitted details<")) coverage.businessSubmissions += 1;
+  const editorialMatches = [...html.matchAll(/data-editorial-profile-review/g)];
+  if (editorialMatches.length > 1) fail(relative, `expected at most one editorial review, found ${editorialMatches.length}`);
+  if (editorialMatches.length === 1) {
+    coverage.editorialReviews += 1;
+    editorialReviewRoutes.add(expectedRoute);
+    const editorialBlock = (html.match(/<section class="section editorial-profile-review"[\s\S]*?<\/section>/i) || [""])[0];
+    if ((editorialBlock.match(/class="profile-signal-row"/g) || []).length < 3) fail(relative, "editorial review has fewer than three sourced facts");
+    if ((editorialBlock.match(/class="signal-source-link"/g) || []).length < 3) fail(relative, "editorial review facts are missing official source links");
+    if (!/Reviewed \d{4}-\d{2}-\d{2} against/.test(editorialBlock)) fail(relative, "editorial review is missing its review date");
+  }
   if (html.includes("review-theme-summary")) coverage.reviewThemes += 1;
+
+  const profilePhotoBlock = (html.match(/<div class="profile-photo">[\s\S]*?<\/div>/i) || [""])[0];
+  const profileImage = (profilePhotoBlock.match(/<img\b[^>]*>/i) || [""])[0];
+  const rightsNote = (html.match(/<p class="image-source-note"[^>]*data-image-rights-note="([^"]+)"[\s\S]*?<\/p>/i) || []);
+  if (profileImage) {
+    const rights = (profileImage.match(/data-image-rights="([^"]+)"/i) || [null, ""])[1];
+    if (!rights || !["owner_permission", "licensed", "public_domain"].includes(rights)) fail(relative, "profile image has no documented usage-rights status");
+    if (!rightsNote.length || rightsNote[1] !== rights) fail(relative, "profile image is missing its matching visible rights note");
+    coverage.imageRightsProfiles += 1;
+  } else {
+    if (!/Business photos appear only when usage permission or a reusable licence is documented/.test(profilePhotoBlock)) {
+      fail(relative, "profile without an authorized image is missing the permission-based placeholder");
+    }
+    if (rightsNote.length) fail(relative, "profile without an image rendered a rights note");
+  }
+
+  for (const imageTag of html.match(/<img\b[^>]+alt="[^"]*(?:listing photo| photo)"[^>]*>/gi) || []) {
+    if (!/data-image-rights="(?:owner_permission|licensed|public_domain)"/.test(imageTag)) {
+      fail(relative, "business-specific image rendered without documented rights");
+      break;
+    }
+  }
 
   const limitedMatches = [...html.matchAll(/data-limited-profile-context/g)];
   if (limitedMatches.length > 1) fail(relative, `expected at most one limited-information section, found ${limitedMatches.length}`);
@@ -127,6 +184,8 @@ for (const file of files) {
     if (normalizeText(localBusiness.name) !== h1) fail(relative, "schema name differs from H1");
     if (normalizeText(localBusiness.description) !== lead) fail(relative, "schema description differs from visible lead");
     if (localBusiness.url !== `${SITE_ORIGIN}${expectedRoute}`) fail(relative, "schema URL differs from canonical route");
+    if (profileImage && !Array.isArray(localBusiness.image)) fail(relative, "authorized profile images are missing from LocalBusiness schema");
+    if (!profileImage && Object.hasOwn(localBusiness, "image")) fail(relative, "LocalBusiness schema contains an unauthorized image");
   }
   if (/\b(?:undefined|NaN)\b/.test(stripScripts(html))) fail(relative, "rendered page contains undefined or NaN");
 }
@@ -135,10 +194,14 @@ reportDuplicates("description", descriptions);
 reportDuplicates("meta description", metaDescriptions);
 auditSitemap(crawlableRoutes);
 auditWebsiteEnrichment(officialWebsiteRoutes);
+auditEditorialProfileReviews(editorialReviewRoutes);
+auditProfileIndexOverrides(crawlableRoutes);
+auditSearchIndexImageRights();
+if (noindexProfileCount > 200) fail("groomers", `quality hold unexpectedly expanded to ${noindexProfileCount} profiles`);
 
 wordCounts.sort((a, b) => a - b);
-console.log(`Listing profiles: ${crawlableCount.toLocaleString()} crawlable, ${redirectCount.toLocaleString()} redirects`);
-console.log(`Unique leads: ${descriptions.size.toLocaleString()} of ${crawlableCount.toLocaleString()}`);
+console.log(`Listing profiles: ${crawlableCount.toLocaleString()} crawlable, ${noindexProfileCount.toLocaleString()} quality holds, ${redirectCount.toLocaleString()} redirects`);
+console.log(`Unique leads: ${descriptions.size.toLocaleString()} of ${profileCount.toLocaleString()}`);
 console.log(
   `Lead words: min ${percentile(wordCounts, 0)}, p10 ${percentile(wordCounts, 0.1)}, median ${percentile(wordCounts, 0.5)}, p90 ${percentile(wordCounts, 0.9)}, max ${percentile(wordCounts, 1)}`,
 );
@@ -147,6 +210,9 @@ console.log(
 );
 console.log(
   `Sparse-profile support: ${coverage.officialWebsiteEnrichment.toLocaleString()} official-site enrichments, ${coverage.websiteLocations.toLocaleString()} structured website locations, ${coverage.limitedInformationContext.toLocaleString()} limited-information decision sections`,
+);
+console.log(
+  `Provenance coverage: ${coverage.editorialReviews.toLocaleString()} editorial source reviews, ${coverage.businessSubmissions.toLocaleString()} business-submitted profiles, ${coverage.imageRightsProfiles.toLocaleString()} profiles with authorized images`,
 );
 
 if (failures.length) {
@@ -208,6 +274,72 @@ function auditWebsiteEnrichment(renderedRoutes) {
     if (entry && Object.hasOwn(entry, "priceAmounts")) fail(route, "enrichment entry must not store price amounts");
   }
   for (const route of renderedRoutes) if (!Object.hasOwn(entries, route)) fail(route, "rendered enrichment has no source-data entry");
+}
+
+function auditEditorialProfileReviews(renderedRoutes) {
+  const file = path.join(ROOT, "data", "editorial-profile-reviews.json");
+  if (!fs.existsSync(file)) {
+    if (renderedRoutes.size) fail("data/editorial-profile-reviews.json", "rendered reviews have no source-data file");
+    return;
+  }
+  let raw;
+  try {
+    raw = JSON.parse(fs.readFileSync(file, "utf8"));
+  } catch (error) {
+    fail("data/editorial-profile-reviews.json", "review data is not valid JSON");
+    return;
+  }
+  const entries = raw && raw.profiles && typeof raw.profiles === "object" ? raw.profiles : {};
+  for (const [route, entry] of Object.entries(entries)) {
+    if (!renderedRoutes.has(route)) fail(route, "editorial review data was not rendered on its profile");
+    const sources = entry && Array.isArray(entry.sourcePages) ? entry.sourcePages : [];
+    const facts = entry && Array.isArray(entry.facts) ? entry.facts : [];
+    if (!/^\d{4}-\d{2}-\d{2}$/.test(entry && entry.reviewedAt)) fail(route, "editorial review has no valid review date");
+    if (sources.length < 1 || sources.some((url) => !/^https:\/\//.test(url))) fail(route, "editorial review source pages are incomplete");
+    if (wordCount(entry && entry.lead) < 55) fail(route, "editorial review lead is too short");
+    if (wordCount(entry && entry.summary) < 55) fail(route, "editorial review summary is too short");
+    if (facts.length < 3 || facts.some((fact) => !fact.label || !fact.value || !sources.includes(fact.sourceUrl))) {
+      fail(route, "editorial review facts are not fully tied to listed source pages");
+    }
+  }
+  for (const route of renderedRoutes) if (!Object.hasOwn(entries, route)) fail(route, "rendered editorial review has no source-data entry");
+}
+
+function auditProfileIndexOverrides(crawlableRoutes) {
+  const file = path.join(ROOT, "data", "profile-index-overrides.json");
+  if (!fs.existsSync(file)) return;
+  let raw;
+  try {
+    raw = JSON.parse(fs.readFileSync(file, "utf8"));
+  } catch (error) {
+    fail("data/profile-index-overrides.json", "index override data is not valid JSON");
+    return;
+  }
+  if (/"(?:clicks|impressions|ctr|position)"\s*:/.test(JSON.stringify(raw))) {
+    fail("data/profile-index-overrides.json", "private Search Console metrics must not be committed");
+  }
+  const routes = Array.isArray(raw) ? raw : raw.keepIndexed || [];
+  for (const route of routes) {
+    if (!crawlableRoutes.has(route)) fail(route, "keep-index override did not produce a crawlable profile");
+  }
+}
+
+function auditSearchIndexImageRights() {
+  const file = path.join(ROOT, "assets", "search-index.json");
+  let raw;
+  try {
+    raw = JSON.parse(fs.readFileSync(file, "utf8"));
+  } catch (error) {
+    fail("assets/search-index.json", "search index is not valid JSON");
+    return;
+  }
+  const allowed = new Set(["owner_permission", "licensed", "public_domain"]);
+  for (const listing of raw.listings || []) {
+    if ((listing.image || listing.fallbackImage) && !allowed.has(listing.imageRights)) {
+      fail(listing.url || "assets/search-index.json", "search index exposes an image without documented rights");
+    }
+    if (!listing.image && listing.imageRights) fail(listing.url || "assets/search-index.json", "search index has image rights without an image");
+  }
 }
 
 function addDuplicateCandidate(map, value, file) {
