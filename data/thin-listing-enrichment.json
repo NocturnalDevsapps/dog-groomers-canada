@@ -1,0 +1,1778 @@
+{
+  "generatedAt": "2026-07-28",
+  "method": "Normalized factual signals from official business websites; no marketing prose or price amounts are stored.",
+  "listings": {
+    "/groomers/alberta/cochrane/auntie-m-s-grooming-house-cochrane-ab-916f5af3/": {
+      "businessName": "Auntie M's Grooming House",
+      "website": "http://www.auntiemsgroominghouse.com/",
+      "sourcePages": [
+        "https://www.auntiemsgroominghouse.com/",
+        "https://www.auntiemsgroominghouse.com/about-5",
+        "https://www.auntiemsgroominghouse.com/services-4"
+      ],
+      "services": [
+        "Full groom or haircut",
+        "Bath or bath-and-brush",
+        "Nail trim or grinding",
+        "Ear cleaning",
+        "De-shedding",
+        "Sanitary trim"
+      ],
+      "convenience": [
+        "One-on-one appointments"
+      ],
+      "credentials": [],
+      "breedExperience": [],
+      "pricingAvailable": false,
+      "bookingLinks": [],
+      "websiteLocation": "",
+      "crawlStatus": "official_website_enriched",
+      "crawledAt": "2026-07-28"
+    },
+    "/groomers/alberta/sherwood-park/lil-arf-n-annie-sherwood-park-ab-e825d1fc/": {
+      "businessName": "Lil\u2019Arf N Annie",
+      "website": "http://www.littlearfnannie.com/about/",
+      "sourcePages": [
+        "http://www.littlearfnannie.com/about/",
+        "http://www.littlearfnannie.com/grooming/"
+      ],
+      "services": [
+        "Full groom or haircut",
+        "Nail trim or grinding",
+        "Ear cleaning"
+      ],
+      "convenience": [],
+      "credentials": [],
+      "breedExperience": [],
+      "pricingAvailable": false,
+      "bookingLinks": [],
+      "websiteLocation": "",
+      "crawlStatus": "official_website_enriched",
+      "crawledAt": "2026-07-28"
+    },
+    "/groomers/british-columbia/duncan/dood-groom-duncan-bc-5f1f6072/": {
+      "businessName": "Dood Groom",
+      "website": "http://www.doodgroom.com/",
+      "sourcePages": [
+        "http://www.doodgroom.com/"
+      ],
+      "services": [
+        "Full groom or haircut",
+        "Bath or bath-and-brush",
+        "Nail trim or grinding",
+        "Sanitary trim"
+      ],
+      "convenience": [
+        "Cage-free appointments"
+      ],
+      "credentials": [
+        "Insurance information",
+        "Pet first-aid or CPR information",
+        "Professional policies"
+      ],
+      "breedExperience": [
+        "Poodles",
+        "Doodles",
+        "Terriers"
+      ],
+      "pricingAvailable": true,
+      "bookingLinks": [],
+      "websiteLocation": "",
+      "crawlStatus": "official_website_enriched",
+      "crawledAt": "2026-07-28"
+    },
+    "/groomers/british-columbia/nanoose-bay/dog-gone-beautiful-nanoose-bay-bc-3b5b6815/": {
+      "businessName": "Dog Gone Beautiful",
+      "website": "http://www.doggonebeautifulnanoosebay.weebly.com/",
+      "sourcePages": [
+        "https://doggonebeautifulnanoosebay.weebly.com/",
+        "https://doggonebeautifulnanoosebay.weebly.com/services-and-prices.html",
+        "https://doggonebeautifulnanoosebay.weebly.com/about-me.html"
+      ],
+      "services": [
+        "Full groom or haircut",
+        "Bath or bath-and-brush",
+        "Nail trim or grinding"
+      ],
+      "convenience": [],
+      "credentials": [],
+      "breedExperience": [],
+      "pricingAvailable": true,
+      "bookingLinks": [],
+      "websiteLocation": "",
+      "crawlStatus": "official_website_enriched",
+      "crawledAt": "2026-07-28"
+    },
+    "/groomers/british-columbia/penticton/bark-on-the-bench-grooming-penticton-bc-9ef6c4b5/": {
+      "businessName": "Bark on the Bench grooming",
+      "website": "https://www.barkonthebench.ca/",
+      "sourcePages": [
+        "https://www.barkonthebench.ca/",
+        "https://www.barkonthebench.ca/services",
+        "https://www.barkonthebench.ca/your-groomer"
+      ],
+      "services": [
+        "Full groom or haircut",
+        "Nail trim or grinding",
+        "Ear cleaning",
+        "De-shedding",
+        "De-matting"
+      ],
+      "convenience": [
+        "One-on-one appointments"
+      ],
+      "credentials": [
+        "Pet first-aid or CPR information"
+      ],
+      "breedExperience": [],
+      "pricingAvailable": true,
+      "bookingLinks": [],
+      "websiteLocation": "653 Upper Bench Road North, Penticton, BC, V2A 8V2",
+      "crawlStatus": "official_website_enriched",
+      "crawledAt": "2026-07-28"
+    },
+    "/groomers/british-columbia/prince-rupert/doggy-hotel-and-spa-prince-rupert-bc-88ccd55a/": {
+      "businessName": "Doggy Hotel & Spa",
+      "website": "https://www.doggyhotelandspa.com/",
+      "sourcePages": [
+        "https://www.doggyhotelandspa.com/",
+        "https://www.doggyhotelandspa.com/spa-day"
+      ],
+      "services": [
+        "Full groom or haircut",
+        "Bath or bath-and-brush",
+        "Nail trim or grinding",
+        "Ear cleaning",
+        "De-shedding"
+      ],
+      "convenience": [],
+      "credentials": [
+        "Certification or licensing information"
+      ],
+      "breedExperience": [
+        "Poodles",
+        "Doodles",
+        "Terriers",
+        "Schnauzers",
+        "Spaniels",
+        "Double-coated breeds"
+      ],
+      "pricingAvailable": true,
+      "bookingLinks": [],
+      "websiteLocation": "525 3 Avenue West, Prince Rupert, BC, V8J 1L9",
+      "crawlStatus": "official_website_enriched",
+      "crawledAt": "2026-07-28"
+    },
+    "/groomers/british-columbia/radium-hot-springs/mountain-tails-dog-grooming-radium-hot-springs-bc-79b32523/": {
+      "businessName": "Mountain Tails Dog Grooming",
+      "website": "https://www.mountaintailsradium.com/",
+      "sourcePages": [
+        "https://www.mountaintailsradium.com/",
+        "https://www.mountaintailsradium.com/about",
+        "https://www.mountaintailsradium.com/services-2"
+      ],
+      "services": [
+        "Full groom or haircut",
+        "Bath or bath-and-brush",
+        "Nail trim or grinding",
+        "Puppy grooming"
+      ],
+      "convenience": [
+        "One-on-one appointments"
+      ],
+      "credentials": [
+        "Certification or licensing information"
+      ],
+      "breedExperience": [],
+      "pricingAvailable": false,
+      "bookingLinks": [],
+      "websiteLocation": "",
+      "crawlStatus": "official_website_enriched",
+      "crawledAt": "2026-07-28"
+    },
+    "/groomers/british-columbia/smithers/websters-k-9-grooming-smithers-bc-fd9d5971/": {
+      "businessName": "Websters K-9 Grooming",
+      "website": "https://www.webstersk9grooming.com/",
+      "sourcePages": [
+        "https://www.webstersk9grooming.com/",
+        "https://www.webstersk9grooming.com/blank-1",
+        "https://www.webstersk9grooming.com/services-3"
+      ],
+      "services": [
+        "Full groom or haircut",
+        "Bath or bath-and-brush",
+        "Nail trim or grinding",
+        "Ear cleaning",
+        "De-matting",
+        "Sanitary trim"
+      ],
+      "convenience": [
+        "One-on-one appointments"
+      ],
+      "credentials": [
+        "Pet first-aid or CPR information"
+      ],
+      "breedExperience": [],
+      "pricingAvailable": true,
+      "bookingLinks": [],
+      "websiteLocation": "6608 British Columbia 16, Smithers, British Columbia, V0J 2N2",
+      "crawlStatus": "official_website_enriched",
+      "crawledAt": "2026-07-28"
+    },
+    "/groomers/british-columbia/surrey/wipe-your-paws-surrey-bc-de745a50/": {
+      "businessName": "Wipe Your Paws",
+      "website": "http://wipeyourpaws.ca/",
+      "sourcePages": [
+        "https://www.wipeyourpaws.ca/",
+        "https://www.wipeyourpaws.ca/about",
+        "https://www.wipeyourpaws.ca/services"
+      ],
+      "services": [
+        "Full groom or haircut",
+        "Bath or bath-and-brush",
+        "Nail trim or grinding",
+        "Ear cleaning",
+        "De-shedding",
+        "De-matting",
+        "Sanitary trim"
+      ],
+      "convenience": [
+        "One-on-one appointments"
+      ],
+      "credentials": [],
+      "breedExperience": [],
+      "pricingAvailable": true,
+      "bookingLinks": [],
+      "websiteLocation": "",
+      "crawlStatus": "official_website_enriched",
+      "crawledAt": "2026-07-28"
+    },
+    "/groomers/canada/a-mobile-pet-grooming-canada-ca-8195ce81/": {
+      "businessName": "A+ Mobile Pet Grooming",
+      "website": "https://www.aplusmobilepetgrooming.com/about-us/",
+      "sourcePages": [
+        "https://www.aplusmobilepetgrooming.com/about-us/",
+        "https://www.aplusmobilepetgrooming.com/services/cat-grooming/",
+        "https://www.aplusmobilepetgrooming.com/services/mobile-dog-grooming/"
+      ],
+      "services": [
+        "Full groom or haircut",
+        "Bath or bath-and-brush",
+        "Nail trim or grinding",
+        "Ear cleaning",
+        "De-shedding",
+        "Puppy grooming",
+        "Cat grooming",
+        "Sanitary trim"
+      ],
+      "convenience": [
+        "Mobile grooming",
+        "One-on-one appointments"
+      ],
+      "credentials": [
+        "Certification or licensing information",
+        "Fear Free training or handling information"
+      ],
+      "breedExperience": [],
+      "pricingAvailable": true,
+      "bookingLinks": [],
+      "websiteLocation": "Toronto",
+      "crawlStatus": "official_website_enriched",
+      "crawledAt": "2026-07-28"
+    },
+    "/groomers/canada/barkin-boler-canada-ca-c859833c/": {
+      "businessName": "Barkin Boler",
+      "website": "https://barkinboler.ca/",
+      "sourcePages": [
+        "https://www.barkinboler.ca/",
+        "https://www.barkinboler.ca/about",
+        "https://www.barkinboler.ca/faq-1"
+      ],
+      "services": [
+        "Nail trim or grinding",
+        "Teeth cleaning",
+        "Sanitary trim"
+      ],
+      "convenience": [
+        "Mobile grooming",
+        "One-on-one appointments"
+      ],
+      "credentials": [
+        "Professional policies"
+      ],
+      "breedExperience": [],
+      "pricingAvailable": false,
+      "bookingLinks": [],
+      "websiteLocation": "",
+      "crawlStatus": "official_website_enriched",
+      "crawledAt": "2026-07-28"
+    },
+    "/groomers/canada/bath-and-biscuit-dog-grooming-and-pet-supplies-canada-ca-49f81ad3/": {
+      "businessName": "Bath & Biscuit Dog Grooming and Pet Supplies",
+      "website": "http://www.bathandbiscuit.ca/",
+      "sourcePages": [
+        "https://bathandbiscuit.ca/"
+      ],
+      "services": [
+        "Full groom or haircut",
+        "Bath or bath-and-brush",
+        "Nail trim or grinding",
+        "De-shedding"
+      ],
+      "convenience": [],
+      "credentials": [],
+      "breedExperience": [
+        "Poodles",
+        "Doodles",
+        "Spaniels",
+        "Double-coated breeds"
+      ],
+      "pricingAvailable": true,
+      "bookingLinks": [],
+      "websiteLocation": "",
+      "crawlStatus": "official_website_enriched",
+      "crawledAt": "2026-07-28"
+    },
+    "/groomers/canada/beach-hut-grooming-canada-ca-eed0f5c2/": {
+      "businessName": "Beach Hut Grooming",
+      "website": "https://www.beachhutgrooming.ca/",
+      "sourcePages": [
+        "https://www.beachhutgrooming.ca/"
+      ],
+      "services": [
+        "Full groom or haircut",
+        "Nail trim or grinding",
+        "Ear cleaning"
+      ],
+      "convenience": [
+        "One-on-one appointments"
+      ],
+      "credentials": [],
+      "breedExperience": [
+        "Spaniels"
+      ],
+      "pricingAvailable": false,
+      "bookingLinks": [],
+      "websiteLocation": "",
+      "crawlStatus": "official_website_enriched",
+      "crawledAt": "2026-07-28"
+    },
+    "/groomers/canada/bite-club-grooming-canada-ca-4779a810/": {
+      "businessName": "Bite Club Grooming",
+      "website": "http://biteclubgrooming.ca/",
+      "sourcePages": [
+        "https://www.biteclubgrooming.ca/",
+        "https://www.biteclubgrooming.ca/faq"
+      ],
+      "services": [
+        "Nail trim or grinding",
+        "Ear cleaning",
+        "De-shedding",
+        "De-matting"
+      ],
+      "convenience": [],
+      "credentials": [],
+      "breedExperience": [],
+      "pricingAvailable": false,
+      "bookingLinks": [],
+      "websiteLocation": "",
+      "crawlStatus": "official_website_enriched",
+      "crawledAt": "2026-07-28"
+    },
+    "/groomers/canada/bwd-petcare-canada-ca-53df5667/": {
+      "businessName": "bwd Petcare",
+      "website": "http://www.bwdpetcare.com/",
+      "sourcePages": [
+        "https://bwdpetcare.com/",
+        "https://bwdpetcare.com/cat-grooming",
+        "https://bwdpetcare.com/dog-grooming"
+      ],
+      "services": [
+        "Full groom or haircut",
+        "Bath or bath-and-brush",
+        "Nail trim or grinding",
+        "Ear cleaning",
+        "De-shedding",
+        "De-matting",
+        "Cat grooming",
+        "Hand stripping"
+      ],
+      "convenience": [
+        "Mobile grooming"
+      ],
+      "credentials": [
+        "Fear Free training or handling information",
+        "Professional policies"
+      ],
+      "breedExperience": [
+        "Doodles",
+        "Double-coated breeds"
+      ],
+      "pricingAvailable": true,
+      "bookingLinks": [],
+      "websiteLocation": "",
+      "crawlStatus": "official_website_enriched",
+      "crawledAt": "2026-07-28"
+    },
+    "/groomers/canada/doggy-oasis-and-grooming-spa-canada-ca-16388bcd/": {
+      "businessName": "Doggy Oasis & Grooming Spa",
+      "website": "http://www.doggyoasisandgroomingspa.ca/",
+      "sourcePages": [
+        "https://www.doggyoasisandgroomingspa.ca/",
+        "https://www.doggyoasisandgroomingspa.ca/dog-grooming-services",
+        "https://www.doggyoasisandgroomingspa.ca/dog-grooming-services"
+      ],
+      "services": [
+        "Full groom or haircut",
+        "Bath or bath-and-brush",
+        "Nail trim or grinding",
+        "Ear cleaning",
+        "De-shedding",
+        "Sanitary trim"
+      ],
+      "convenience": [
+        "One-on-one appointments",
+        "Cage-free appointments"
+      ],
+      "credentials": [],
+      "breedExperience": [
+        "Poodles",
+        "Terriers",
+        "Double-coated breeds"
+      ],
+      "pricingAvailable": true,
+      "bookingLinks": [],
+      "websiteLocation": "",
+      "crawlStatus": "official_website_enriched",
+      "crawledAt": "2026-07-28"
+    },
+    "/groomers/canada/duke-s-den-dog-grooming-canada-ca-89df0840/": {
+      "businessName": "Duke\u2019s Den - Dog Grooming",
+      "website": "https://dukesdendoggrooming.com/",
+      "sourcePages": [
+        "https://www.dukesdendoggrooming.com/",
+        "https://www.dukesdendoggrooming.com/book-online",
+        "https://www.dukesdendoggrooming.com/booking-calendar/full-grooming-1"
+      ],
+      "services": [
+        "Full groom or haircut",
+        "Nail trim or grinding"
+      ],
+      "convenience": [],
+      "credentials": [],
+      "breedExperience": [],
+      "pricingAvailable": true,
+      "bookingLinks": [],
+      "websiteLocation": "52 Akinsdale Gardens, St. Albert, AB, T8N 2W9",
+      "crawlStatus": "official_website_enriched",
+      "crawledAt": "2026-07-28"
+    },
+    "/groomers/canada/furry-land-mobile-grooming-canada-ca-0a0a44de/": {
+      "businessName": "Furry Land - Mobile Grooming",
+      "website": "http://furryland.ca/",
+      "sourcePages": [
+        "https://furryland.ca/"
+      ],
+      "services": [
+        "Cat grooming"
+      ],
+      "convenience": [
+        "Mobile grooming"
+      ],
+      "credentials": [],
+      "breedExperience": [],
+      "pricingAvailable": false,
+      "bookingLinks": [],
+      "websiteLocation": "",
+      "crawlStatus": "official_website_enriched",
+      "crawledAt": "2026-07-28"
+    },
+    "/groomers/canada/furry-land-mobile-grooming-canada-ca-579307d2/": {
+      "businessName": "Furry Land - Mobile Grooming",
+      "website": "http://furryland.ca/toronto",
+      "sourcePages": [
+        "https://furryland.ca/toronto/",
+        "https://furryland.ca/"
+      ],
+      "services": [
+        "Full groom or haircut",
+        "Bath or bath-and-brush",
+        "Nail trim or grinding",
+        "De-shedding",
+        "De-matting",
+        "Cat grooming"
+      ],
+      "convenience": [
+        "Mobile grooming",
+        "Cage-free appointments"
+      ],
+      "credentials": [
+        "Professional policies"
+      ],
+      "breedExperience": [],
+      "pricingAvailable": false,
+      "bookingLinks": [],
+      "websiteLocation": "",
+      "crawlStatus": "official_website_enriched",
+      "crawledAt": "2026-07-28"
+    },
+    "/groomers/canada/groom-n-zoom-services-canada-ca-a2239a1c/": {
+      "businessName": "Groom 'N' Zoom Services",
+      "website": "http://www.groomnzoom.services/",
+      "sourcePages": [
+        "http://www.groomnzoom.services/",
+        "http://www.groomnzoom.services/policy.html",
+        "http://www.groomnzoom.services/services.html"
+      ],
+      "services": [
+        "Full groom or haircut",
+        "Bath or bath-and-brush",
+        "Nail trim or grinding",
+        "De-matting",
+        "Teeth cleaning"
+      ],
+      "convenience": [
+        "Online booking"
+      ],
+      "credentials": [],
+      "breedExperience": [],
+      "pricingAvailable": true,
+      "bookingLinks": [
+        {
+          "name": "Make An appointment",
+          "url": "http://www.groomnzoom.services/appointment.html"
+        }
+      ],
+      "websiteLocation": "",
+      "crawlStatus": "official_website_enriched",
+      "crawledAt": "2026-07-28"
+    },
+    "/groomers/canada/k9-pawvengers-innisfil-canada-ca-2adb7b1e/": {
+      "businessName": "K9 Pawvengers, Innisfil",
+      "website": "https://k9pawvengers.ca/",
+      "sourcePages": [
+        "https://www.k9pawvengers.ca/",
+        "https://www.k9pawvengers.ca/dog-grooming",
+        "https://www.k9pawvengers.ca/dog-grooming-1"
+      ],
+      "services": [
+        "Full groom or haircut",
+        "Bath or bath-and-brush",
+        "Nail trim or grinding",
+        "Ear cleaning",
+        "De-shedding",
+        "De-matting",
+        "Cat grooming",
+        "Teeth cleaning"
+      ],
+      "convenience": [],
+      "credentials": [
+        "Insurance information",
+        "Pet first-aid or CPR information",
+        "Professional policies"
+      ],
+      "breedExperience": [
+        "Poodles",
+        "Doodles",
+        "Double-coated breeds"
+      ],
+      "pricingAvailable": true,
+      "bookingLinks": [],
+      "websiteLocation": "",
+      "crawlStatus": "official_website_enriched",
+      "crawledAt": "2026-07-28"
+    },
+    "/groomers/canada/pawz-set-go-pet-services-inc-canada-ca-0daf15d6/": {
+      "businessName": "Pawz Set Go Pet Services Inc.",
+      "website": "http://www.pawzsetgo.com/",
+      "sourcePages": [
+        "https://pawzsetgo.com/",
+        "https://pawzsetgo.com/basic-grooming-comfort-care/",
+        "https://pawzsetgo.com/about-us/"
+      ],
+      "services": [
+        "Full groom or haircut",
+        "Bath or bath-and-brush",
+        "Nail trim or grinding",
+        "Ear cleaning",
+        "De-shedding",
+        "De-matting",
+        "Sanitary trim"
+      ],
+      "convenience": [
+        "Online booking"
+      ],
+      "credentials": [
+        "Insurance information"
+      ],
+      "breedExperience": [],
+      "pricingAvailable": false,
+      "bookingLinks": [
+        {
+          "name": "Schedule A Meet & Greet",
+          "url": "https://pawzsetgo.com/contact-us/"
+        }
+      ],
+      "websiteLocation": "",
+      "crawlStatus": "official_website_enriched",
+      "crawledAt": "2026-07-28"
+    },
+    "/groomers/canada/pet-care-by-vet-tech-katie-canada-ca-d07d6a02/": {
+      "businessName": "pet care by vet tech katie",
+      "website": "https://www.petcarebyrvtkatie.ca/",
+      "sourcePages": [
+        "https://www.petcarebyrvtkatie.ca/",
+        "https://www.petcarebyrvtkatie.ca/product-page/furminator-de-shedding-treatment-brush-out",
+        "https://www.petcarebyrvtkatie.ca/product-page/rinse-less-shampoo-conditioner-treatment-complete-brush-out"
+      ],
+      "services": [
+        "Bath or bath-and-brush",
+        "Nail trim or grinding",
+        "Ear cleaning",
+        "De-shedding"
+      ],
+      "convenience": [],
+      "credentials": [],
+      "breedExperience": [],
+      "pricingAvailable": true,
+      "bookingLinks": [],
+      "websiteLocation": "",
+      "crawlStatus": "official_website_enriched",
+      "crawledAt": "2026-07-28"
+    },
+    "/groomers/canada/pet-pawdicures-mobile-nail-trimming-canada-ca-12d52281/": {
+      "businessName": "Pet Pawdicures Mobile Nail Trimming",
+      "website": "https://petpawdicures.com/",
+      "sourcePages": [
+        "https://petpawdicures.com/",
+        "https://petpawdicures.com/service-rates/",
+        "https://petpawdicures.com/about/"
+      ],
+      "services": [
+        "Nail trim or grinding",
+        "Ear cleaning",
+        "De-matting",
+        "Teeth cleaning",
+        "Sanitary trim"
+      ],
+      "convenience": [],
+      "credentials": [],
+      "breedExperience": [],
+      "pricingAvailable": true,
+      "bookingLinks": [],
+      "websiteLocation": "",
+      "crawlStatus": "official_website_enriched",
+      "crawledAt": "2026-07-28"
+    },
+    "/groomers/canada/river-valley-pet-care-canada-ca-fe2d2fbb/": {
+      "businessName": "River Valley Pet Care",
+      "website": "https://www.rivervalleypet.ca/",
+      "sourcePages": [
+        "https://rivervalleypet.ca/",
+        "https://rivervalleypet.ca/our-services"
+      ],
+      "services": [
+        "Nail trim or grinding",
+        "Ear cleaning"
+      ],
+      "convenience": [
+        "Online booking"
+      ],
+      "credentials": [],
+      "breedExperience": [],
+      "pricingAvailable": true,
+      "bookingLinks": [
+        {
+          "name": "Schedule a Visit",
+          "url": "https://rivervalleypet.ca/contact-us"
+        }
+      ],
+      "websiteLocation": "",
+      "crawlStatus": "official_website_enriched",
+      "crawledAt": "2026-07-28"
+    },
+    "/groomers/canada/ruffcutts-dog-grooming-canada-ca-d9c2b526/": {
+      "businessName": "RuffCutts Dog Grooming",
+      "website": "https://ruffcuttsbyamanda.weebly.com/?fbclid=IwAR2CtOydV5LwRrtjGx8Vn-6cQEH4m8KRHW_FRENVopILVoJ5yJN7SDN64jM",
+      "sourcePages": [
+        "https://ruffcuttsbyamanda.weebly.com/?fbclid=IwAR2CtOydV5LwRrtjGx8Vn-6cQEH4m8KRHW_FRENVopILVoJ5yJN7SDN64jM",
+        "https://ruffcuttsbyamanda.weebly.com/about-me.html",
+        "https://ruffcuttsbyamanda.weebly.com/my-services.html"
+      ],
+      "services": [
+        "Full groom or haircut",
+        "Bath or bath-and-brush",
+        "Nail trim or grinding",
+        "Ear cleaning",
+        "De-shedding"
+      ],
+      "convenience": [],
+      "credentials": [],
+      "breedExperience": [
+        "Double-coated breeds"
+      ],
+      "pricingAvailable": true,
+      "bookingLinks": [],
+      "websiteLocation": "",
+      "crawlStatus": "official_website_enriched",
+      "crawledAt": "2026-07-28"
+    },
+    "/groomers/canada/state-of-the-heart-canine-canada-ca-587d2b73/": {
+      "businessName": "State of the Heart Canine",
+      "website": "https://www.stateoftheheartcanine.com/",
+      "sourcePages": [
+        "https://www.stateoftheheartcanine.com/",
+        "https://www.stateoftheheartcanine.com/services",
+        "https://www.stateoftheheartcanine.com/about"
+      ],
+      "services": [
+        "Full groom or haircut",
+        "Nail trim or grinding",
+        "Ear cleaning"
+      ],
+      "convenience": [
+        "Mobile grooming",
+        "One-on-one appointments",
+        "Online booking"
+      ],
+      "credentials": [
+        "Certification or licensing information"
+      ],
+      "breedExperience": [
+        "Poodles",
+        "Doodles",
+        "Schnauzers",
+        "Spaniels"
+      ],
+      "pricingAvailable": true,
+      "bookingLinks": [
+        {
+          "name": "Request Appointment",
+          "url": "https://www.stateoftheheartcanine.com/contact"
+        }
+      ],
+      "websiteLocation": "",
+      "crawlStatus": "official_website_enriched",
+      "crawledAt": "2026-07-28"
+    },
+    "/groomers/canada/the-canis-company-canada-ca-f9ce5840/": {
+      "businessName": "The Canis Company",
+      "website": "https://www.thecaniscompany.com/",
+      "sourcePages": [
+        "https://www.thecaniscompany.com/",
+        "https://www.thecaniscompany.com/grooming",
+        "https://www.thecaniscompany.com/about-us"
+      ],
+      "services": [
+        "Full groom or haircut",
+        "Nail trim or grinding",
+        "De-matting"
+      ],
+      "convenience": [
+        "Mobile grooming"
+      ],
+      "credentials": [],
+      "breedExperience": [
+        "Double-coated breeds"
+      ],
+      "pricingAvailable": true,
+      "bookingLinks": [],
+      "websiteLocation": "",
+      "crawlStatus": "official_website_enriched",
+      "crawledAt": "2026-07-28"
+    },
+    "/groomers/canada/the-fluffed-tail-dog-spa-canada-ca-82481e80/": {
+      "businessName": "The Fluffed Tail Dog Spa",
+      "website": "http://thefluffedtaildogspa.com/",
+      "sourcePages": [
+        "https://thefluffedtaildogspa.com/",
+        "https://thefluffedtaildogspa.com/faq/"
+      ],
+      "services": [
+        "Nail trim or grinding",
+        "Puppy grooming",
+        "Creative grooming"
+      ],
+      "convenience": [
+        "One-on-one appointments"
+      ],
+      "credentials": [
+        "Professional policies"
+      ],
+      "breedExperience": [],
+      "pricingAvailable": false,
+      "bookingLinks": [],
+      "websiteLocation": "",
+      "crawlStatus": "official_website_enriched",
+      "crawledAt": "2026-07-28"
+    },
+    "/groomers/canada/the-mutty-paw-canada-ca-b6d81bc6/": {
+      "businessName": "The Mutty Paw",
+      "website": "http://www.themuttypaw.com/",
+      "sourcePages": [
+        "https://themuttypaw.com/",
+        "https://themuttypaw.com/2022/04/20/mobile-grooming-2022/",
+        "https://themuttypaw.com/about/"
+      ],
+      "services": [
+        "Nail trim or grinding"
+      ],
+      "convenience": [
+        "Mobile grooming",
+        "One-on-one appointments",
+        "Pickup or drop-off details"
+      ],
+      "credentials": [],
+      "breedExperience": [],
+      "pricingAvailable": false,
+      "bookingLinks": [],
+      "websiteLocation": "",
+      "crawlStatus": "official_website_enriched",
+      "crawledAt": "2026-07-28"
+    },
+    "/groomers/canada/tinkle-time-pet-services-canada-ca-f23ee435/": {
+      "businessName": "Tinkle Time Pet Services",
+      "website": "https://tinkletime.ca/",
+      "sourcePages": [
+        "https://tinkletime.ca/",
+        "https://tinkletime.ca/mobile-in-home-dog-and-cat-grooming/"
+      ],
+      "services": [
+        "Full groom or haircut",
+        "Bath or bath-and-brush",
+        "Nail trim or grinding",
+        "De-matting",
+        "Cat grooming"
+      ],
+      "convenience": [
+        "Mobile grooming",
+        "In-home grooming",
+        "One-on-one appointments"
+      ],
+      "credentials": [
+        "Professional policies"
+      ],
+      "breedExperience": [],
+      "pricingAvailable": true,
+      "bookingLinks": [],
+      "websiteLocation": "",
+      "crawlStatus": "official_website_enriched",
+      "crawledAt": "2026-07-28"
+    },
+    "/groomers/canada/toilettage-pooch-mobile-canada-ca-a1199fa5/": {
+      "businessName": "Toilettage Pooch Mobile",
+      "website": "http://www.poochmobile.ca/",
+      "sourcePages": [
+        "https://www.poochmobile.ca/",
+        "https://www.poochmobile.ca/grooming-process.html",
+        "https://www.poochmobile.ca/rates.html"
+      ],
+      "services": [
+        "Full groom or haircut",
+        "Bath or bath-and-brush",
+        "Nail trim or grinding",
+        "Ear cleaning",
+        "De-shedding",
+        "De-matting",
+        "Sanitary trim"
+      ],
+      "convenience": [
+        "Mobile grooming"
+      ],
+      "credentials": [],
+      "breedExperience": [
+        "Poodles"
+      ],
+      "pricingAvailable": true,
+      "bookingLinks": [],
+      "websiteLocation": "",
+      "crawlStatus": "official_website_enriched",
+      "crawledAt": "2026-07-28"
+    },
+    "/groomers/canada/town-and-country-mobile-pet-services-canada-ca-ff61e453/": {
+      "businessName": "Town & Country Mobile Pet Services",
+      "website": "http://www.townandcountrypetgrooming.ca/",
+      "sourcePages": [
+        "http://www.townandcountrypetgrooming.ca/",
+        "http://www.townandcountrypetgrooming.ca/about.html",
+        "http://www.townandcountrypetgrooming.ca/services.html"
+      ],
+      "services": [
+        "Full groom or haircut",
+        "Nail trim or grinding",
+        "Ear cleaning",
+        "Cat grooming",
+        "Teeth cleaning",
+        "Sanitary trim"
+      ],
+      "convenience": [
+        "Mobile grooming"
+      ],
+      "credentials": [],
+      "breedExperience": [],
+      "pricingAvailable": true,
+      "bookingLinks": [],
+      "websiteLocation": "",
+      "crawlStatus": "official_website_enriched",
+      "crawledAt": "2026-07-28"
+    },
+    "/groomers/canada/trendy-paws-and-pups-canada-ca-a5f06979/": {
+      "businessName": "Trendy Paws and Pups",
+      "website": "http://www.trendypawsandpups.ca/",
+      "sourcePages": [
+        "https://www.trendypawsandpups.ca/"
+      ],
+      "services": [
+        "Full groom or haircut",
+        "Nail trim or grinding",
+        "De-shedding"
+      ],
+      "convenience": [
+        "One-on-one appointments"
+      ],
+      "credentials": [],
+      "breedExperience": [],
+      "pricingAvailable": false,
+      "bookingLinks": [],
+      "websiteLocation": "",
+      "crawlStatus": "official_website_enriched",
+      "crawledAt": "2026-07-28"
+    },
+    "/groomers/canada/urban-pooch-s-pet-care-canada-ca-1b2264e7/": {
+      "businessName": "Urban Pooch's Pet Care",
+      "website": "http://www.urbanpoochs.com/",
+      "sourcePages": [
+        "https://urbanpoochs.com/",
+        "https://urbanpoochs.com/grooming-service/",
+        "https://urbanpoochs.com/sitting-service/"
+      ],
+      "services": [
+        "Full groom or haircut",
+        "Bath or bath-and-brush",
+        "Nail trim or grinding",
+        "Ear cleaning"
+      ],
+      "convenience": [
+        "Mobile grooming",
+        "One-on-one appointments"
+      ],
+      "credentials": [],
+      "breedExperience": [],
+      "pricingAvailable": true,
+      "bookingLinks": [],
+      "websiteLocation": "",
+      "crawlStatus": "official_website_enriched",
+      "crawledAt": "2026-07-28"
+    },
+    "/groomers/canada/vet-tech-plus-canada-ca-fc4f2cee/": {
+      "businessName": "Vet Tech Plus",
+      "website": "http://vettechplus.net/",
+      "sourcePages": [
+        "https://www.vettechplus.net/",
+        "https://www.vettechplus.net/about",
+        "https://www.vettechplus.net/services"
+      ],
+      "services": [
+        "Nail trim or grinding",
+        "Ear cleaning",
+        "De-matting",
+        "Sanitary trim"
+      ],
+      "convenience": [],
+      "credentials": [],
+      "breedExperience": [],
+      "pricingAvailable": true,
+      "bookingLinks": [],
+      "websiteLocation": "",
+      "crawlStatus": "official_website_enriched",
+      "crawledAt": "2026-07-28"
+    },
+    "/groomers/canada/westshore-pet-care-services-canada-ca-4b3a7dc8/": {
+      "businessName": "Westshore Pet Care Services",
+      "website": "http://www.westshorepetcare.com/",
+      "sourcePages": [
+        "https://www.westshorepetcare.com/",
+        "https://www.westshorepetcare.com/dog-grooming-services",
+        "https://www.westshorepetcare.com/cat-grooming"
+      ],
+      "services": [
+        "Full groom or haircut",
+        "Nail trim or grinding",
+        "Ear cleaning",
+        "De-shedding",
+        "Cat grooming",
+        "Sanitary trim"
+      ],
+      "convenience": [
+        "In-home grooming",
+        "One-on-one appointments",
+        "Online booking"
+      ],
+      "credentials": [],
+      "breedExperience": [],
+      "pricingAvailable": true,
+      "bookingLinks": [
+        {
+          "name": "Request an Appointment",
+          "url": "https://www.westshorepetcare.com/get-in-touch"
+        }
+      ],
+      "websiteLocation": "",
+      "crawlStatus": "official_website_enriched",
+      "crawledAt": "2026-07-28"
+    },
+    "/groomers/canada/yaya-mobile-pet-grooming-canada-ca-c967346f/": {
+      "businessName": "YaYa Mobile Pet Grooming",
+      "website": "http://yayapetgrooming.ca/",
+      "sourcePages": [
+        "https://yayapetgrooming.ca/"
+      ],
+      "services": [
+        "Full groom or haircut",
+        "Bath or bath-and-brush",
+        "Nail trim or grinding",
+        "De-shedding",
+        "Cat grooming"
+      ],
+      "convenience": [
+        "Mobile grooming",
+        "One-on-one appointments"
+      ],
+      "credentials": [
+        "Certification or licensing information"
+      ],
+      "breedExperience": [
+        "Poodles"
+      ],
+      "pricingAvailable": false,
+      "bookingLinks": [],
+      "websiteLocation": "",
+      "crawlStatus": "official_website_enriched",
+      "crawledAt": "2026-07-28"
+    },
+    "/groomers/canada/zoomin-for-a-groomin-canada-ca-5a1ec056/": {
+      "businessName": "Zoomin' for a Groomin'",
+      "website": "https://www.z4ag.ca/",
+      "sourcePages": [
+        "https://www.z4ag.ca/",
+        "https://www.z4ag.ca/home",
+        "https://www.z4ag.ca/pricing"
+      ],
+      "services": [
+        "Full groom or haircut",
+        "De-matting",
+        "Hand stripping"
+      ],
+      "convenience": [],
+      "credentials": [],
+      "breedExperience": [],
+      "pricingAvailable": true,
+      "bookingLinks": [],
+      "websiteLocation": "",
+      "crawlStatus": "official_website_enriched",
+      "crawledAt": "2026-07-28"
+    },
+    "/groomers/manitoba/forrest/forrest-river-canines-forrest-mb-5aaae007/": {
+      "businessName": "Forrest River Canines",
+      "website": "http://www.forrestrivercanines.com/",
+      "sourcePages": [
+        "https://www.forrestrivercanines.com/",
+        "https://www.forrestrivercanines.com/grooming.html",
+        "https://www.forrestrivercanines.com/about-us.html"
+      ],
+      "services": [
+        "Full groom or haircut",
+        "Nail trim or grinding",
+        "Ear cleaning"
+      ],
+      "convenience": [],
+      "credentials": [
+        "Certification or licensing information",
+        "Pet first-aid or CPR information"
+      ],
+      "breedExperience": [
+        "Poodles",
+        "Doodles",
+        "Terriers",
+        "Schnauzers",
+        "Spaniels",
+        "Double-coated breeds"
+      ],
+      "pricingAvailable": true,
+      "bookingLinks": [],
+      "websiteLocation": "",
+      "crawlStatus": "official_website_enriched",
+      "crawledAt": "2026-07-28"
+    },
+    "/groomers/manitoba/macgregor/kenny-s-k9-macgregor-mb-e4e0f207/": {
+      "businessName": "Kenny's K9",
+      "website": "https://www.kennysk9.com/",
+      "sourcePages": [
+        "https://www.kennysk9.com/",
+        "https://www.kennysk9.com/new-page-2",
+        "https://www.kennysk9.com/about"
+      ],
+      "services": [
+        "Full groom or haircut",
+        "Bath or bath-and-brush",
+        "Nail trim or grinding",
+        "Ear cleaning",
+        "De-shedding",
+        "De-matting",
+        "Puppy grooming",
+        "Cat grooming",
+        "Creative grooming",
+        "Teeth cleaning",
+        "Sanitary trim"
+      ],
+      "convenience": [
+        "One-on-one appointments"
+      ],
+      "credentials": [
+        "Pet first-aid or CPR information"
+      ],
+      "breedExperience": [
+        "Poodles",
+        "Doodles",
+        "Terriers",
+        "Double-coated breeds"
+      ],
+      "pricingAvailable": true,
+      "bookingLinks": [],
+      "websiteLocation": "",
+      "crawlStatus": "official_website_enriched",
+      "crawledAt": "2026-07-28"
+    },
+    "/groomers/newfoundland-and-labrador/st-john-s/ruffin-it-canine-club-inc-st-john-s-nl-49948b76/": {
+      "businessName": "Ruffin' It Canine Club Inc.",
+      "website": "http://www.ruffinitnl.com/",
+      "sourcePages": [
+        "https://ruffinitnl.com/",
+        "https://ruffinitnl.com/pages/grooming",
+        "https://ruffinitnl.com/pages/about-ruffin-it"
+      ],
+      "services": [
+        "Full groom or haircut",
+        "Nail trim or grinding",
+        "Ear cleaning",
+        "De-shedding",
+        "De-matting",
+        "Teeth cleaning",
+        "Sanitary trim"
+      ],
+      "convenience": [],
+      "credentials": [],
+      "breedExperience": [],
+      "pricingAvailable": false,
+      "bookingLinks": [],
+      "websiteLocation": "",
+      "crawlStatus": "official_website_enriched",
+      "crawledAt": "2026-07-28"
+    },
+    "/groomers/nova-scotia/dartmouth/groomingdale-s-pet-grooming-dartmouth-ns-5b9bcbb7/": {
+      "businessName": "Groomingdale\u2019s pet grooming",
+      "website": "https://store.petvalu.ca/location/1428/",
+      "sourcePages": [
+        "https://store.petvalu.ca/location/1428/"
+      ],
+      "services": [
+        "Bath or bath-and-brush",
+        "Self-service dog wash"
+      ],
+      "convenience": [],
+      "credentials": [],
+      "breedExperience": [],
+      "pricingAvailable": false,
+      "bookingLinks": [],
+      "websiteLocation": "264 Baker Dr, Dartmouth, NS, B2W 6L4",
+      "crawlStatus": "official_website_enriched",
+      "crawledAt": "2026-07-28"
+    },
+    "/groomers/nova-scotia/east-mountain/freya-s-friends-east-mountain-ns-9a0e0b26/": {
+      "businessName": "Freya's Friends",
+      "website": "http://freyasfriends.ca/",
+      "sourcePages": [
+        "https://www.freyasfriends.ca/",
+        "https://www.freyasfriends.ca/grooming",
+        "https://www.freyasfriends.ca/about"
+      ],
+      "services": [
+        "Full groom or haircut",
+        "Bath or bath-and-brush",
+        "Nail trim or grinding",
+        "Ear cleaning",
+        "De-shedding",
+        "De-matting",
+        "Sanitary trim"
+      ],
+      "convenience": [
+        "One-on-one appointments"
+      ],
+      "credentials": [
+        "Professional policies"
+      ],
+      "breedExperience": [
+        "Double-coated breeds"
+      ],
+      "pricingAvailable": true,
+      "bookingLinks": [],
+      "websiteLocation": "",
+      "crawlStatus": "official_website_enriched",
+      "crawledAt": "2026-07-28"
+    },
+    "/groomers/nova-scotia/halifax/petsmart-grooming-halifax-ns-8c2176f8/": {
+      "businessName": "PetSmart Grooming",
+      "website": "https://stores.petsmart.ca/ns/halifax/halifax-west-end/grooming",
+      "sourcePages": [
+        "https://stores.petsmart.ca/ns/halifax/halifax-west-end/grooming",
+        "https://stores.petsmart.ca/ns/bedford/bedford/grooming",
+        "https://stores.petsmart.ca/ns/dartmouth/dartmouth/grooming"
+      ],
+      "services": [
+        "Nail trim or grinding",
+        "Ear cleaning",
+        "De-shedding",
+        "Teeth cleaning"
+      ],
+      "convenience": [],
+      "credentials": [],
+      "breedExperience": [],
+      "pricingAvailable": false,
+      "bookingLinks": [],
+      "websiteLocation": "7001 Mumford Rd Unit 001, HALIFAX, NS, B3L 2H8",
+      "crawlStatus": "official_website_enriched",
+      "crawledAt": "2026-07-28"
+    },
+    "/groomers/nova-scotia/north-alton/soulmate-grooming-studio-north-alton-ns-4273ebdc/": {
+      "businessName": "Soulmate Grooming Studio",
+      "website": "https://soulmategrooming.com/contact-us/",
+      "sourcePages": [
+        "https://soulmategrooming.com/contact-us/",
+        "https://soulmategrooming.com/grooming-services/",
+        "https://soulmategrooming.com/"
+      ],
+      "services": [
+        "Full groom or haircut",
+        "Ear cleaning",
+        "Sanitary trim"
+      ],
+      "convenience": [],
+      "credentials": [],
+      "breedExperience": [],
+      "pricingAvailable": false,
+      "bookingLinks": [],
+      "websiteLocation": "",
+      "crawlStatus": "official_website_enriched",
+      "crawledAt": "2026-07-28"
+    },
+    "/groomers/nova-scotia/timberlea/sabrina-s-pet-salon-timberlea-ns-1eb1a2f5/": {
+      "businessName": "Sabrina's Pet Salon",
+      "website": "https://sabrinaspetsalon.wixsite.com/grooming",
+      "sourcePages": [
+        "https://sabrinaspetsalon.wixsite.com/grooming",
+        "https://sabrinaspetsalon.wixsite.com/grooming/about-us",
+        "https://sabrinaspetsalon.wixsite.com/grooming/our-services"
+      ],
+      "services": [
+        "Nail trim or grinding",
+        "Cat grooming"
+      ],
+      "convenience": [
+        "One-on-one appointments"
+      ],
+      "credentials": [],
+      "breedExperience": [],
+      "pricingAvailable": false,
+      "bookingLinks": [],
+      "websiteLocation": "",
+      "crawlStatus": "official_website_enriched",
+      "crawledAt": "2026-07-28"
+    },
+    "/groomers/ontario/almonte/kay9-grooming-almonte-on-a7775498/": {
+      "businessName": "Kay9 Grooming",
+      "website": "http://www.kay9grooming.ca/",
+      "sourcePages": [
+        "https://kay9grooming.ca/",
+        "https://kay9grooming.ca/about/",
+        "https://kay9grooming.ca/services/"
+      ],
+      "services": [
+        "Full groom or haircut",
+        "Bath or bath-and-brush",
+        "Nail trim or grinding"
+      ],
+      "convenience": [
+        "One-on-one appointments"
+      ],
+      "credentials": [],
+      "breedExperience": [],
+      "pricingAvailable": false,
+      "bookingLinks": [],
+      "websiteLocation": "",
+      "crawlStatus": "official_website_enriched",
+      "crawledAt": "2026-07-28"
+    },
+    "/groomers/ontario/almonte/missy-s-woodland-pet-spaw-almonte-on-efdd2b0c/": {
+      "businessName": "Missy\u2019s Woodland Pet Spaw",
+      "website": "http://www.missyswoodlandpetspaw.com/",
+      "sourcePages": [
+        "https://missyswoodlandpetspaw.com/",
+        "https://missyswoodlandpetspaw.com/services-and-pricing-2/",
+        "https://missyswoodlandpetspaw.com/about/"
+      ],
+      "services": [
+        "Full groom or haircut",
+        "Bath or bath-and-brush",
+        "Nail trim or grinding",
+        "Ear cleaning",
+        "De-shedding",
+        "De-matting",
+        "Puppy grooming",
+        "Cat grooming",
+        "Teeth cleaning"
+      ],
+      "convenience": [
+        "One-on-one appointments",
+        "Cage-free appointments"
+      ],
+      "credentials": [],
+      "breedExperience": [
+        "Poodles",
+        "Doodles",
+        "Terriers",
+        "Spaniels"
+      ],
+      "pricingAvailable": true,
+      "bookingLinks": [],
+      "websiteLocation": "",
+      "crawlStatus": "official_website_enriched",
+      "crawledAt": "2026-07-28"
+    },
+    "/groomers/ontario/brampton/glamour-pets-mobile-pet-grooming-brampton-on-7f057bd9/": {
+      "businessName": "Glamour Pets Mobile Pet Grooming",
+      "website": "http://glamourpets.ca/",
+      "sourcePages": [
+        "https://glamourpets.ca/",
+        "https://glamourpets.ca/author/mobilegroomer/",
+        "https://glamourpets.ca/cat-grooming/"
+      ],
+      "services": [
+        "Nail trim or grinding",
+        "De-matting",
+        "Puppy grooming",
+        "Cat grooming",
+        "Sanitary trim"
+      ],
+      "convenience": [
+        "Mobile grooming",
+        "One-on-one appointments"
+      ],
+      "credentials": [],
+      "breedExperience": [],
+      "pricingAvailable": false,
+      "bookingLinks": [],
+      "websiteLocation": "",
+      "crawlStatus": "official_website_enriched",
+      "crawledAt": "2026-07-28"
+    },
+    "/groomers/ontario/cambridge/krystal-at-new-approach-cambridge-on-3e28b111/": {
+      "businessName": "Krystal at New Approach",
+      "website": "http://groommydog.ca/",
+      "sourcePages": [
+        "https://newapproach.ca/dog-grooming/",
+        "https://newapproach.ca/about/",
+        "https://newapproach.ca/faq/"
+      ],
+      "services": [
+        "Full groom or haircut",
+        "Bath or bath-and-brush",
+        "Nail trim or grinding"
+      ],
+      "convenience": [],
+      "credentials": [],
+      "breedExperience": [],
+      "pricingAvailable": true,
+      "bookingLinks": [],
+      "websiteLocation": "",
+      "crawlStatus": "official_website_enriched",
+      "crawledAt": "2026-07-28"
+    },
+    "/groomers/ontario/cornwall/comet-s-pet-salon-private-pet-spa-one-on-one-w-your-pet-cornwall-on-ea4df019/": {
+      "businessName": "Comet's Pet Salon \u2022 Private Pet Spa (One on One w Your Pet)",
+      "website": "http://63bde62ab68b6.site123.me/",
+      "sourcePages": [
+        "https://63bde62ab68b6.site123.me/"
+      ],
+      "services": [
+        "Bath or bath-and-brush",
+        "Nail trim or grinding",
+        "Ear cleaning",
+        "De-shedding"
+      ],
+      "convenience": [
+        "One-on-one appointments"
+      ],
+      "credentials": [],
+      "breedExperience": [
+        "Double-coated breeds"
+      ],
+      "pricingAvailable": false,
+      "bookingLinks": [],
+      "websiteLocation": "",
+      "crawlStatus": "official_website_enriched",
+      "crawledAt": "2026-07-28"
+    },
+    "/groomers/ontario/east-gwillimbury/goldenvale-grooming-east-gwillimbury-on-1d389d07/": {
+      "businessName": "Goldenvale Grooming",
+      "website": "https://www.goldenvalevet.com/services/grooming",
+      "sourcePages": [
+        "https://www.goldenvalevet.com/services/grooming",
+        "https://www.goldenvalevet.com/our-team",
+        "https://www.goldenvalevet.com/services/veterinary-services"
+      ],
+      "services": [
+        "Nail trim or grinding",
+        "Ear cleaning",
+        "De-shedding"
+      ],
+      "convenience": [],
+      "credentials": [
+        "Pet first-aid or CPR information",
+        "Fear Free training or handling information"
+      ],
+      "breedExperience": [],
+      "pricingAvailable": false,
+      "bookingLinks": [],
+      "websiteLocation": "",
+      "crawlStatus": "official_website_enriched",
+      "crawledAt": "2026-07-28"
+    },
+    "/groomers/ontario/embro/the-dog-barn-embro-on-3095ba42/": {
+      "businessName": "The Dog Barn",
+      "website": "https://thedogbarn.ca/",
+      "sourcePages": [
+        "https://thedogbarn.ca/"
+      ],
+      "services": [
+        "Full groom or haircut",
+        "Bath or bath-and-brush",
+        "Nail trim or grinding",
+        "Ear cleaning",
+        "De-shedding",
+        "Puppy grooming",
+        "Sanitary trim"
+      ],
+      "convenience": [],
+      "credentials": [],
+      "breedExperience": [],
+      "pricingAvailable": false,
+      "bookingLinks": [],
+      "websiteLocation": "",
+      "crawlStatus": "official_website_enriched",
+      "crawledAt": "2026-07-28"
+    },
+    "/groomers/ontario/grimsby/urban-tailz-grimsby-grimsby-on-af0ba2ff/": {
+      "businessName": "Urban Tailz Grimsby",
+      "website": "https://www.urbantailzgrimsby.com/",
+      "sourcePages": [
+        "https://www.urbantailzgrimsby.com/",
+        "https://www.urbantailzgrimsby.com/about",
+        "https://www.urbantailzgrimsby.com/service-page/pet-communication-with-karen"
+      ],
+      "services": [],
+      "convenience": [],
+      "credentials": [
+        "Professional policies"
+      ],
+      "breedExperience": [],
+      "pricingAvailable": false,
+      "bookingLinks": [],
+      "websiteLocation": "18 Marlow Avenue, Grimsby, ON, L3M 1Y3",
+      "crawlStatus": "official_website_enriched",
+      "crawledAt": "2026-07-28"
+    },
+    "/groomers/ontario/keswick/party-paws-pet-sitting-svc-keswick-on-a73bf414/": {
+      "businessName": "Party Paws Pet Sitting Svc",
+      "website": "http://partypaws.ca/wp/",
+      "sourcePages": [
+        "http://partypaws.ca/wp/",
+        "https://partypaws.ca/book-our-services/"
+      ],
+      "services": [
+        "Full groom or haircut",
+        "Bath or bath-and-brush",
+        "Nail trim or grinding",
+        "Puppy grooming",
+        "Cat grooming"
+      ],
+      "convenience": [],
+      "credentials": [
+        "Certification or licensing information",
+        "Pet first-aid or CPR information"
+      ],
+      "breedExperience": [],
+      "pricingAvailable": false,
+      "bookingLinks": [],
+      "websiteLocation": "",
+      "crawlStatus": "official_website_enriched",
+      "crawledAt": "2026-07-28"
+    },
+    "/groomers/ontario/kitchener/pro-grooming-kitchener-on-a1acbbd8/": {
+      "businessName": "Pro Grooming",
+      "website": "https://progrooming.ca/contact-us/",
+      "sourcePages": [
+        "https://progrooming.ca/contact-us/",
+        "https://progrooming.ca/",
+        "https://progrooming.ca/price-list/"
+      ],
+      "services": [
+        "Full groom or haircut",
+        "Bath or bath-and-brush",
+        "Nail trim or grinding",
+        "Ear cleaning",
+        "De-shedding",
+        "De-matting"
+      ],
+      "convenience": [],
+      "credentials": [],
+      "breedExperience": [],
+      "pricingAvailable": false,
+      "bookingLinks": [],
+      "websiteLocation": "",
+      "crawlStatus": "official_website_enriched",
+      "crawledAt": "2026-07-28"
+    },
+    "/groomers/ontario/lunenburg/shannoncourt-lunenburg-on-78f67526/": {
+      "businessName": "Shannoncourt",
+      "website": "http://shannoncourtdogtraining.com/",
+      "sourcePages": [
+        "https://shannoncourtdogtraining.com/",
+        "https://shannoncourtdogtraining.com/grooming/",
+        "https://shannoncourtdogtraining.com/grooming/"
+      ],
+      "services": [
+        "Full groom or haircut",
+        "Bath or bath-and-brush",
+        "Nail trim or grinding",
+        "Ear cleaning",
+        "De-shedding",
+        "Cat grooming"
+      ],
+      "convenience": [
+        "One-on-one appointments"
+      ],
+      "credentials": [],
+      "breedExperience": [],
+      "pricingAvailable": true,
+      "bookingLinks": [],
+      "websiteLocation": "",
+      "crawlStatus": "official_website_enriched",
+      "crawledAt": "2026-07-28"
+    },
+    "/groomers/ontario/markham/woofur-markham-on-2eee194c/": {
+      "businessName": "Woofur",
+      "website": "http://www.woofur.ca/",
+      "sourcePages": [
+        "https://www.woofur.ca/",
+        "https://www.woofur.ca/cat-grooming"
+      ],
+      "services": [
+        "Nail trim or grinding",
+        "Ear cleaning",
+        "Cat grooming",
+        "Sanitary trim"
+      ],
+      "convenience": [
+        "Cage-free appointments",
+        "Online booking"
+      ],
+      "credentials": [
+        "Certification or licensing information"
+      ],
+      "breedExperience": [],
+      "pricingAvailable": false,
+      "bookingLinks": [
+        {
+          "name": "REQUEST AN APPOINTMENT",
+          "url": "https://www.woofur.ca/request-an-appointment"
+        }
+      ],
+      "websiteLocation": "",
+      "crawlStatus": "official_website_enriched",
+      "crawledAt": "2026-07-28"
+    },
+    "/groomers/ontario/mount-forest/precious-paws-dog-grooming-mount-forest-on-d7cfd249/": {
+      "businessName": "Precious Paws Dog Grooming",
+      "website": "http://www.preciouspawsgrooming.com/",
+      "sourcePages": [
+        "https://www.preciouspawsgrooming.com/",
+        "https://www.preciouspawsgrooming.com/grooming",
+        "https://www.preciouspawsgrooming.com/about"
+      ],
+      "services": [
+        "Full groom or haircut",
+        "Bath or bath-and-brush",
+        "Nail trim or grinding",
+        "Ear cleaning",
+        "Puppy grooming"
+      ],
+      "convenience": [],
+      "credentials": [
+        "Professional policies"
+      ],
+      "breedExperience": [],
+      "pricingAvailable": false,
+      "bookingLinks": [],
+      "websiteLocation": "",
+      "crawlStatus": "official_website_enriched",
+      "crawledAt": "2026-07-28"
+    },
+    "/groomers/ontario/orangeville/the-groom-meister-orangeville-on-dfc5a3f1/": {
+      "businessName": "The Groom Meister",
+      "website": "https://thegroommeister.com/",
+      "sourcePages": [
+        "https://thegroommeister.com/",
+        "https://thegroommeister.com/",
+        "https://thegroommeister.com/about-us/"
+      ],
+      "services": [
+        "Hand stripping"
+      ],
+      "convenience": [
+        "Mobile grooming"
+      ],
+      "credentials": [],
+      "breedExperience": [],
+      "pricingAvailable": false,
+      "bookingLinks": [],
+      "websiteLocation": "",
+      "crawlStatus": "official_website_enriched",
+      "crawledAt": "2026-07-28"
+    },
+    "/groomers/ontario/toronto/mypups4evergrooming-dog-grooming-toronto-toronto-on-a756b618/": {
+      "businessName": "Mypups4evergrooming | Dog Grooming Toronto",
+      "website": "https://www.mypups4ever.com/?utm_source=google&utm_medium=wix_google_business_profile&utm_campaign=5991095802077794352",
+      "sourcePages": [
+        "https://www.mypups4ever.com/?utm_source=google&utm_medium=wix_google_business_profile&utm_campaign=5991095802077794352",
+        "https://www.mypups4ever.com/",
+        "https://www.mypups4ever.com/team-4"
+      ],
+      "services": [],
+      "convenience": [
+        "One-on-one appointments"
+      ],
+      "credentials": [],
+      "breedExperience": [],
+      "pricingAvailable": false,
+      "bookingLinks": [],
+      "websiteLocation": "Auburn Avenue, Toronto, ON, M6H 2L6",
+      "crawlStatus": "official_website_enriched",
+      "crawledAt": "2026-07-28"
+    },
+    "/groomers/ontario/windsor/petsmart-grooming-windsor-on-d1b59e41/": {
+      "businessName": "PetSmart Grooming",
+      "website": "https://stores.petsmart.ca/on/windsor/windsor-relo/grooming?utm_source=google&utm_medium=organic&utm_campaign=google-my-business",
+      "sourcePages": [
+        "https://stores.petsmart.ca/on/windsor/windsor-relo/grooming?utm_source=google&utm_medium=organic&utm_campaign=google-my-business",
+        "https://stores.petsmart.ca/on/windsor/south-windsor/grooming",
+        "https://stores.petsmart.ca/on/windsor/windsor-tecumseh-mall-on/grooming"
+      ],
+      "services": [
+        "Nail trim or grinding",
+        "Ear cleaning",
+        "De-shedding",
+        "Teeth cleaning"
+      ],
+      "convenience": [],
+      "credentials": [],
+      "breedExperience": [],
+      "pricingAvailable": false,
+      "bookingLinks": [],
+      "websiteLocation": "4115 Walker Rd Unit 60A, WINDSOR, ON, N8W 3T6",
+      "crawlStatus": "official_website_enriched",
+      "crawledAt": "2026-07-28"
+    },
+    "/groomers/ontario/woodstock/sudzees-woodstock-on-49742667/": {
+      "businessName": "Sudzees",
+      "website": "https://sudzees.ca/",
+      "sourcePages": [
+        "https://sudzees.ca/"
+      ],
+      "services": [],
+      "convenience": [],
+      "credentials": [],
+      "breedExperience": [],
+      "pricingAvailable": false,
+      "bookingLinks": [],
+      "websiteLocation": "201 Ingersoll Road, Woodstock, Ontario, N4S 7V6",
+      "crawlStatus": "official_website_enriched",
+      "crawledAt": "2026-07-28"
+    },
+    "/groomers/quebec/chertsey/coquetterie-mc-distribution-chertsey-petmobile-chertsey-qc-b887156a/": {
+      "businessName": "Coquetterie MC, Distribution Chertsey PetMobile",
+      "website": "https://petmobile.ca/",
+      "sourcePages": [
+        "https://petmobile.ca/",
+        "https://petmobile.ca/product-categories/cat-products/treatment-cat/",
+        "https://petmobile.ca/product-categories/dog-products/dog-cleanliness/dog-cleanliness-brushesaandaccessories/"
+      ],
+      "services": [
+        "Bath or bath-and-brush",
+        "De-shedding",
+        "De-matting"
+      ],
+      "convenience": [],
+      "credentials": [],
+      "breedExperience": [],
+      "pricingAvailable": false,
+      "bookingLinks": [],
+      "websiteLocation": "",
+      "crawlStatus": "official_website_enriched",
+      "crawledAt": "2026-07-28"
+    },
+    "/groomers/quebec/montreal/fluffy-tails-montreal-qc-7532b5e3/": {
+      "businessName": "Fluffy Tails",
+      "website": "http://fluffytail.ca/",
+      "sourcePages": [
+        "https://fluffytail.ca/"
+      ],
+      "services": [
+        "Bath or bath-and-brush"
+      ],
+      "convenience": [],
+      "credentials": [],
+      "breedExperience": [],
+      "pricingAvailable": false,
+      "bookingLinks": [],
+      "websiteLocation": "",
+      "crawlStatus": "official_website_enriched",
+      "crawledAt": "2026-07-28"
+    },
+    "/groomers/quebec/saint-lazare/wizard-of-paws-wellness-center-saint-lazare-qc-8476c0a3/": {
+      "businessName": "Wizard of Paws Wellness Center",
+      "website": "http://www.thewizardofpaws.ca/",
+      "sourcePages": [
+        "https://www.thewizardofpaws.ca/",
+        "https://www.thewizardofpaws.ca/dog-grooming"
+      ],
+      "services": [
+        "Nail trim or grinding"
+      ],
+      "convenience": [
+        "Online booking"
+      ],
+      "credentials": [],
+      "breedExperience": [],
+      "pricingAvailable": true,
+      "bookingLinks": [
+        {
+          "name": "Request An Appointment",
+          "url": "https://www.thewizardofpaws.ca/contact"
+        }
+      ],
+      "websiteLocation": "2844 rue Huntsmen, Saint-Lazare, J7T2A1",
+      "crawlStatus": "official_website_enriched",
+      "crawledAt": "2026-07-28"
+    }
+  }
+}

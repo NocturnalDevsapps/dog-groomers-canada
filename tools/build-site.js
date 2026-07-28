@@ -27,6 +27,7 @@ const IMAGE_OVERRIDES_FILE = path.join(ROOT, "data", "listing-image-overrides.js
 const BROKEN_IMAGE_URLS_FILE = path.join(ROOT, "data", "broken-image-urls.json");
 const LISTING_CORRECTIONS_FILE = path.join(ROOT, "data", "listing-corrections.json");
 const MANUAL_LISTINGS_FILE = path.join(ROOT, "data", "manual-listings.json");
+const THIN_LISTING_ENRICHMENT_FILE = path.join(ROOT, "data", "thin-listing-enrichment.json");
 const LEGACY_AD_SERVICE_WORKER_TOMBSTONE = `self.addEventListener("install", () => self.skipWaiting());
 self.addEventListener("activate", (event) => {
   event.waitUntil(self.registration.unregister());
@@ -246,7 +247,8 @@ function main() {
 
   const rawListings = [...loadListings(CSV_FILE), ...loadManualListings()];
   const correctedListings = applyListingCorrections(buildListingUrls(rawListings), loadListingCorrections());
-  const listings = removeBrokenListingImages(applyImageOverrides(correctedListings.listings, loadImageOverrides()), loadBrokenImageUrls());
+  const enrichedListings = applyThinListingEnrichment(correctedListings.listings, loadThinListingEnrichment());
+  const listings = removeBrokenListingImages(applyImageOverrides(enrichedListings, loadImageOverrides()), loadBrokenImageUrls());
   const provinceGroups = groupProvinces(listings);
   const cityGroups = groupCities(listings);
   const serviceGroups = groupServices(listings);
@@ -383,6 +385,7 @@ function loadListings(file) {
       reviewCommentCount: reviewComments.length,
       reviewThemes,
       description: "",
+      descriptionIsCustom: false,
       temporarilyClosed: isTruthy(get("temporarilyClosed")),
       scrapedAt: clean(get("scrapedAt")),
       score: 0,
@@ -473,6 +476,7 @@ function loadManualListings() {
       reviewCommentCount: 0,
       reviewThemes: [],
       description: "",
+      descriptionIsCustom: Boolean(clean(item.description)),
       offer,
       temporarilyClosed: Boolean(item.temporarilyClosed),
       scrapedAt: clean(item.updatedAt),
@@ -576,12 +580,53 @@ function applyListingCorrections(listings, corrections) {
     const fields = correction.fields || {};
     const updates = Object.fromEntries(allowedFields.filter((field) => Object.hasOwn(fields, field)).map((field) => [field, fields[field]]));
     const updated = { ...listing, ...updates };
-    updated.description = buildListingDescription(updated);
+    updated.description = updated.descriptionIsCustom ? listing.description : buildListingDescription(updated);
     updated.score = qualityScore(updated);
     corrected.push(updated);
   }
 
   return { listings: corrected, redirects };
+}
+
+function loadThinListingEnrichment() {
+  if (!fs.existsSync(THIN_LISTING_ENRICHMENT_FILE)) return new Map();
+  const raw = JSON.parse(fs.readFileSync(THIN_LISTING_ENRICHMENT_FILE, "utf8"));
+  const entries = raw && !Array.isArray(raw) && raw.listings && typeof raw.listings === "object" ? raw.listings : {};
+  return new Map(Object.entries(entries).filter(([url, value]) => url.startsWith("/groomers/") && value && typeof value === "object"));
+}
+
+function applyThinListingEnrichment(listings, enrichment) {
+  if (!enrichment.size) return listings;
+  return listings.map((listing) => {
+    const entry = enrichment.get(listing.url);
+    if (!entry || (entry.website && websiteHostname(entry.website) !== websiteHostname(listing.website))) return listing;
+
+    const sourcePages = unique((Array.isArray(entry.sourcePages) ? entry.sourcePages : []).map(safeHttpUrl).filter(Boolean)).slice(0, 3);
+    const updated = {
+      ...listing,
+      websiteCrawlStatus: clean(entry.crawlStatus) || "official_website_enriched",
+      websiteCrawlSource: sourcePages[0] || listing.websiteCrawlSource || listing.website,
+      websiteResearchPages: sourcePages,
+      websiteEnrichedAt: clean(entry.crawledAt),
+      websiteLocation: clean(entry.websiteLocation).slice(0, 180),
+      websiteServices: unique([...(listing.websiteServices || []), ...cleanSignalArray(entry.services).map(friendlyWebsiteService)]).slice(0, 12),
+      websiteConvenience: unique([...(listing.websiteConvenience || []), ...cleanSignalArray(entry.convenience).map(friendlyWebsiteSignal)]).slice(0, 12),
+      websiteCredentials: unique([...(listing.websiteCredentials || []), ...cleanSignalArray(entry.credentials).map(friendlyWebsiteSignal)]).slice(0, 12),
+      websiteBreedExperience: unique([...(listing.websiteBreedExperience || []), ...cleanSignalArray(entry.breedExperience)]).slice(0, 12),
+      websitePricingAvailable: Boolean(listing.websitePricingAvailable || entry.pricingAvailable),
+      bookingLinks: normalizeBookingLinks([...(listing.bookingLinks || []), ...(Array.isArray(entry.bookingLinks) ? entry.bookingLinks : [])]),
+    };
+    updated.description = updated.descriptionIsCustom ? listing.description : buildListingDescription(updated);
+    return updated;
+  });
+}
+
+function websiteHostname(value) {
+  try {
+    return new URL(value).hostname.toLowerCase().replace(/^www\./, "");
+  } catch (error) {
+    return "";
+  }
 }
 
 function loadImageOverrides() {
@@ -1189,7 +1234,7 @@ function writeListingPages(context) {
             </section>
             ${listingSpecificSignalsSection(listing)}
             ${listingReviewThemesSection(listing)}
-            ${listingGuidanceSection(listing)}
+            ${listingGuidanceSection(listing, related, correctionUrl)}
             ${profileCostAndQuoteSection(listing, city, province, costMap)}
             ${profileQuestionsSection(listing)}
             ${profileCorrectionSection(listing, correctionUrl)}
@@ -3712,7 +3757,7 @@ function listingSpecificSignalsSection(listing) {
     rows.push(profileSignalRow("Website policies", esc(joinWithAnd(listing.websiteCredentials.slice(0, 5)))));
   }
   if (listing.websiteBreedExperience && listing.websiteBreedExperience.length) {
-    rows.push(profileSignalRow("Breed experience", `${esc(joinWithAnd(listing.websiteBreedExperience.slice(0, 6)))} <span class="signal-qualifier">mentioned on the business website</span>`));
+    rows.push(profileSignalRow("Breed and coat mentions", `${esc(joinWithAnd(listing.websiteBreedExperience.slice(0, 6)))} <span class="signal-qualifier">mentioned on the business website</span>`));
   }
   if (listing.websitePricingAvailable) {
     const pricingSignal = listing.websiteCrawlStatus === "owner_provided" && listing.offer
@@ -3737,16 +3782,27 @@ function listingSpecificSignalsSection(listing) {
   if (listing.ownerUpdateCount) {
     rows.push(profileSignalRow("Business updates", `${esc(countLabel(listing.ownerUpdateCount, "owner update"))} appeared in the public listing snapshot.`));
   }
+  if (listing.websiteLocation) {
+    rows.push(profileSignalRow(
+      "Website location",
+      `${esc(listing.websiteLocation)} <span class="signal-qualifier">from structured data on the business website; confirm it matches the current service location</span>`,
+    ));
+  }
 
   const snapshot = profileSnapshotLabel(listing.scrapedAt);
   const sourceLabel = listing.websiteCrawlStatus === "owner_provided" ? "Owner-provided profile details" : "Public listing details";
   const sourceDate = snapshot ? ` gathered in ${snapshot}` : "";
-  const websiteSource = listing.websiteCrawlStatus === "website_crawled" && listing.websiteCrawlSource
-    ? ` Website findings came from <a href="${escAttr(listing.websiteCrawlSource)}" target="_blank" rel="nofollow noopener">the business website page crawled for this profile</a>.`
-    : "";
+  const hasSupplementalWebsiteEnrichment = listing.websiteCrawlStatus === "official_website_enriched";
+  const websiteResearchDate = profileSnapshotLabel(listing.websiteEnrichedAt);
+  const websitePageCount = listing.websiteResearchPages && listing.websiteResearchPages.length;
+  const websiteSource = hasSupplementalWebsiteEnrichment && listing.websiteCrawlSource
+    ? ` Website findings came from <a href="${escAttr(listing.websiteCrawlSource)}" target="_blank" rel="nofollow noopener">the official business website</a>${websitePageCount ? ` and ${countLabel(websitePageCount, "relevant page")} were reviewed` : ""}${websiteResearchDate ? ` in ${websiteResearchDate}` : ""}.`
+    : listing.websiteCrawlStatus === "website_crawled" && listing.websiteCrawlSource
+      ? ` Website findings came from <a href="${escAttr(listing.websiteCrawlSource)}" target="_blank" rel="nofollow noopener">the business website page crawled for this profile</a>.`
+      : "";
   rows.push(profileSignalRow("Source timing", `${esc(sourceLabel)}${esc(sourceDate)}.${websiteSource}`));
 
-  return `<section class="section profile-signals" data-profile-signals>
+  return `<section class="section profile-signals" data-profile-signals${hasSupplementalWebsiteEnrichment ? " data-official-website-enrichment" : ""}>
       <h2>Business-specific signals</h2>
       <p>These details separate core profile data from findings on a business website when website evidence is available. They support comparison, but they are not an endorsement or a guarantee that every detail is still current.</p>
       <dl class="profile-signal-list">${rows.join("")}</dl>
@@ -3769,7 +3825,8 @@ function listingReviewThemesSection(listing) {
     </section>`;
 }
 
-function listingGuidanceSection(listing) {
+function listingGuidanceSection(listing, related, correctionUrl) {
+  if (isLimitedInformationListing(listing)) return limitedListingGuidanceSection(listing, related, correctionUrl);
   const profileServices = listingProfileServices(listing);
   const serviceText = profileServices.length ? profileServices.slice(0, 5).join(", ") : "bath, haircut, nail trim, de-shedding, de-matting, and puppy grooming";
   return `<section class="section">
@@ -3781,6 +3838,76 @@ function listingGuidanceSection(listing) {
         <div class="info-card"><h3>Listing accuracy</h3><p>Directory details can change. Use the phone, website, and map links above when available, and send corrections if a detail is outdated.</p></div>
       </div>
     </section>`;
+}
+
+function limitedListingGuidanceSection(listing, related, correctionUrl) {
+  const services = substantiveProfileServices(listing);
+  const available = [
+    `${listing.city}, ${listing.provinceCode} location`,
+    listing.address ? "a listed street address" : "",
+    listing.phone ? "a phone number" : "",
+    listing.website ? "a business website" : "",
+    listing.rating ? `${listing.rating.toFixed(1)} stars${listing.reviews ? ` from ${countLabel(listing.reviews, "review")}` : ""}` : "",
+    services.length ? `named services including ${joinWithAnd(services.slice(0, 4))}` : "",
+    listing.hours.length ? "listed hours" : "",
+    preferredBookingLink(listing) ? "an appointment link" : "",
+  ].filter(Boolean);
+  const missing = [
+    services.length ? "" : "a detailed current service menu",
+    listing.hours.length ? "" : "current hours or appointment schedule",
+    preferredBookingLink(listing) ? "" : "the preferred booking method and new-client availability",
+    listing.websitePricingAvailable ? "" : "current package scope and pricing",
+    listing.reviewThemes && listing.reviewThemes.length ? "" : "enough written feedback to summarize recurring customer themes",
+    listing.website ? "" : "a first-party website or policy page",
+  ].filter(Boolean);
+  const nextCheck = !services.length
+    ? `Describe your dog's breed, size, coat condition, temperament, and requested finish when contacting ${listing.title}; ask what is included before accepting a quote.`
+    : !listing.hours.length
+      ? `Confirm that ${listing.title} is accepting new clients and ask for its current appointment schedule before planning a visit.`
+      : !listing.reviewThemes.length
+        ? `Ask for recent examples involving a coat or temperament similar to your dog's, then confirm handling, pickup timing, and price scope.`
+        : `Confirm the service package, current price, timing, and policies directly before booking.`;
+  const sameProvinceComparisons = related.filter((item) => item.provinceCode === listing.provinceCode && item.provinceSlug !== "canada");
+  const comparisons = (sameProvinceComparisons.length ? sameProvinceComparisons : related).slice(0, 3);
+  const comparisonLinks = comparisons.length
+    ? `${comparisons.map((item) => `<a href="${escAttr(item.url)}">${esc(item.title)}</a>`).join(", ")}, and the <a href="${escAttr(listing.cityUrl)}">${esc(listing.city)} directory</a>.`
+    : `the <a href="${escAttr(listing.cityUrl)}">${esc(listing.city)} directory</a> for other profiles with stronger source coverage.`;
+
+  return `<section class="section limited-profile-context" data-limited-profile-context data-information-depth="${listingInformationDepth(listing)}">
+      <h2>What this profile can and cannot confirm</h2>
+      <p>The available public evidence for ${esc(listing.title)} is limited. That is not a judgment about service quality; it means fewer business-specific details were available to independently summarize.</p>
+      <dl class="profile-signal-list limited-profile-list">
+        ${profileSignalRow("Included in the snapshot", esc(joinWithAnd(available.slice(0, 7))))}
+        ${profileSignalRow("Still to confirm", esc(joinWithAnd(missing.slice(0, 5))))}
+        ${profileSignalRow("Best next check", esc(nextCheck))}
+        ${profileSignalRow("Compare locally", comparisonLinks)}
+      </dl>
+      <p class="muted">Business owner or customer with a reliable correction? <a href="${escAttr(correctionUrl)}">Send updated services, hours, booking details, or other source information</a>.</p>
+    </section>`;
+}
+
+function listingInformationDepth(listing) {
+  let depth = 0;
+  if (substantiveProfileServices(listing).length) depth += 2;
+  if (listingWebsiteEvidence(listing).length) depth += 2;
+  if (listing.reviewThemes && listing.reviewThemes.length) depth += 2;
+  if (listing.hours && listing.hours.length) depth += 1;
+  if (preferredBookingLink(listing)) depth += 1;
+  if (listing.ownerUpdateCount) depth += 1;
+  if (listing.reviews) depth += 1;
+  if (listing.descriptionIsCustom) depth += 2;
+  if (listing.offer) depth += 1;
+  return depth;
+}
+
+function isLimitedInformationListing(listing) {
+  return listingInformationDepth(listing) <= 3;
+}
+
+function substantiveProfileServices(listing) {
+  return listingProfileServices(listing).filter(
+    (item) => !/^(?:dog grooming|pet grooming|cat grooming|grooming|groomer|pet groomer|dog groomer|cat groomer|general dog grooming)$/i.test(clean(item)),
+  );
 }
 
 function profileCostAndQuoteSection(listing, city, province, costMap) {
@@ -4496,6 +4623,18 @@ function friendlyWebsiteSignal(value) {
   return labels[cleaned.toLowerCase()] || cleaned;
 }
 
+function friendlyWebsiteService(value) {
+  const labels = {
+    "full groom or haircut": "Haircut / styling",
+    "bath or bath-and-brush": "Bath / bath and brush",
+    "nail trim or grinding": "Nail trim / grind",
+    "de-shedding": "Deshedding",
+    "puppy grooming": "Puppy groom",
+  };
+  const cleaned = clean(value);
+  return labels[cleaned.toLowerCase()] || cleaned;
+}
+
 function hasMeaningfulWebsitePricing(value) {
   const text = clean(value);
   if (!text || /^(?:no|none)\b/i.test(text) || /not found|not available|no grooming-specific/i.test(text)) return false;
@@ -4577,7 +4716,22 @@ function buildListingDescription(listing) {
 }
 
 function listingProfileServices(listing) {
-  return (listing.services || []).filter((item) => !/^(?:confirm|call|contact|ask|check)\b/i.test(item));
+  const services = unique([...(listing.services || []), ...(listing.websiteServices || [])])
+    .filter((item) => !/^(?:confirm|call|contact|ask|check)\b/i.test(item));
+  return listing.websiteCrawlStatus === "official_website_enriched" ? uniqueBy(services, profileServiceKey) : services;
+}
+
+function profileServiceKey(value) {
+  const key = normalizeKey(value);
+  if (/full groom|haircut|hair cut|styling|breed cut|breed clip/.test(key)) return "haircut";
+  if (/bath|shampoo/.test(key)) return "bath";
+  if (/nail|dremel/.test(key)) return "nails";
+  if (/de[-\s]?shed|deshed|undercoat/.test(key)) return "deshedding";
+  if (/de[-\s]?mat|demat/.test(key)) return "dematting";
+  if (/puppy/.test(key)) return "puppy";
+  if (/cat|feline/.test(key)) return "cat";
+  if (/teeth|tooth|dental/.test(key)) return "teeth";
+  return key;
 }
 
 function listingWebsiteEvidence(listing) {
@@ -4592,7 +4746,7 @@ function listingWebsiteEvidence(listing) {
     evidence.push(joinWithAnd(listing.websiteCredentials.slice(0, 2).map(lowerFirst)));
   }
   if (listing.websiteBreedExperience && listing.websiteBreedExperience.length) {
-    evidence.push(`breed-experience information for ${joinWithAnd(listing.websiteBreedExperience.slice(0, 3))}`);
+    evidence.push(`breed or coat-type references to ${joinWithAnd(listing.websiteBreedExperience.slice(0, 3))}`);
   }
   if (listing.websitePricingAvailable) evidence.push("published grooming price information");
   return evidence;

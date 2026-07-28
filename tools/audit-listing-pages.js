@@ -11,16 +11,20 @@ const failures = [];
 const descriptions = new Map();
 const metaDescriptions = new Map();
 const wordCounts = [];
+const officialWebsiteRoutes = new Set();
 const coverage = {
   websiteServices: 0,
   websiteAccess: 0,
   websitePolicies: 0,
-  breedExperience: 0,
+  breedMentions: 0,
   pricing: 0,
   appointments: 0,
   accessibility: 0,
   amenities: 0,
   reviewThemes: 0,
+  websiteLocations: 0,
+  officialWebsiteEnrichment: 0,
+  limitedInformationContext: 0,
 };
 
 const files = findIndexFiles(GROOMERS_DIR);
@@ -88,7 +92,7 @@ for (const file of files) {
     websiteServices: "Website services",
     websiteAccess: "Website access",
     websitePolicies: "Website policies",
-    breedExperience: "Breed experience",
+    breedMentions: "Breed and coat mentions",
     pricing: "Pricing signal",
     appointments: "Appointments",
     accessibility: "Accessibility",
@@ -96,7 +100,25 @@ for (const file of files) {
   })) {
     if (signalBlock.includes(`>${label}<`)) coverage[key] += 1;
   }
+  if (signalBlock.includes(">Website location<")) coverage.websiteLocations += 1;
+  if (signalBlock.includes("data-official-website-enrichment")) {
+    coverage.officialWebsiteEnrichment += 1;
+    officialWebsiteRoutes.add(expectedRoute);
+    if (!/the official business website/i.test(signalBlock)) fail(relative, "enriched profile is missing official-website attribution");
+  }
   if (html.includes("review-theme-summary")) coverage.reviewThemes += 1;
+
+  const limitedMatches = [...html.matchAll(/data-limited-profile-context/g)];
+  if (limitedMatches.length > 1) fail(relative, `expected at most one limited-information section, found ${limitedMatches.length}`);
+  if (limitedMatches.length === 1) {
+    coverage.limitedInformationContext += 1;
+    const limitedBlock = (html.match(/<section class="section limited-profile-context"[\s\S]*?<\/section>/i) || [""])[0];
+    const depth = Number((limitedBlock.match(/data-information-depth="(\d+)"/) || [null, ""])[1]);
+    if (!Number.isFinite(depth) || depth > 3) fail(relative, `invalid limited-information depth ${depth}`);
+    if ((limitedBlock.match(/class="profile-signal-row"/g) || []).length !== 4) fail(relative, "limited-information section must have four decision rows");
+    if (!/not a judgment about service quality/i.test(limitedBlock)) fail(relative, "limited-information section is missing its neutral qualifier");
+    if (!/>Compare locally</i.test(limitedBlock) || !/>Still to confirm</i.test(limitedBlock)) fail(relative, "limited-information section is missing comparison guidance");
+  }
 
   const localBusiness = getLocalBusinessSchema(html);
   if (!localBusiness) {
@@ -112,6 +134,7 @@ for (const file of files) {
 reportDuplicates("description", descriptions);
 reportDuplicates("meta description", metaDescriptions);
 auditSitemap(crawlableRoutes);
+auditWebsiteEnrichment(officialWebsiteRoutes);
 
 wordCounts.sort((a, b) => a - b);
 console.log(`Listing profiles: ${crawlableCount.toLocaleString()} crawlable, ${redirectCount.toLocaleString()} redirects`);
@@ -120,7 +143,10 @@ console.log(
   `Lead words: min ${percentile(wordCounts, 0)}, p10 ${percentile(wordCounts, 0.1)}, median ${percentile(wordCounts, 0.5)}, p90 ${percentile(wordCounts, 0.9)}, max ${percentile(wordCounts, 1)}`,
 );
 console.log(
-  `Signal coverage: website services ${coverage.websiteServices.toLocaleString()}, website access ${coverage.websiteAccess.toLocaleString()}, website policies ${coverage.websitePolicies.toLocaleString()}, breed experience ${coverage.breedExperience.toLocaleString()}, pricing ${coverage.pricing.toLocaleString()}, appointment links ${coverage.appointments.toLocaleString()}, accessibility ${coverage.accessibility.toLocaleString()}, amenities ${coverage.amenities.toLocaleString()}, review themes ${coverage.reviewThemes.toLocaleString()}`,
+  `Signal coverage: website services ${coverage.websiteServices.toLocaleString()}, website access ${coverage.websiteAccess.toLocaleString()}, website policies ${coverage.websitePolicies.toLocaleString()}, breed or coat mentions ${coverage.breedMentions.toLocaleString()}, pricing ${coverage.pricing.toLocaleString()}, appointment links ${coverage.appointments.toLocaleString()}, accessibility ${coverage.accessibility.toLocaleString()}, amenities ${coverage.amenities.toLocaleString()}, review themes ${coverage.reviewThemes.toLocaleString()}`,
+);
+console.log(
+  `Sparse-profile support: ${coverage.officialWebsiteEnrichment.toLocaleString()} official-site enrichments, ${coverage.websiteLocations.toLocaleString()} structured website locations, ${coverage.limitedInformationContext.toLocaleString()} limited-information decision sections`,
 );
 
 if (failures.length) {
@@ -163,6 +189,25 @@ function auditSitemap(routes) {
   );
   for (const route of routes) if (!sitemapRoutes.has(route)) fail(route, "crawlable profile missing from sitemap");
   for (const route of sitemapRoutes) if (!routes.has(route)) fail(route, "sitemap profile has no crawlable file");
+}
+
+function auditWebsiteEnrichment(renderedRoutes) {
+  const file = path.join(ROOT, "data", "thin-listing-enrichment.json");
+  if (!fs.existsSync(file)) return;
+  let raw;
+  try {
+    raw = JSON.parse(fs.readFileSync(file, "utf8"));
+  } catch (error) {
+    fail("data/thin-listing-enrichment.json", "enrichment data is not valid JSON");
+    return;
+  }
+  const entries = raw && raw.listings && typeof raw.listings === "object" ? raw.listings : {};
+  for (const [route, entry] of Object.entries(entries)) {
+    if (!renderedRoutes.has(route)) fail(route, "enrichment data was not rendered on its profile");
+    if (!entry || !Array.isArray(entry.sourcePages) || !entry.sourcePages.length) fail(route, "enrichment entry has no source pages");
+    if (entry && Object.hasOwn(entry, "priceAmounts")) fail(route, "enrichment entry must not store price amounts");
+  }
+  for (const route of renderedRoutes) if (!Object.hasOwn(entries, route)) fail(route, "rendered enrichment has no source-data entry");
 }
 
 function addDuplicateCandidate(map, value, file) {
