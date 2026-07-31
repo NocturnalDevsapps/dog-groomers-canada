@@ -2560,8 +2560,9 @@ function writeUtilityPages(context) {
       <p>Questions, corrections, removal requests, and source updates can be sent to <a href="mailto:${CONTACT_EMAIL}">${CONTACT_EMAIL}</a>.</p>
     </section>
     <section class="section">
-      <h2>Looking for a groomer in the United States?</h2>
+      <h2>Related directories from this publisher</h2>
       <p>Our sister directory, <a href="https://doggroomersus.com/">Dog Groomers US</a>, helps dog owners browse grooming businesses by state and city, compare documented service and access details, and use free appointment-planning tools.</p>
+      <p>Nocturnal Devs also publishes <a href="https://headspascout.com/">Head Spa Scout</a>, a U.S. head spa directory with location search, source-backed profiles, documented service details, and practical consumer guidance.</p>
     </section>`,
   );
   writePage(context, "/about/", "About Dog Groomers Canada", "About Dog Groomers Canada, a Canadian dog grooming directory with city, service, profile, correction, and booking guidance.", aboutBody, [
