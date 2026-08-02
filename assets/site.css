@@ -908,6 +908,55 @@ button.plain-action {
   gap: 18px;
 }
 
+.ad-band {
+  padding: 16px 0;
+  background: #fff;
+  border-bottom: 1px solid var(--line);
+}
+
+.ad-placement {
+  width: 100%;
+  min-width: 0;
+  overflow: hidden;
+  text-align: center;
+}
+
+.ad-label {
+  display: block;
+  margin: 0 0 6px;
+  color: var(--muted);
+  font-size: 0.7rem;
+  line-height: 1.2;
+}
+
+.ad-placement .adsbygoogle {
+  width: 100%;
+}
+
+.ad-placement--leaderboard {
+  max-width: 970px;
+  min-height: 108px;
+  margin: 0 auto;
+}
+
+.ad-placement--sidebar {
+  width: min(100%, 336px);
+  min-height: 272px;
+  margin: 0 auto;
+}
+
+.ad-placement--in-content {
+  min-height: 120px;
+  margin: 30px 0;
+  padding: 12px 0;
+  border-top: 1px solid var(--line);
+  border-bottom: 1px solid var(--line);
+}
+
+.ad-placement:has(.adsbygoogle[data-ad-status="unfilled"]) {
+  display: none;
+}
+
 .filter-bar {
   display: flex;
   align-items: center;
@@ -1764,6 +1813,10 @@ body[data-page="winter-paw-tool"] .page-intro {
     grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 
+  .side-panel > .ad-placement--sidebar {
+    grid-column: 1 / -1;
+  }
+
   .guide-rail,
   .guide-grid,
   .grid-4 {
@@ -1840,6 +1893,19 @@ body[data-page="winter-paw-tool"] .page-intro {
 
   .guide-card.row .guide-card-meta {
     grid-row: auto;
+  }
+
+  .ad-band {
+    padding: 12px 0;
+  }
+
+  .ad-placement--leaderboard,
+  .ad-placement--in-content {
+    min-height: 100px;
+  }
+
+  .ad-placement--in-content {
+    margin: 24px 0;
   }
 
   .author-box {

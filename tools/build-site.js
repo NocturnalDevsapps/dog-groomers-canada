@@ -38,6 +38,21 @@ self.addEventListener("activate", (event) => {
 const GOOGLE_ANALYTICS_ID = "G-BY1BF23TD7";
 const ADSENSE_CLIENT_ID = "ca-pub-2494233247909241";
 const ADSENSE_SELLER_RECORD = "google.com, pub-2494233247909241, DIRECT, f08c47fec0942fa0";
+const ADSENSE_SLOTS = Object.freeze({
+  leaderboard: "9035205346",
+  sidebar: "4819416718",
+  inContent: "8427489237",
+});
+const ADSENSE_EXCLUDED_ROUTES = new Set([
+  "/about/",
+  "/add-your-business/",
+  "/contact/",
+  "/editorial-policy/",
+  "/for-businesses/",
+  "/privacy/",
+  "/sitemap/",
+  "/terms/",
+]);
 const GROW_SITE_ID = "U2l0ZTo1OTBhOGFjZC1lOTEwLTQ2ZTQtODE3NS02YTVkZTE4MDhhYjM=";
 const DOCUMENTED_IMAGE_RIGHTS = new Set(["owner_permission", "licensed", "public_domain"]);
 
@@ -1068,6 +1083,7 @@ function writeHomePage(context) {
         </div>
       </div>
     </section>
+    ${adsenseLeaderboardBand()}
     ${homeGuideSection(context)}
     ${homeCostSection(context)}
     ${homeToolSection(context)}
@@ -1398,6 +1414,7 @@ function writeListingPages(context) {
               ${services}
               <p class="muted" style="margin-top:14px">Service information is summarized from available listing data and may not be complete. Confirm current services and prices directly with the groomer.</p>
             </section>
+            ${indexable ? adsenseAd("inContent", "in-content") : ""}
             ${listingSpecificSignalsSection(listing)}
             ${editorialProfileReviewSection(listing)}
             ${listingReviewThemesSection(listing)}
@@ -2891,6 +2908,7 @@ function pageHtml(route, title, description, body, schema = [], options = {}) {
   const meta = metaDescription(description);
   const robotsContent = options.robotsContent || "index,follow,max-image-preview:large";
   const includeAdsense = routePath !== "/404.html" && !robotsContent.toLowerCase().includes("noindex");
+  const renderedBody = includeAdsense && !ADSENSE_EXCLUDED_ROUTES.has(routePath) ? adsenseSidebarPlacements(body) : body;
   const schemaItems = Array.isArray(schema) ? schema.filter(Boolean) : [schema].filter(Boolean);
   const pageContainerTag = /<main(?:\s|>)/i.test(body) ? "div" : "main";
   return `<!doctype html>
@@ -2931,7 +2949,7 @@ function pageHtml(route, title, description, body, schema = [], options = {}) {
 <body ${options.bodyAttrs || ""}>
   <a class="skip-link" href="#main">Skip to content</a>
   ${header(route)}
-  <${pageContainerTag} id="main" class="page">${body}</${pageContainerTag}>
+  <${pageContainerTag} id="main" class="page">${renderedBody}</${pageContainerTag}>
   ${footer()}
 </body>
 </html>
@@ -3183,6 +3201,7 @@ function guideArticleBody(article, context) {
             <p class="article-summary">${esc(article.description)}</p>
             ${guideAuthorBox(article)}
             ${articleSections.slice(0, inlineToolIndex).join("")}
+            ${adsenseAd("inContent", "in-content")}
             ${guideRelevantToolCard(relevantTool)}
             ${articleSections.slice(inlineToolIndex).join("")}
             ${guideFaqSection(article)}
@@ -5373,6 +5392,30 @@ function googleIntegrationHead({ includeAdsense = true } = {}) {
 
 function adsenseInitializerScript() {
   return `<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=${ADSENSE_CLIENT_ID}" crossorigin="anonymous"></script>`;
+}
+
+function adsenseAd(slotName, placement = slotName) {
+  const slot = ADSENSE_SLOTS[slotName];
+  if (!ADSENSE_CLIENT_ID || !slot) return "";
+  const format = placement === "sidebar" ? "rectangle" : "auto";
+  return `<div class="ad-placement ad-placement--${escAttr(placement)}" data-ad-placement="${escAttr(placement)}" aria-label="Advertisement">
+    <span class="ad-label">Advertisement</span>
+    <ins class="adsbygoogle"
+      style="display:block"
+      data-ad-client="${ADSENSE_CLIENT_ID}"
+      data-ad-slot="${slot}"
+      data-ad-format="${format}"
+      data-full-width-responsive="true"></ins>
+    <script>(adsbygoogle = window.adsbygoogle || []).push({});</script>
+  </div>`;
+}
+
+function adsenseLeaderboardBand() {
+  return `<aside class="ad-band" aria-label="Sponsored content"><div class="wrap">${adsenseAd("leaderboard")}</div></aside>`;
+}
+
+function adsenseSidebarPlacements(body) {
+  return body.replaceAll('<aside class="side-panel">', `<aside class="side-panel">\n            ${adsenseAd("sidebar")}`);
 }
 
 function growInitializerScript() {
