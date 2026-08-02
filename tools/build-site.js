@@ -588,7 +588,20 @@ function applyListingCorrections(listings, corrections) {
   const byUrl = new Map(corrections.filter((item) => item && item.url).map((item) => [item.url, item]));
   const corrected = [];
   const redirects = [];
-  const allowedFields = ["title", "address", "street", "postalCode", "phone", "phoneRaw", "website", "mapsUrl", "temporarilyClosed"];
+  const allowedFields = [
+    "title",
+    "address",
+    "street",
+    "postalCode",
+    "city",
+    "phone",
+    "phoneRaw",
+    "website",
+    "mapsUrl",
+    "lat",
+    "lng",
+    "temporarilyClosed",
+  ];
 
   for (const listing of listings) {
     const correction = byUrl.get(listing.url);
@@ -4038,8 +4051,8 @@ function listingSpecificSignalsSection(listing) {
   }
 
   const snapshot = profileSnapshotLabel(listing.scrapedAt);
-  const sourceLabel = listing.businessSubmission || listing.websiteCrawlStatus === "owner_provided"
-    ? "Business-submitted profile details"
+  const sourceLabel = listing.websiteCrawlStatus === "owner_provided"
+    ? "Owner-provided profile details"
     : "Public listing details";
   const sourceDate = snapshot ? ` gathered in ${snapshot}` : "";
   const hasSupplementalWebsiteEnrichment = ["official_website_enriched", "editorially_reviewed"].includes(listing.websiteCrawlStatus);

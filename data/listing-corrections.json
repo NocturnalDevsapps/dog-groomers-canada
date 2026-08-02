@@ -77,6 +77,24 @@
         "postalCode": "B0N 0B9",
         "website": "https://thebarkshireclub.com/"
       }
+    },
+    {
+      "url": "/groomers/ontario/south-porcupine/dawg-pet-spa-south-porcupine-on-e7515536/",
+      "note": "Owner-provided address correction received August 2026.",
+      "businessSubmission": {
+        "receivedAt": "2026-08-02",
+        "label": "Business-submitted correction",
+        "source": "New address supplied directly to Dog Groomers Canada; postal code and map location checked against public address data"
+      },
+      "fields": {
+        "address": "5865 King Street, Porcupine, ON P0N 1C0, Canada",
+        "street": "5865 King Street",
+        "city": "Porcupine",
+        "postalCode": "P0N 1C0",
+        "mapsUrl": "https://www.google.com/maps/search/?api=1&query=Dawg%20Pet%20Spa%2C%205865%20King%20Street%2C%20Porcupine%2C%20ON%20P0N%201C0",
+        "lat": 48.4939485,
+        "lng": -81.1708997
+      }
     }
   ]
 }
