@@ -95,6 +95,11 @@
         "lat": 48.4939485,
         "lng": -81.1708997
       }
+    },
+    {
+      "url": "/groomers/saskatchewan/birch-hills/bark-inn-boarding-and-services-birch-hills-sk-a41cf366/",
+      "note": "Owner-requested removal received August 2026; the business no longer offers grooming and requested removal of its contact and location details.",
+      "exclude": true
     }
   ]
 }

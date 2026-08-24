@@ -29,7 +29,7 @@ Generated profiles are visibly labelled as directory records. Profiles with norm
 
 Business-specific images render only when `imageRights` records owner permission, a reusable licence, or a public-domain basis. Public availability, attribution, and source links are not treated as permission. The current build displays the approved GroomArts Academy gallery and uses a site-owned placeholder elsewhere, with an authorization flow for businesses that want to submit photos.
 
-The current generated build includes 7,241 crawlable URLs, including 5,639 crawlable business profiles, 90 accessible profile quality holds, 1,804 profiles with rendered first-party website enrichment, 133 dog grooming cost pages, and 8 grooming-tool pages. The cost pages use planning ranges and quote questions instead of fixed price claims, because real prices depend on dog size, coat condition, matting, handling, add-ons, mobile route needs, and local availability.
+The current generated build includes 7,239 crawlable URLs, including 5,638 crawlable business profiles, 90 accessible profile quality holds, 1,804 profiles with rendered first-party website enrichment, 133 dog grooming cost pages, and 8 grooming-tool pages. The cost pages use planning ranges and quote questions instead of fixed price claims, because real prices depend on dog size, coat condition, matting, handling, add-ons, mobile route needs, and local availability.
 
 Before any major release, inspect Search Console indexing for the homepage, guide hub, tools hub, several city pages, and several guide articles. Preserve established URLs, canonicals, titles, and sitemap membership while improving original value and reader trust.
 
