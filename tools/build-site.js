@@ -387,6 +387,7 @@ function loadListings(file) {
       countryCode: clean(get("countryCode")) || "CA",
       phone,
       phoneRaw,
+      email: "",
       website,
       mapsUrl: clean(get("url")),
       rating,
@@ -419,6 +420,8 @@ function loadListings(file) {
       descriptionIsCustom: false,
       editorialReview: null,
       businessSubmission: null,
+      serviceAreas: [],
+      addressHidden: false,
       keepIndexed: false,
       temporarilyClosed: isTruthy(get("temporarilyClosed")),
       scrapedAt: clean(get("scrapedAt")),
@@ -445,6 +448,8 @@ function loadManualListings() {
     if (!title) throw new Error(`Manual listing ${index + 1} is missing a title.`);
 
     const phone = clean(item.phone);
+    const addressHidden = Boolean(item.addressHidden);
+    const serviceAreas = unique(cleanSignalArray(item.serviceAreas)).slice(0, 12);
     const website = sanitizeBusinessWebsite(clean(item.website));
     const services = unique((Array.isArray(item.services) ? item.services : []).map(clean)).filter(Boolean).slice(0, 8);
     const hours = (Array.isArray(item.hours) ? item.hours : [])
@@ -469,9 +474,9 @@ function loadManualListings() {
       id: shortHash(clean(item.id) || website || `${title}-${address}-${index + 1}`),
       title,
       category: clean(item.category) || "Pet groomer",
-      address,
-      street: clean(item.street),
-      postalCode: clean(item.postalCode) || extractPostalCode(address),
+      address: addressHidden ? "" : address,
+      street: addressHidden ? "" : clean(item.street),
+      postalCode: addressHidden ? "" : clean(item.postalCode) || extractPostalCode(address),
       city,
       province: province.name,
       provinceCode: province.code,
@@ -482,11 +487,11 @@ function loadManualListings() {
       phoneRaw: clean(item.phoneRaw) || phone.replace(/[^\d+]/g, ""),
       email: clean(item.email),
       website,
-      mapsUrl: clean(item.mapsUrl),
+      mapsUrl: addressHidden ? "" : clean(item.mapsUrl),
       rating: numberOrNull(item.rating),
       reviews: integerOrZero(item.reviews),
-      lat: numberOrNull(item.lat),
-      lng: numberOrNull(item.lng),
+      lat: addressHidden ? null : numberOrNull(item.lat),
+      lng: addressHidden ? null : numberOrNull(item.lng),
       image,
       photos,
       imageRights,
@@ -515,6 +520,8 @@ function loadManualListings() {
       descriptionIsCustom: Boolean(clean(item.description)),
       editorialReview: null,
       businessSubmission: normalizeBusinessSubmission(item.businessSubmission),
+      serviceAreas,
+      addressHidden,
       keepIndexed: false,
       offer,
       temporarilyClosed: Boolean(item.temporarilyClosed),
@@ -593,6 +600,18 @@ function buildListingUrls(listings) {
   });
 }
 
+function relocateListingRoute(listing) {
+  const base = slugify(`${listing.title}-${listing.city}-${listing.provinceCode}`) || `groomer-${listing.id}`;
+  const slug = `${base}-${listing.id}`;
+  const cityPath = listing.provinceSlug === "canada" ? "canada" : `${listing.provinceSlug}/${listing.citySlug}`;
+  return {
+    ...listing,
+    slug,
+    cityUrl: listing.provinceSlug === "canada" ? "/cities/" : `/provinces/${listing.provinceSlug}/${listing.citySlug}/`,
+    url: `/groomers/${cityPath}/${slug}/`,
+  };
+}
+
 function loadListingCorrections() {
   if (!fs.existsSync(LISTING_CORRECTIONS_FILE)) return [];
   const raw = JSON.parse(fs.readFileSync(LISTING_CORRECTIONS_FILE, "utf8"));
@@ -603,6 +622,7 @@ function applyListingCorrections(listings, corrections) {
   const byUrl = new Map(corrections.filter((item) => item && item.url).map((item) => [item.url, item]));
   const corrected = [];
   const redirects = [];
+  const usedUrls = new Set(listings.map((listing) => listing.url));
   const allowedFields = [
     "title",
     "address",
@@ -611,10 +631,12 @@ function applyListingCorrections(listings, corrections) {
     "city",
     "phone",
     "phoneRaw",
+    "email",
     "website",
     "mapsUrl",
     "lat",
     "lng",
+    "serviceText",
     "temporarilyClosed",
   ];
 
@@ -631,7 +653,31 @@ function applyListingCorrections(listings, corrections) {
 
     const fields = correction.fields || {};
     const updates = Object.fromEntries(allowedFields.filter((field) => Object.hasOwn(fields, field)).map((field) => [field, fields[field]]));
-    const updated = { ...listing, ...updates };
+    if (Object.hasOwn(fields, "serviceAreas")) {
+      updates.serviceAreas = unique(cleanSignalArray(fields.serviceAreas)).slice(0, 12);
+    }
+    if (Object.hasOwn(fields, "addressHidden")) updates.addressHidden = fields.addressHidden === true;
+
+    let updated = { ...listing, ...updates };
+    if (updated.addressHidden) {
+      updated = {
+        ...updated,
+        address: "",
+        street: "",
+        postalCode: "",
+        mapsUrl: "",
+        lat: null,
+        lng: null,
+      };
+    }
+    if (correction.relocate) {
+      usedUrls.delete(listing.url);
+      updated.citySlug = slugify(updated.city);
+      updated = relocateListingRoute(updated);
+      if (usedUrls.has(updated.url)) throw new Error(`Listing correction route already exists: ${updated.url}`);
+      usedUrls.add(updated.url);
+      if (listing.url !== updated.url) redirects.push({ from: listing.url, to: updated.url });
+    }
     updated.businessSubmission = normalizeBusinessSubmission(correction.businessSubmission) || listing.businessSubmission;
     updated.description = updated.descriptionIsCustom ? listing.description : buildListingDescription(updated);
     updated.score = qualityScore(updated);
@@ -1015,6 +1061,7 @@ function writeStaticAssets(context) {
         reviews: listing.reviews,
         lat: listing.lat,
         lng: listing.lng,
+        serviceAreas: listing.serviceAreas,
         image: listing.image,
         fallbackImage: sameBusinessFallbackImage(listing),
         imageSource: listing.imageSource || "",
@@ -1366,6 +1413,7 @@ function writeListingPages(context) {
           .join("")}</ul></section>`
       : "";
     const profileServices = listingProfileServices(listing);
+    const serviceAreaText = listingServiceAreaText(listing);
     const services = profileServices.length
       ? `<div class="tag-cloud">${profileServices.map((item) => `<span class="tag">${esc(item)}</span>`).join("")}</div>`
       : `<p class="muted">Call ahead to confirm bath, haircut, nail trim, de-shedding, puppy groom, de-matting, and breed-specific services.</p>`;
@@ -1374,8 +1422,10 @@ function writeListingPages(context) {
         ${detailRow("Phone", listing.phone ? `<a href="tel:${escAttr(listing.phoneRaw || listing.phone)}">${esc(listing.phone)}</a>` : "Call to confirm")}${listing.email ? `
         ${detailRow("Email", `<a href="mailto:${escAttr(listing.email)}">${esc(listing.email)}</a>`)}` : ""}
         ${detailRow("Website", listing.website ? `<a href="${escAttr(listing.website)}" target="_blank" rel="nofollow noopener">${esc(cleanDisplayUrl(listing.website))}</a>` : "Not listed")}
-        ${detailRow("Address", listing.address ? esc(listing.address) : `${esc(listing.city)}, ${esc(listing.province)}`)}
-        ${detailRow("Maps", listing.mapsUrl ? `<a href="${escAttr(listing.mapsUrl)}" target="_blank" rel="nofollow noopener">Open in Google Maps</a>` : "Map link not listed")}
+        ${listing.addressHidden
+          ? detailRow("Service area", `Mobile service in ${esc(serviceAreaText || `${listing.city}, ${listing.provinceCode}`)}. No street address is published at the business's request.`)
+          : `${detailRow("Address", listing.address ? esc(listing.address) : `${esc(listing.city)}, ${esc(listing.province)}`)}
+        ${serviceAreaText ? `${detailRow("Service area", esc(serviceAreaText))}\n        ` : ""}${detailRow("Maps", listing.mapsUrl ? `<a href="${escAttr(listing.mapsUrl)}" target="_blank" rel="nofollow noopener">Open in Google Maps</a>` : "Map link not listed")}`}
         ${detailRow("Category", esc(listing.category || "Pet groomer"))}
         ${detailRow("Status", listing.temporarilyClosed ? "Temporarily closed in source data" : "Call business to confirm current availability")}
       </dl>`;
@@ -4062,6 +4112,12 @@ function listingSpecificSignalsSection(listing) {
       `${esc(listing.businessSubmission.source)}. Received ${esc(listing.businessSubmission.receivedAt)}; this label records provenance and does not imply paid placement or third-party certification.`,
     ));
   }
+  if (listing.serviceAreas && listing.serviceAreas.length) {
+    rows.push(profileSignalRow(
+      "Mobile service area",
+      `${esc(listingServiceAreaText(listing))} <span class="signal-qualifier">supplied directly by the business</span>`,
+    ));
+  }
   if (listing.websiteLocation) {
     rows.push(profileSignalRow(
       "Website location",
@@ -4464,12 +4520,13 @@ function cityMetaDescription(city) {
 
 function listingMetaDescription(listing) {
   const pieces = [`${shortText(listing.title, 54)} dog grooming in ${listing.city}, ${listing.provinceCode}`];
+  if (listing.serviceAreas && listing.serviceAreas.length) pieces.push(`mobile service in ${listingServiceAreaText(listing)}`);
   if (listing.rating && listing.reviews) pieces.push(`${listing.rating.toFixed(1)} stars from ${countLabel(listing.reviews, "review")}`);
   if (listing.offer) pieces.push(listing.offer.title);
   if (listing.services.length) pieces.push(listing.services.slice(0, 2).join(" and "));
   const street = clean(listing.street || listing.address.split(",")[0]);
   if (street && street.length < 50) pieces.push(street);
-  pieces.push("phone, website, hours, map, and nearby groomers");
+  pieces.push(listing.addressHidden ? "phone, website, hours, and nearby groomers" : "phone, website, hours, map, and nearby groomers");
   return metaDescription(`${pieces.join(". ")}.`);
 }
 
@@ -4614,14 +4671,26 @@ function localBusinessSchema(listing) {
     telephone: listing.phone || undefined,
     email: listing.email || undefined,
     image: listing.photos.length ? listing.photos.map(absoluteUrl) : undefined,
-    address: {
-      "@type": "PostalAddress",
-      streetAddress: listing.street || listing.address,
-      addressLocality: listing.city,
-      addressRegion: listing.provinceCode,
-      postalCode: listing.postalCode || undefined,
-      addressCountry: "CA",
-    },
+    address: listing.addressHidden
+      ? undefined
+      : {
+          "@type": "PostalAddress",
+          streetAddress: listing.street || listing.address,
+          addressLocality: listing.city,
+          addressRegion: listing.provinceCode,
+          postalCode: listing.postalCode || undefined,
+          addressCountry: "CA",
+        },
+    areaServed: listing.serviceAreas && listing.serviceAreas.length
+      ? listing.serviceAreas.map((city) => ({
+          "@type": "City",
+          name: city,
+          containedInPlace: {
+            "@type": "AdministrativeArea",
+            name: listing.province,
+          },
+        }))
+      : undefined,
     geo:
       Number.isFinite(listing.lat) && Number.isFinite(listing.lng)
         ? {
@@ -4999,6 +5068,9 @@ function buildListingDescription(listing) {
   const pieces = [
     `${listing.title} is listed as ${indefiniteArticle(category)} ${category} in ${profileLocationText(listing)}${locationDetail}`,
   ];
+  if (listing.serviceAreas && listing.serviceAreas.length) {
+    pieces.push(`The business reports a mobile service area covering ${listingServiceAreaText(listing)}`);
+  }
   if (listing.rating) {
     pieces.push(`The public listing snapshot reports a ${listing.rating.toFixed(1)} star rating${listing.reviews ? ` from ${countLabel(listing.reviews, "review")}` : ""}`);
   }
@@ -5088,6 +5160,10 @@ function profileLocationText(listing) {
   }
   if (!city) return province || "Canada";
   return `${city}, ${province}`;
+}
+
+function listingServiceAreaText(listing) {
+  return joinWithAnd(unique(cleanSignalArray(listing.serviceAreas)));
 }
 
 function joinTopics(values) {

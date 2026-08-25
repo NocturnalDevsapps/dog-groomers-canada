@@ -29318,36 +29318,47 @@
       "researchMethod": "direct_html",
       "crawledAt": "2026-07-28"
     },
-    "/groomers/ontario/mississauga/kittycat-mobile-pet-grooming-mississauga-on-2709d2db/": {
-      "businessName": "KittyCat Mobile Pet Grooming",
+    "/groomers/ontario/oakville/kittycat-pet-grooming-oakville-on-2709d2db/": {
+      "businessName": "KittyCat Pet Grooming",
       "website": "https://kittycatgrooming.ca/",
       "sourcePages": [
-        "https://kittycatgrooming.ca/"
+        "https://kittycatgrooming.ca/",
+        "https://kittycatgrooming.ca/kittycats-story-1"
       ],
       "services": [
+        "Cat grooming",
         "Full groom or haircut",
         "Bath or bath-and-brush",
         "Nail trim or grinding",
         "Ear cleaning",
         "De-shedding",
-        "Cat grooming",
+        "Sanitary trim",
         "Teeth cleaning"
       ],
       "convenience": [
-        "Mobile grooming"
+        "Mobile grooming",
+        "One-on-one appointments",
+        "Online booking"
       ],
-      "credentials": [],
+      "credentials": [
+        "Certification or licensing information"
+      ],
       "breedExperience": [
         "Poodles",
         "Schnauzers",
         "Spaniels"
       ],
-      "pricingAvailable": false,
-      "bookingLinks": [],
+      "pricingAvailable": true,
+      "bookingLinks": [
+        {
+          "name": "Book an appointment",
+          "url": "https://kittycatgrooming.groomore.com/"
+        }
+      ],
       "websiteLocation": "",
       "crawlStatus": "official_website_enriched",
       "researchMethod": "direct_html",
-      "crawledAt": "2026-07-28"
+      "crawledAt": "2026-08-25"
     },
     "/groomers/ontario/mississauga/lakeview-dog-grooming-mississauga-on-aad20d2f/": {
       "businessName": "Lakeview Dog Grooming",

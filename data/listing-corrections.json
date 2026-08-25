@@ -97,6 +97,32 @@
       }
     },
     {
+      "url": "/groomers/ontario/mississauga/kittycat-mobile-pet-grooming-mississauga-on-2709d2db/",
+      "note": "Owner-provided mobile-service update received August 2026. Street address, map link, and coordinates are intentionally withheld at the business's request.",
+      "relocate": true,
+      "businessSubmission": {
+        "receivedAt": "2026-08-25",
+        "label": "Business-submitted update",
+        "source": "Business name, contact details, mobile service area, and address-privacy request supplied directly to Dog Groomers Canada"
+      },
+      "fields": {
+        "title": "KittyCat Pet Grooming",
+        "city": "Oakville",
+        "phone": "+1 647-517-4228",
+        "phoneRaw": "+16475174228",
+        "email": "kittycatgrooming@gmail.com",
+        "website": "https://kittycatgrooming.ca/",
+        "serviceText": "Mobile cat grooming and mobile dog grooming",
+        "serviceAreas": [
+          "Oakville",
+          "Mississauga",
+          "Milton",
+          "Burlington"
+        ],
+        "addressHidden": true
+      }
+    },
+    {
       "url": "/groomers/saskatchewan/birch-hills/bark-inn-boarding-and-services-birch-hills-sk-a41cf366/",
       "note": "Owner-requested removal received August 2026; the business no longer offers grooming and requested removal of its contact and location details.",
       "exclude": true
