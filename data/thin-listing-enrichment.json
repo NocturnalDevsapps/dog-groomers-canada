@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-07-28",
+  "generatedAt": "2026-08-26",
   "method": "Normalized factual signals from official business websites using direct HTML and Crawl4AI browser fallback; no marketing prose or price amounts are stored.",
   "listings": {
     "/groomers/alberta/airdrie/airdrie-groomingdales-airdrie-ab-5ad623f8/": {
@@ -23123,6 +23123,25 @@
       "researchMethod": "direct_html",
       "crawledAt": "2026-07-28"
     },
+    "/groomers/ontario/cobourg/cj-s-dog-resort-and-spa-cobourg-on-2f6b8bd1/": {
+      "businessName": "CJ's Dog Resort and Spa",
+      "website": "https://cjsdogresortandspa.ca/home-page/",
+      "sourcePages": [
+        "https://cjsdogresortandspa.ca/home-page/"
+      ],
+      "services": [
+        "Bath or bath-and-brush"
+      ],
+      "convenience": [],
+      "credentials": [],
+      "breedExperience": [],
+      "pricingAvailable": false,
+      "bookingLinks": [],
+      "websiteLocation": "",
+      "crawlStatus": "official_website_enriched",
+      "researchMethod": "crawl4ai_browser",
+      "crawledAt": "2026-08-26"
+    },
     "/groomers/ontario/cobourg/designer-dogs-grooming-spa-cobourg-on-8e1104ff/": {
       "businessName": "Designer Dogs Grooming Spa",
       "website": "https://www.fresha.com/book-now/designer-dogs-grooming-spa-tbztwt5x/all-offer?share=true&pId=2728828",
@@ -44880,6 +44899,30 @@
       "researchMethod": "direct_html",
       "crawledAt": "2026-07-28"
     },
+    "/groomers/quebec/saint-lazare-de-bellechasse/salon-de-toilettage-charme-canin-saint-lazare-de-bellechasse-qc-32c584c3/": {
+      "businessName": "Salon De Toilettage Charme Canin",
+      "website": "https://www.charmecanin.com/",
+      "sourcePages": [
+        "https://www.charmecanin.com/",
+        "https://www.charmecanin.com/index.php/salon-de-toilettage-a-saint-lazare",
+        "https://www.charmecanin.com/index.php/toilettage-a-bellechasse"
+      ],
+      "services": [
+        "Full groom or haircut",
+        "Nail trim or grinding",
+        "Cat grooming",
+        "Creative grooming"
+      ],
+      "convenience": [],
+      "credentials": [],
+      "breedExperience": [],
+      "pricingAvailable": false,
+      "bookingLinks": [],
+      "websiteLocation": "",
+      "crawlStatus": "official_website_enriched",
+      "researchMethod": "crawl4ai_browser",
+      "crawledAt": "2026-08-26"
+    },
     "/groomers/quebec/saint-lazare/wizard-of-paws-wellness-center-saint-lazare-qc-8476c0a3/": {
       "businessName": "Wizard of Paws Wellness Center",
       "website": "http://www.thewizardofpaws.ca/",
@@ -45357,6 +45400,31 @@
       "crawlStatus": "official_website_enriched",
       "researchMethod": "direct_html",
       "crawledAt": "2026-07-28"
+    },
+    "/groomers/quebec/sherbrooke/aristopoils-sherbrooke-qc-75adc409/": {
+      "businessName": "Aristopoils",
+      "website": "https://aristopoils.ca/",
+      "sourcePages": [
+        "https://aristopoils.ca/",
+        "https://aristopoils.ca/toilettage",
+        "https://aristopoils.ca/toilettage?hsLang=fr-ca"
+      ],
+      "services": [
+        "Full groom or haircut",
+        "Bath or bath-and-brush",
+        "Nail trim or grinding",
+        "Ear cleaning",
+        "De-matting"
+      ],
+      "convenience": [],
+      "credentials": [],
+      "breedExperience": [],
+      "pricingAvailable": false,
+      "bookingLinks": [],
+      "websiteLocation": "",
+      "crawlStatus": "official_website_enriched",
+      "researchMethod": "crawl4ai_browser",
+      "crawledAt": "2026-08-26"
     },
     "/groomers/quebec/sherbrooke/academie-la-griffe-sherbrooke-qc-55844074/": {
       "businessName": "Acad\u00e9mie La Griffe",

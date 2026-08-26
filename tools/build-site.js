@@ -629,6 +629,8 @@ function applyListingCorrections(listings, corrections) {
     "street",
     "postalCode",
     "city",
+    "province",
+    "provinceCode",
     "phone",
     "phoneRaw",
     "email",
@@ -672,6 +674,7 @@ function applyListingCorrections(listings, corrections) {
     }
     if (correction.relocate) {
       usedUrls.delete(listing.url);
+      updated.provinceSlug = slugify(updated.province);
       updated.citySlug = slugify(updated.city);
       updated = relocateListingRoute(updated);
       if (usedUrls.has(updated.url)) throw new Error(`Listing correction route already exists: ${updated.url}`);

@@ -931,7 +931,7 @@ async def crawl4ai_recover(
 
     browser_config = BrowserConfig(headless=True, verbose=False, user_agent=USER_AGENT)
     run_config = CrawlerRunConfig(
-        cache_mode=CacheMode.ENABLED,
+        cache_mode=CacheMode.BYPASS,
         page_timeout=max(5_000, int(timeout * 1_000)),
         wait_until="domcontentloaded",
         verbose=False,

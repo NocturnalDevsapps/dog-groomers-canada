@@ -123,6 +123,32 @@
       }
     },
     {
+      "url": "/groomers/canada/aristopoils-canada-ca-75adc409/",
+      "note": "Official website, phone number, and Sherbrooke service location checked August 2026.",
+      "relocate": true,
+      "fields": {
+        "address": "Chemin Hamel, Sherbrooke, QC, Canada",
+        "street": "Chemin Hamel",
+        "city": "Sherbrooke",
+        "province": "Quebec",
+        "provinceCode": "QC",
+        "website": "https://aristopoils.ca/",
+        "mapsUrl": "https://www.google.com/maps/search/?api=1&query=Aristopoils%2C%20Chemin%20Hamel%2C%20Sherbrooke%2C%20QC",
+        "lat": 45.4119432,
+        "lng": -71.9556372
+      }
+    },
+    {
+      "url": "/groomers/quebec/saint-lazare-de-bellechasse/salon-de-toilettage-charme-canin-saint-lazare-de-bellechasse-qc-32c584c3/",
+      "note": "Official website, phone number, and unit-level address checked August 2026.",
+      "fields": {
+        "address": "261C Rte 279, Saint-Lazare-de-Bellechasse, QC G0R 3J0, Canada",
+        "street": "261C Rte 279",
+        "postalCode": "G0R 3J0",
+        "website": "https://www.charmecanin.com/"
+      }
+    },
+    {
       "url": "/groomers/saskatchewan/birch-hills/bark-inn-boarding-and-services-birch-hills-sk-a41cf366/",
       "note": "Owner-requested removal received August 2026; the business no longer offers grooming and requested removal of its contact and location details.",
       "exclude": true
