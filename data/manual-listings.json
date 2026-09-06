@@ -61,6 +61,46 @@
         "sourceUrl": "https://groomartsacademy.com/"
       },
       "updatedAt": "2026-07-27"
+    },
+    {
+      "id": "k9-designs-by-tanice-willis-point",
+      "title": "K9 Designs by Tanice",
+      "category": "Dog groomer",
+      "city": "Willis Point",
+      "province": "British Columbia",
+      "provinceCode": "BC",
+      "countryCode": "CA",
+      "email": "taniceberst@gmail.com",
+      "description": "K9 Designs by Tanice offers private, one-to-one dog grooming in Willis Point, British Columbia. Tanice describes the setting as a quiet forest retreat, with no kennels and an unhurried approach to each visit. Her owner-supplied grooming portfolio includes full grooms, bathing and fluff-drying, haircut and styling examples, and a puppy introduction that allowed time for treats and play while getting familiar with grooming sounds and sensations. The accompanying photo stories emphasize taking breaks when a dog needs time to settle. Email Tanice directly to discuss your dog's coat, the grooming you need, appointment availability, current rates, and directions before visiting.",
+      "services": [
+        "One-to-one grooming",
+        "Full groom",
+        "Bathing and fluff-drying",
+        "Haircuts and styling",
+        "Puppy introductions"
+      ],
+      "convenienceText": "Private, quiet forest setting in Willis Point; no kennels; unhurried one-to-one grooming.",
+      "websiteCrawlStatus": "owner_provided",
+      "image": "/assets/listings/k9-designs-by-tanice-roxy.jpg",
+      "photos": [
+        "/assets/listings/k9-designs-by-tanice-roxy.jpg",
+        "/assets/listings/k9-designs-by-tanice-franklin.jpg",
+        "/assets/listings/k9-designs-by-tanice-happy.jpg",
+        "/assets/listings/k9-designs-by-tanice-heinz-trooper.jpg",
+        "/assets/listings/k9-designs-by-tanice-murphy-finn.jpg"
+      ],
+      "imageCredit": "Grooming photos and collages by Tanice, supplied and used with permission.",
+      "imageRights": {
+        "status": "owner_permission",
+        "grantedAt": "2026-09-06",
+        "credit": "Grooming photos and collages by Tanice, supplied and used with permission."
+      },
+      "businessSubmission": {
+        "receivedAt": "2026-09-06",
+        "label": "Business-submitted listing",
+        "source": "Business details and five authorized grooming collages supplied directly by Tanice"
+      },
+      "updatedAt": "2026-09-06"
     }
   ]
 }

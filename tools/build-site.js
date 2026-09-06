@@ -1422,7 +1422,7 @@ function writeListingPages(context) {
       : `<p class="muted">Call ahead to confirm bath, haircut, nail trim, de-shedding, puppy groom, de-matting, and breed-specific services.</p>`;
     const contact = `
       <dl class="detail-list">
-        ${detailRow("Phone", listing.phone ? `<a href="tel:${escAttr(listing.phoneRaw || listing.phone)}">${esc(listing.phone)}</a>` : "Call to confirm")}${listing.email ? `
+        ${detailRow("Phone", listing.phone ? `<a href="tel:${escAttr(listing.phoneRaw || listing.phone)}">${esc(listing.phone)}</a>` : listing.email ? "Not listed; contact by email" : "Call to confirm")}${listing.email ? `
         ${detailRow("Email", `<a href="mailto:${escAttr(listing.email)}">${esc(listing.email)}</a>`)}` : ""}
         ${detailRow("Website", listing.website ? `<a href="${escAttr(listing.website)}" target="_blank" rel="nofollow noopener">${esc(cleanDisplayUrl(listing.website))}</a>` : "Not listed")}
         ${listing.addressHidden
@@ -1430,7 +1430,7 @@ function writeListingPages(context) {
           : `${detailRow("Address", listing.address ? esc(listing.address) : `${esc(listing.city)}, ${esc(listing.province)}`)}
         ${serviceAreaText ? `${detailRow("Service area", esc(serviceAreaText))}\n        ` : ""}${detailRow("Maps", listing.mapsUrl ? `<a href="${escAttr(listing.mapsUrl)}" target="_blank" rel="nofollow noopener">Open in Google Maps</a>` : "Map link not listed")}`}
         ${detailRow("Category", esc(listing.category || "Pet groomer"))}
-        ${detailRow("Status", listing.temporarilyClosed ? "Temporarily closed in source data" : "Call business to confirm current availability")}
+        ${detailRow("Status", listing.temporarilyClosed ? "Temporarily closed in source data" : !listing.phone && listing.email ? "Email business to confirm current availability" : "Call business to confirm current availability")}
       </dl>`;
 
     const body = `
@@ -1448,7 +1448,7 @@ function writeListingPages(context) {
               ${profileProvenanceLine(listing)}
               <p class="lead">${esc(listing.description)}</p>
               <div class="meta-line">${ratingLine(listing)}<span>${esc(listing.city)}, ${esc(listing.provinceCode)}</span></div>
-              <div class="tag-cloud" style="margin-top:18px">${listing.phone ? `<a class="btn btn-dark" href="tel:${escAttr(listing.phoneRaw || listing.phone)}">Call ${esc(listing.phone)}</a>` : ""}${listing.website ? `<a class="btn btn-primary" href="${escAttr(listing.website)}" target="_blank" rel="nofollow noopener">Visit Website</a>` : ""}${listing.mapsUrl ? `<a class="btn btn-light" href="${escAttr(listing.mapsUrl)}" target="_blank" rel="nofollow noopener">Open Map</a>` : ""}<button class="btn btn-light shortlist-toggle" type="button" data-shortlist-toggle data-listing-url="${escAttr(listing.url)}" data-listing-name="${escAttr(listing.title)}" aria-label="Save ${escAttr(listing.title)} to compare" aria-pressed="false">☆ Save to compare</button></div>
+              <div class="tag-cloud" style="margin-top:18px">${listing.phone ? `<a class="btn btn-dark" href="tel:${escAttr(listing.phoneRaw || listing.phone)}">Call ${esc(listing.phone)}</a>` : ""}${listing.website ? `<a class="btn btn-primary" href="${escAttr(listing.website)}" target="_blank" rel="nofollow noopener">Visit Website</a>` : ""}${!listing.phone && !listing.website && listing.email ? `<a class="btn btn-primary" href="mailto:${escAttr(listing.email)}">Email business</a>` : ""}${listing.mapsUrl ? `<a class="btn btn-light" href="${escAttr(listing.mapsUrl)}" target="_blank" rel="nofollow noopener">Open Map</a>` : ""}<button class="btn btn-light shortlist-toggle" type="button" data-shortlist-toggle data-listing-url="${escAttr(listing.url)}" data-listing-name="${escAttr(listing.title)}" aria-label="Save ${escAttr(listing.title)} to compare" aria-pressed="false">☆ Save to compare</button></div>
             </div>
             <div class="profile-photo-wrap"><div class="profile-photo">${listing.image ? `<img src="${escAttr(listing.image)}" alt="${escAttr(listingImageAlt(listing, "profile"))}" loading="eager" referrerpolicy="no-referrer"${listingImageRightsAttr(listing)}${sameBusinessFallbackImage(listing) ? ` data-fallback-image="${escAttr(sameBusinessFallbackImage(listing))}" data-fallback-alt="${escAttr(listingImageAlt(listing, "profile"))}"` : ""}>` : imageUnavailable(listing, "profile")}</div>${listingImageSourceNote(listing)}</div>
           </div>
@@ -4286,6 +4286,7 @@ function profileCostAndQuoteSection(listing, city, province, costMap) {
     : "rating not listed in the source data";
   const contactText = [
     listing.phone ? "phone number" : "",
+    listing.email ? "email address" : "",
     listing.website ? "website" : "",
     listing.hours.length ? "listed hours" : "",
     listing.mapsUrl ? "map link" : "",
@@ -5138,6 +5139,7 @@ function listingWebsiteEvidence(listing) {
 function listingContactSignals(listing) {
   return [
     listing.phone ? "a phone number" : "",
+    listing.email ? "an email address" : "",
     listing.website ? "a business website" : "",
     preferredBookingLink(listing) ? "an appointment link" : "",
     listing.hours && listing.hours.length ? "listed hours" : "",
