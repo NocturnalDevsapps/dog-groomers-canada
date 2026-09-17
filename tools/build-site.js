@@ -36,14 +36,9 @@ self.addEventListener("activate", (event) => {
 });
 `;
 const GOOGLE_ANALYTICS_ID = "G-BY1BF23TD7";
-const ADSENSE_CLIENT_ID = "ca-pub-2494233247909241";
-const ADSENSE_SELLER_RECORD = "google.com, pub-2494233247909241, DIRECT, f08c47fec0942fa0";
-const ADSENSE_SLOTS = Object.freeze({
-  leaderboard: "9035205346",
-  sidebar: "4819416718",
-  inContent: "8427489237",
-});
-const ADSENSE_EXCLUDED_ROUTES = new Set([
+const JOURNEY_SITE_ID = "0268a860-d0bb-483b-b355-599bfc6e3594";
+const JOURNEY_ADS_FILE = path.join(ROOT, "data", "journey-ads.txt");
+const JOURNEY_EXCLUDED_ROUTES = new Set([
   "/about/",
   "/add-your-business/",
   "/contact/",
@@ -263,6 +258,10 @@ function main() {
     throw new Error(`CSV file not found: ${CSV_FILE}`);
   }
 
+  const journeyAdsTxt = fs.readFileSync(JOURNEY_ADS_FILE, "utf8");
+  if (!journeyAdsTxt.includes("ownerdomain=doggroomerscanada.ca") || !journeyAdsTxt.includes(`journeymv.com, ${JOURNEY_SITE_ID}, DIRECT`)) {
+    throw new Error("Journey ads.txt must match Dog Groomers Canada's site ID and domain.");
+  }
   cleanGeneratedFiles();
 
   const rawListings = [...loadListings(CSV_FILE), ...loadManualListings()];
@@ -1133,7 +1132,6 @@ function writeHomePage(context) {
         </div>
       </div>
     </section>
-    ${adsenseLeaderboardBand()}
     ${homeGuideSection(context)}
     ${homeCostSection(context)}
     ${homeToolSection(context)}
@@ -1467,7 +1465,6 @@ function writeListingPages(context) {
               ${services}
               <p class="muted" style="margin-top:14px">Service information is summarized from available listing data and may not be complete. Confirm current services and prices directly with the groomer.</p>
             </section>
-            ${indexable ? adsenseAd("inContent", "in-content") : ""}
             ${listingSpecificSignalsSection(listing)}
             ${editorialProfileReviewSection(listing)}
             ${listingReviewThemesSection(listing)}
@@ -2773,9 +2770,9 @@ function writeUtilityPages(context) {
         <p>Google Analytics helps us measure aggregate traffic and understand which directory, guide, and tool pages are useful. Google may process cookies, IP addresses, device and browser information, page URLs, and interaction events for this purpose. Learn more about <a href="https://policies.google.com/technologies/partner-sites" rel="nofollow noopener" target="_blank">how Google uses information from sites that use its services</a>.</p>
       </section>
       <section class="section">
-        <h2>Google AdSense</h2>
-        <p>Google AdSense code is used to verify this site and may provide advertising after Google approves it for ad serving. Google and its advertising partners may use cookies, device identifiers, IP addresses, page information, and interaction data to deliver, limit, personalize, and measure advertising.</p>
-        <p>Visitors in the European Economic Area, United Kingdom, and Switzerland are shown Google's published European regulations message so they can manage consent choices before eligible advertising is served. Learn more about <a href="https://policies.google.com/technologies/ads" rel="nofollow noopener" target="_blank">Google's advertising technologies</a>.</p>
+        <h2>Advertising by Journey by Mediavine</h2>
+        <p>Journey by Mediavine manages programmatic advertising on this site. Mediavine and its advertising partners may use cookies, identifiers, device and browser information, page information, and interaction data to deliver and measure advertising. Use the privacy and consent controls provided by Mediavine to manage available advertising choices.</p>
+        <p>Mediavine supplies additional advertising privacy disclosures through its script on this page. For more information and privacy request options, visit the <a href="https://www.mediavine.com/legal-and-privacy-center/" rel="nofollow noopener" target="_blank">Mediavine Legal and Privacy Center</a>.</p>
       </section>
       <section class="section">
         <h2>Directory information</h2>
@@ -2787,8 +2784,8 @@ function writeUtilityPages(context) {
       </section>
       <section class="section">
         <h2>Data choices</h2>
-        <p>You can clear saved location and groomer-shortlist data by using the shortlist's clear button or clearing this site's browser storage. You can also block or delete cookies in your browser settings and use an available Google privacy message to manage advertising consent choices. Some Grow, analytics, or advertising features may work differently when storage is blocked. Grow users can use Mediavine's privacy request options, and you can contact <a href="mailto:${CONTACT_EMAIL}">${CONTACT_EMAIL}</a> about information sent directly to this site.</p>
-        <p class="muted">Last updated July 28, 2026.</p>
+        <p>You can clear saved location and groomer-shortlist data by using the shortlist's clear button or clearing this site's browser storage. You can also block or delete cookies in your browser settings and use Mediavine's available privacy and consent controls to manage advertising choices. Some Grow, analytics, or advertising features may work differently when storage is blocked. Grow users can use Mediavine's privacy request options, and you can contact <a href="mailto:${CONTACT_EMAIL}">${CONTACT_EMAIL}</a> about information sent directly to this site.</p>
+        <p class="muted">Last updated September 16, 2026.</p>
       </section>`,
     ),
     breadcrumbSchema([{ label: "Home", url: "/" }, { label: "Privacy", url: "/privacy/" }]),
@@ -2933,7 +2930,7 @@ function writeSitemap(context) {
 
 function writeRobotsAndDomain() {
   fs.writeFileSync(path.join(ROOT, "robots.txt"), `User-agent: *\nAllow: /\nSitemap: ${SITE_URL}/sitemap.xml\n`);
-  fs.writeFileSync(path.join(ROOT, "ads.txt"), `${ADSENSE_SELLER_RECORD}\n`);
+  fs.copyFileSync(JOURNEY_ADS_FILE, path.join(ROOT, "ads.txt"));
   fs.writeFileSync(path.join(ROOT, "sw.js"), LEGACY_AD_SERVICE_WORKER_TOMBSTONE);
   fs.writeFileSync(path.join(ROOT, "CNAME"), "doggroomerscanada.ca\n");
   fs.writeFileSync(path.join(ROOT, ".nojekyll"), "");
@@ -2960,8 +2957,8 @@ function pageHtml(route, title, description, body, schema = [], options = {}) {
   const canonical = options.canonicalUrl || absoluteUrl(options.canonicalRoute || routePath);
   const meta = metaDescription(description);
   const robotsContent = options.robotsContent || "index,follow,max-image-preview:large";
-  const includeAdsense = routePath !== "/404.html" && !robotsContent.toLowerCase().includes("noindex");
-  const renderedBody = includeAdsense && !ADSENSE_EXCLUDED_ROUTES.has(routePath) ? adsenseSidebarPlacements(body) : body;
+  const includeJourney = routePath !== "/404.html" && !robotsContent.toLowerCase().includes("noindex");
+  const blockJourneyAds = includeJourney && JOURNEY_EXCLUDED_ROUTES.has(routePath);
   const schemaItems = Array.isArray(schema) ? schema.filter(Boolean) : [schema].filter(Boolean);
   const pageContainerTag = /<main(?:\s|>)/i.test(body) ? "div" : "main";
   return `<!doctype html>
@@ -2971,7 +2968,7 @@ function pageHtml(route, title, description, body, schema = [], options = {}) {
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="dgc-base-path" content="">
   <meta name="theme-color" content="${THEME_COLOR}">
-  ${googleIntegrationHead({ includeAdsense })}
+  ${siteIntegrationHead()}
   <title>${esc(title)}</title>
   <meta name="description" content="${escAttr(meta)}">
   <link rel="canonical" href="${escAttr(canonical)}">
@@ -2998,11 +2995,12 @@ function pageHtml(route, title, description, body, schema = [], options = {}) {
   <link rel="stylesheet" href="/assets/site.css?v=${ASSET_VERSION}">
   ${schemaItems.map((item) => `<script type="application/ld+json">${safeJson(item)}</script>`).join("\n  ")}
   <script src="/assets/main.js?v=${ASSET_VERSION}" defer></script>
+  ${includeJourney ? journeyInitializerScript() : ""}
 </head>
 <body ${options.bodyAttrs || ""}>
   <a class="skip-link" href="#main">Skip to content</a>
   ${header(route)}
-  <${pageContainerTag} id="main" class="page">${renderedBody}</${pageContainerTag}>
+  <${pageContainerTag} id="main" class="page">${blockJourneyAds ? '<div id="ad-management-config-settings" data-blocklist-all="1"></div>' : ""}${body}</${pageContainerTag}>
   ${footer()}
 </body>
 </html>
@@ -3254,7 +3252,6 @@ function guideArticleBody(article, context) {
             <p class="article-summary">${esc(article.description)}</p>
             ${guideAuthorBox(article)}
             ${articleSections.slice(0, inlineToolIndex).join("")}
-            ${adsenseAd("inContent", "in-content")}
             ${guideRelevantToolCard(relevantTool)}
             ${articleSections.slice(inlineToolIndex).join("")}
             ${guideFaqSection(article)}
@@ -5450,7 +5447,7 @@ function siteManifest() {
   )}\n`;
 }
 
-function googleIntegrationHead({ includeAdsense = true } = {}) {
+function siteIntegrationHead() {
   const scripts = [];
   if (GOOGLE_ANALYTICS_ID) {
     scripts.push(`<script async src="https://www.googletagmanager.com/gtag/js?id=${GOOGLE_ANALYTICS_ID}"></script>`);
@@ -5461,9 +5458,6 @@ function googleIntegrationHead({ includeAdsense = true } = {}) {
   gtag("config", "${GOOGLE_ANALYTICS_ID}");
 </script>`);
   }
-  if (includeAdsense && ADSENSE_CLIENT_ID) {
-    scripts.push(adsenseInitializerScript());
-  }
   if (GROW_SITE_ID) {
     scripts.push(growInitializerScript());
   }
@@ -5471,32 +5465,8 @@ function googleIntegrationHead({ includeAdsense = true } = {}) {
   return scripts.join("\n  ");
 }
 
-function adsenseInitializerScript() {
-  return `<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=${ADSENSE_CLIENT_ID}" crossorigin="anonymous"></script>`;
-}
-
-function adsenseAd(slotName, placement = slotName) {
-  const slot = ADSENSE_SLOTS[slotName];
-  if (!ADSENSE_CLIENT_ID || !slot) return "";
-  const format = placement === "sidebar" ? "rectangle" : "auto";
-  return `<div class="ad-placement ad-placement--${escAttr(placement)}" data-ad-placement="${escAttr(placement)}" aria-label="Advertisement">
-    <span class="ad-label">Advertisement</span>
-    <ins class="adsbygoogle"
-      style="display:block"
-      data-ad-client="${ADSENSE_CLIENT_ID}"
-      data-ad-slot="${slot}"
-      data-ad-format="${format}"
-      data-full-width-responsive="true"></ins>
-    <script>(adsbygoogle = window.adsbygoogle || []).push({});</script>
-  </div>`;
-}
-
-function adsenseLeaderboardBand() {
-  return `<aside class="ad-band" aria-label="Sponsored content"><div class="wrap">${adsenseAd("leaderboard")}</div></aside>`;
-}
-
-function adsenseSidebarPlacements(body) {
-  return body.replaceAll('<aside class="side-panel">', `<aside class="side-panel">\n            ${adsenseAd("sidebar")}`);
+function journeyInitializerScript() {
+  return `<script type="text/javascript" async="async" data-noptimize="1" data-cfasync="false" src="//scripts.scriptwrapper.com/tags/${JOURNEY_SITE_ID}.js"></script>`;
 }
 
 function growInitializerScript() {
