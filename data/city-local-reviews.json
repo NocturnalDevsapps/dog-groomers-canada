@@ -1,0 +1,275 @@
+{
+  "cities": {
+    "/provinces/ontario/toronto/": {
+      "reviewedAt": "2026-09-21",
+      "intro": "Start with the type of visit you need: washing your dog yourself, a short tidy, or a full haircut. The Toronto options below publish different packages and booking arrangements; choose the correct branch before requesting a time.",
+      "businesses": [
+        {
+          "profileUrl": "/groomers/ontario/toronto/fur-bar-toronto-on-b7dbdcf3/",
+          "name": "FUR BAR",
+          "format": "Full groom, tidy or de-shedding",
+          "comparison": "Fur Bar separates full haircuts from bath-and-tidy and de-shedding packages.",
+          "confirm": "Select the Toronto booking link for King Street West.",
+          "facts": [
+            "The Toronto branch is at 844 King Street West; its published number is 416-366-7729.",
+            "The full groom includes bathing, drying, nails, ears and a full haircut. Bath-and-tidy includes light face, feet and sanitary trimming.",
+            "Puppy grooming and bath-and-de-shedding are listed separately."
+          ],
+          "sourceUrls": [
+            "https://www.furbar.ca/doggrooming",
+            "https://www.furbar.ca/contact"
+          ],
+          "bookingUrl": "https://booking.moego.pet/ol/landing?name=FurBarToronto"
+        },
+        {
+          "profileUrl": "/groomers/ontario/toronto/juju-grooms-toronto-on-f68c104b/",
+          "name": "Juju Grooms",
+          "format": "Dog and cat salon",
+          "comparison": "Juju Grooms describes low-impact grooming and an appointment-day discussion of your dog’s needs.",
+          "confirm": "Ask for a coat-specific estimate and allow for the quoted visit length.",
+          "facts": [
+            "The official site lists 1684 Queen Street West and 416-792-1684.",
+            "Dog appointments typically take three to five hours; size, coat condition and temperament affect timing.",
+            "An emailed photo can help with an estimate, but the site says a quote is not the final price."
+          ],
+          "sourceUrls": [
+            "https://www.jujugrooms.com/"
+          ],
+          "bookingUrl": "https://booking.moego.pet/go/?name=JujuGrooms"
+        },
+        {
+          "profileUrl": "/groomers/ontario/toronto/dirty-pawz-self-serve-dog-wash-toronto-on-0862edd1/",
+          "name": "Dirty Pawz Self-Serve Dog Wash",
+          "format": "Self-service wash and staffed grooming",
+          "comparison": "Dirty Pawz offers self-service washing alongside lite grooming and full grooms.",
+          "confirm": "Self-service needs no appointment; reserve staffed grooming separately.",
+          "facts": [
+            "The site lists 804 Queen Street East and 529 Adelaide Street West.",
+            "The full-grooming online calendar is for Queen Street; the service page asks Adelaide customers to call.",
+            "The full groom includes a bath, drying, brushing, clipping and nail, ear, paw and sanitary care."
+          ],
+          "sourceUrls": [
+            "https://www.dirtypawzdogwash.com/our-services/grooming-services-toronto/",
+            "https://www.dirtypawzdogwash.com/"
+          ]
+        }
+      ]
+    },
+    "/provinces/alberta/calgary/": {
+      "reviewedAt": "2026-09-21",
+      "intro": "Compare appointment structure as well as grooming packages. These Calgary businesses publish different time allowances and drop-off arrangements, so a convenient address alone may not determine which visit fits your day.",
+      "businesses": [
+        {
+          "profileUrl": "/groomers/alberta/calgary/sunshine-dog-grooming-inc-calgary-ab-d8284788/",
+          "name": "Sunshine Dog Grooming Inc.",
+          "format": "One-to-one grooming",
+          "comparison": "Sunshine describes one-to-one attention in a kennel-free setting.",
+          "confirm": "Ask about your dog’s coat, handling needs and total appointment time.",
+          "facts": [
+            "The published location is Unit 101B, 14919 Deer Ridge Drive SE, with phone 403-605-8355.",
+            "The site describes baths, trims and grooming tailored to individual dogs, and links to online booking."
+          ],
+          "sourceUrls": [
+            "https://www.sunshinedoggrooming.dog/"
+          ],
+          "bookingUrl": "https://booking.moego.pet/ol/landing?name=SunshineDogGrooming"
+        },
+        {
+          "profileUrl": "/groomers/alberta/calgary/muttley-crue-organics-calgary-ab-58af7640/",
+          "name": "Muttley Crue Organics",
+          "format": "Grooming with breaks",
+          "comparison": "Muttley Crue allows four to five hours and includes daycare with grooming.",
+          "confirm": "Confirm early drop-off or late collection when booking.",
+          "facts": [
+            "The grooming page lists Unit 112, 620 46 Avenue NE and 403-262-6888.",
+            "It describes breed-specific cuts and hand scissoring, with breaks between grooming stages.",
+            "The booking instructions ask new clients to create a profile, upload vaccinations, then call to arrange grooming."
+          ],
+          "sourceUrls": [
+            "https://muttleycrue.ca/dog-grooming/"
+          ]
+        },
+        {
+          "profileUrl": "/groomers/alberta/calgary/spa-4-paws-calgary-ab-052b7a9d/",
+          "name": "Spa 4 Paws",
+          "format": "Bathing, grooming and nails",
+          "comparison": "Spa 4 Paws asks customers to allow at least three hours for grooming.",
+          "confirm": "An online request is followed by email confirmation.",
+          "facts": [
+            "The contact page lists Unit 4, 2650 36 Street SE and 403-457-1225.",
+            "The service categories are bathing, grooming and nail trims; the site offers online appointment requests."
+          ],
+          "sourceUrls": [
+            "https://www.spafourpaws.com/",
+            "https://www.spafourpaws.com/Contact"
+          ],
+          "bookingUrl": "https://www.spafourpaws.com/Booking"
+        }
+      ]
+    },
+    "/provinces/alberta/edmonton/": {
+      "reviewedAt": "2026-09-21",
+      "intro": "Confirm both the service and the Edmonton branch before booking. A bath-and-brush appointment, a styled haircut and a walk-in nail visit have different requirements; retail or daycare hours may not be grooming hours.",
+      "businesses": [
+        {
+          "profileUrl": "/groomers/alberta/edmonton/oh-my-dog-spa-and-grooming-edmonton-ab-46217918/",
+          "name": "Oh My Dog Spa and Grooming",
+          "format": "North-side salon",
+          "comparison": "Oh My Dog lists bath-and-dry, bath-and-tidy, grooming and hand stripping.",
+          "confirm": "Choose the north location on the booking page; confirm walk-in nail hours.",
+          "facts": [
+            "The north address is 216 Mistatim Road NW; the site also lists a separate south location at 5596 Windermere Boulevard.",
+            "The published number is 780-655-1797.",
+            "The booking page advertises walk-in nail trims and separates north and south appointment options."
+          ],
+          "sourceUrls": [
+            "https://www.ohmydogspa.ca/",
+            "https://www.ohmydogspa.ca/book-now"
+          ],
+          "bookingUrl": "https://www.ohmydogspa.ca/book-now"
+        },
+        {
+          "profileUrl": "/groomers/alberta/edmonton/the-pampered-puppy-edmonton-ab-63bdf2fa/",
+          "name": "The Pampered Puppy",
+          "format": "124 Street grooming and daycare",
+          "comparison": "The Pampered Puppy publishes a haircut package and offers daycare at its 124 Street branch.",
+          "confirm": "Use centralized booking and specify 124 Street, Mayfield or Southside.",
+          "facts": [
+            "The 124 Street branch is at 10303 124 Street NW. The contact page lists 780-732-7277 for calls or texts.",
+            "The Pampered Package includes a bath, haircut, nail clipping and ear care.",
+            "The website restricts daycare to the 124 Street location, with different grooming days at other branches."
+          ],
+          "sourceUrls": [
+            "https://www.thepamperedpuppy.net/",
+            "https://www.thepamperedpuppy.net/contact.htm"
+          ]
+        },
+        {
+          "profileUrl": "/groomers/alberta/edmonton/posh-pooch-hotel-and-daycare-edmonton-ab-61237955/",
+          "name": "Posh Pooch Hotel and Daycare",
+          "format": "Bath-and-brush spa",
+          "comparison": "Posh Pooch offers bathing, brushing, de-shedding and nail trims, including standalone spa visits.",
+          "confirm": "For a haircut, ask directly whether your requested styling is available.",
+          "facts": [
+            "The spa page lists 9402 31 Avenue NW and 780-435-3115.",
+            "Bath-and-brush packages vary by coat length and size; the site notes that condition, temperament and time can affect the final price.",
+            "Spa services can be booked without a daycare or boarding stay."
+          ],
+          "sourceUrls": [
+            "https://www.poshpooch.ca/poshspa"
+          ],
+          "bookingUrl": "https://poshpooch.portal.gingrapp.com/"
+        }
+      ]
+    },
+    "/provinces/quebec/montreal/": {
+      "reviewedAt": "2026-09-21",
+      "intro": "Decide whether you want a salon visit or grooming brought to your home. For Montreal mobile services, confirm your exact address and parking arrangements; for any reservation form, check that the business has confirmed your appointment.",
+      "businesses": [
+        {
+          "profileUrl": "/groomers/quebec/montreal/mobispaw-montreal-qc-ba4ef696/",
+          "name": "Mobispaw",
+          "format": "Mobile grooming van",
+          "comparison": "Mobispaw’s Montreal page describes a van that comes to the customer and a full-groom package.",
+          "confirm": "Confirm service coverage for your address and the space needed for the van.",
+          "facts": [
+            "The Montreal package lists bathing, brushing, a haircut, ear cleaning and nail trimming.",
+            "Its published coverage includes Montreal neighbourhoods and additional surrounding areas; confirm your address before reserving."
+          ],
+          "sourceUrls": [
+            "https://mobispaw.com/pages/locations-montreal"
+          ]
+        },
+        {
+          "profileUrl": "/groomers/quebec/montreal/spa-beasts-v-i-p-montreal-qc-b8fc5f9c/",
+          "name": "SPA Beasts V.I.P.",
+          "format": "Dog and cat grooming",
+          "comparison": "SPA Bêtes VIP publishes dog and cat grooming and a reservation form.",
+          "confirm": "Specify pet size, the service requested and your preferred time; confirm the location.",
+          "facts": [
+            "The official site describes grooming for dogs and cats.",
+            "The reservation form asks for pet type, dog size, breed, age and preferred date and time."
+          ],
+          "sourceUrls": [
+            "https://spabetesvip.com/",
+            "https://spabetesvip.com/fr/Booking/Reservation"
+          ],
+          "bookingUrl": "https://spabetesvip.com/fr/Booking/Reservation"
+        }
+      ]
+    },
+    "/provinces/ontario/hamilton/": {
+      "reviewedAt": "2026-09-21",
+      "intro": "Check new-client availability before comparing appointment times. The Hamilton sources below show why a salon can be operating normally while its regular schedule is full; contact details and a booking button alone do not establish availability.",
+      "businesses": [
+        {
+          "profileUrl": "/groomers/ontario/hamilton/dogs-by-daisy-hamilton-on-fd28e970/",
+          "name": "Dogs By Daisy",
+          "format": "Appointments with wider time slots",
+          "comparison": "Dogs By Daisy describes wider appointment slots for individual attention.",
+          "confirm": "Ask for the package inclusions and time allowance for your dog.",
+          "facts": [
+            "The business lists bathing, haircuts, nail trimming and ear cleaning among its services.",
+            "Its website says services are by appointment and links to an appointment page."
+          ],
+          "sourceUrls": [
+            "https://dogsbydaisy.com/"
+          ],
+          "bookingUrl": "https://dogsbydaisy.com/book-an-appointment/"
+        },
+        {
+          "profileUrl": "/groomers/ontario/hamilton/somerset-grooming-hamilton-on-6da16f3f/",
+          "name": "Somerset Grooming",
+          "format": "Salon with a new-client waitlist",
+          "comparison": "Somerset’s published notice says it is not accepting new clients into its regular schedule.",
+          "confirm": "Call about the new-client waitlist or cancellation list; availability may change.",
+          "facts": [
+            "The official site provides 905-385-0168 for booking.",
+            "Its 2026 booking notice describes a new-client waitlist and a cancellation list, rather than immediate availability."
+          ],
+          "sourceUrls": [
+            "https://www.somersetgrooms.com/"
+          ]
+        }
+      ]
+    },
+    "/provinces/british-columbia/surrey/": {
+      "reviewedAt": "2026-09-21",
+      "intro": "Compare the service package and the right contact channel. Some Surrey businesses separate phone calls from appointment texts, and a store with several branches may have different salon availability at each location.",
+      "businesses": [
+        {
+          "profileUrl": "/groomers/british-columbia/surrey/furfection-dog-spaw-ltd-surrey-bc-5399ae01/",
+          "name": "Furfection Dog Spaw ltd",
+          "format": "Appointment-only spa",
+          "comparison": "Furfection separates its voice number from its new booking-system text number.",
+          "confirm": "Use the published voice number for calls; confirm your service before reserving.",
+          "facts": [
+            "The site lists Unit 123, 6820 188 Street, and 778-710-7297 for voice calls.",
+            "It publishes bathing, nail trimming, hand scissoring, hand stripping and de-shedding.",
+            "All services are by appointment; reception hours are not a guarantee of grooming availability."
+          ],
+          "sourceUrls": [
+            "https://furfection.ca/"
+          ],
+          "bookingUrl": "https://book.cuddlesapp.com/furfection-dog-spaw/intake-form"
+        },
+        {
+          "profileUrl": "/groomers/british-columbia/surrey/pet-solutions-supermarket-and-grooming-surrey-bc-1ad78fea/",
+          "name": "Pet Solutions Supermarket & Grooming",
+          "format": "One-dog-at-a-time appointments",
+          "comparison": "Pet Solutions says most grooms take about two to two-and-a-half hours.",
+          "confirm": "Confirm the Surrey branch when calling and ask about coat-specific timing.",
+          "facts": [
+            "The Surrey store is listed at 10602 King George Highway, with phone 604-585-3737.",
+            "Its grooming page includes nails, pad tidying, bath, brush, drying and styling in the groom.",
+            "The business also lists a Delta store, so verify where your appointment will take place."
+          ],
+          "sourceUrls": [
+            "https://www.petsolutionsbc.com/grooming/",
+            "https://www.petsolutionsbc.com/"
+          ]
+        }
+      ]
+    }
+  }
+}

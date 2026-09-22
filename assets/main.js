@@ -244,7 +244,7 @@
     const distance = typeof item.distance === "number" ? `<span>${item.distance.toFixed(1)} km away</span>` : "";
     const serviceText = item.services && item.services.length ? `<p class="services">${escapeHtml(item.services.slice(0, 4).join(" · "))}</p>` : "";
     const website = item.website
-      ? `<a class="plain-action" href="${escapeAttr(item.website)}" rel="nofollow noopener" target="_blank">${globeIcon()} Website</a>`
+      ? `<a class="plain-action" data-enquiry-event="listing_website_click" href="${escapeAttr(item.website)}" rel="nofollow noopener" target="_blank">${globeIcon()} Website</a>`
       : "";
     const phone = item.phone ? `<a class="plain-action" href="tel:${escapeAttr(item.phoneRaw || item.phone)}">${phoneIcon()} ${escapeHtml(item.phone)}</a>` : "";
     const isSaved = shortlistUrls.includes(item.url);
@@ -312,7 +312,7 @@
       <p class="shortlist-services">${escapeHtml(services)}</p>
       <div class="shortlist-item-actions">
         ${item.phone ? `<a class="btn btn-light" href="tel:${escapeAttr(item.phoneRaw || item.phone)}">Call</a>` : ""}
-        ${item.website ? `<a class="btn btn-light" href="${escapeAttr(item.website)}" target="_blank" rel="nofollow noopener">Website</a>` : ""}
+        ${item.website ? `<a class="btn btn-light" data-enquiry-event="listing_website_click" href="${escapeAttr(item.website)}" target="_blank" rel="nofollow noopener">Website</a>` : ""}
         <a class="btn btn-primary" href="${escapeAttr(withBase(item.url))}">View profile</a>
       </div>
     </article>`;

@@ -31,7 +31,7 @@ Generated profiles are visibly labelled as directory records. Profiles with norm
 
 Business-specific images render only when `imageRights` records owner permission, a reusable licence, or a public-domain basis. Public availability, attribution, and source links are not treated as permission. The current build displays the approved GroomArts Academy gallery and uses a site-owned placeholder elsewhere, with an authorization flow for businesses that want to submit photos.
 
-The current generated build includes 7,239 crawlable URLs, including 5,638 crawlable business profiles, 90 accessible profile quality holds, 1,804 profiles with rendered first-party website enrichment, 133 dog grooming cost pages, and 8 grooming-tool pages. The cost pages use planning ranges and quote questions instead of fixed price claims, because real prices depend on dog size, coat condition, matting, handling, add-ons, mobile route needs, and local availability.
+The current generated build includes 7,244 crawlable URLs, including 5,642 crawlable business profiles, 87 accessible profile quality holds, 1,807 profiles with rendered first-party website enrichment, 133 dog grooming cost pages, and 8 grooming-tool pages. The cost pages use planning ranges and quote questions instead of fixed price claims, because real prices depend on dog size, coat condition, matting, handling, add-ons, mobile route needs, and local availability.
 
 Before any major release, inspect Search Console indexing for the homepage, guide hub, tools hub, several city pages, and several guide articles. Preserve established URLs, canonicals, titles, and sitemap membership while improving original value and reader trust.
 
@@ -82,3 +82,47 @@ python3.12 -m unittest discover -s tools/tests -p 'test_*.py' -v
 4. Point DNS for `doggroomerscanada.ca` to GitHub Pages.
 
 The `CNAME` file is already set to `doggroomerscanada.ca`.
+
+## Content dates and local comparisons
+
+Sitemap `lastmod` values come only from `data/page-content-updates.json`. Add a route, the actual date of a substantial content change, and a note describing that change. Unknown dates are omitted. Rebuilding the site, changing analytics, or updating a cache version must not refresh every page's content date. The generator rejects invalid, future, or undocumented dates.
+
+`data/city-local-reviews.json` contains manually reviewed official sources for comparisons in Calgary, Edmonton, Toronto, Montreal, Hamilton, and Surrey, plus additive details on 15 matching profiles. Preserve source links and the actual review date; recheck the source before refreshing a claim. These sections describe published services and booking logistics, not endorsements, independently inspected premises, or guaranteed availability. Existing titles, URLs, canonical tags, listing order, and indexing quality rules remain stable.
+
+## Enquiry measurement
+
+`assets/enquiries.js` measures delegated interactions on static and dynamically rendered directory links:
+
+| Event | Meaning | GA4 key event |
+| --- | --- | --- |
+| `phone_click` | Business telephone link selected | Yes |
+| `booking_click` | Explicit appointment link selected | Yes |
+| `listing_website_click` | Business website link selected | No |
+| `directions_click` | Business map/directions action selected | No |
+| `listing_email_prepared` | Valid listing form prepared an email using the existing mailto flow | No |
+
+These measure intent: a phone click does not confirm a connected call, a booking click does not confirm an appointment, and email preparation does not confirm a sent message. True completed calls/bookings require a separate integration with the phone or booking provider.
+
+Event parameters include the public listing ID, city/province slugs and placement; web actions also include the destination domain. They exclude phone numbers, email addresses, URL query strings and form contents. Tracking does not prevent navigation and tolerates unavailable analytics.
+
+GA4 property 538257267 has `phone_click` and `booking_click` configured as key events with no default monetary value. Event-scoped custom dimensions are Enquiry city (`city_slug`), Enquiry province (`province_slug`), Enquiry placement (`link_placement`) and Enquiry listing ID (`listing_id`). In Explore, use event name and these dimensions with event count, filtering to enquiry events and a city or short date range. Data is prospective after deployment and visitor interaction; custom reporting may need 24–48 hours. No synthetic production events should be sent during QA.
+
+Run focused regressions after changing these modules:
+
+```bash
+node --test tools/tests/enquiries.test.js tools/tests/sitemap-dates.test.js
+node tools/audit-listing-pages.js
+node tools/audit-monetization.js
+```
+
+Use a local preview that blocks external analytics/ad requests for browser QA. Private Search Console exports, the individual excluded-page review and account analytics reports are kept outside this public repository.
+
+## Amazon Associates links
+
+Amazon Canada affiliate search links use this site's verified Associate ID, `doggroomersca-20`. The website is registered in that account. Do not reuse its tag on another site.
+
+`data/guide-shopping.json` deliberately limits the initial rollout to three existing technique guides: line brushing, bath and brush, and nail care. Each has two relevant category links, original buying criteria, limitations, alternatives to purchasing, and source links. These are shopping comparisons, not hands-on product reviews. `tools/guide-shopping.js` creates direct HTTPS Amazon.ca search URLs with the tag, `rel="sponsored nofollow noopener"`, and visible `(paid link)` labels. Every participating article shows the required Amazon Associate statement before its first affiliate link and links to the editorial disclosure.
+
+Keep prices, ratings, discounts, availability promises, copied product descriptions, Amazon images, tracking widgets and product-review schema out of this static implementation. Amazon prices/availability require its supported data tools and rules. Update the original guidance and sources before expanding to another guide; record substantive content dates in both the guide data and the sitemap registry. Existing URLs, titles and indexing controls must remain unchanged. The generated article's visible review date and Article `dateModified` follow the reviewed guide date; original publication dates remain intact.
+
+No Amazon ad script, pixel, display unit or ads.txt entry is needed for these text links. Journey and Grow configuration stays unchanged. Amazon reports clicks and qualifying purchases in Associates Central; enquiry key events must not count affiliate shopping clicks. Owner-side tax/payment onboarding is managed in Amazon Associates, not in this repository.

@@ -5,6 +5,9 @@ const fs = require("node:fs");
 const path = require("node:path");
 const crypto = require("node:crypto");
 const { guideCategories, guideArticles } = require("./grooming-guides");
+const { validateUpdates, lastmodTag } = require("./sitemap-dates");
+const { validateReviews, cityComparison, profileReview } = require("./local-comparisons");
+const { shopping, guideShoppingDisclosure, guideShoppingSection, guideShoppingText } = require("./guide-shopping");
 
 const ROOT = path.resolve(__dirname, "..");
 const SITE_URL = "https://doggroomerscanada.ca";
@@ -12,7 +15,7 @@ const CSV_FILE =
   process.argv[2] ||
   path.join(ROOT, "Apify Google Maps Scraper jJzJjRpnTviQKBwns - dog grooming only.csv");
 const BUILD_DATE = process.env.BUILD_DATE || new Date().toISOString().slice(0, 10);
-// Update this only when the published directory/guides are materially reviewed.
+// Original guide publication/review date; never use as a site-wide sitemap date.
 const CONTENT_UPDATED_DATE = "2026-07-20";
 const ASSET_VERSION = process.env.ASSET_VERSION || new Date().toISOString().replace(/[-:T.Z]/g, "").slice(0, 12);
 const BRAND_NAME = "Dog Groomers Canada";
@@ -262,6 +265,7 @@ function main() {
   if (!journeyAdsTxt.includes("ownerdomain=doggroomerscanada.ca") || !journeyAdsTxt.includes(`journeymv.com, ${JOURNEY_SITE_ID}, DIRECT`)) {
     throw new Error("Journey ads.txt must match Dog Groomers Canada's site ID and domain.");
   }
+  const contentUpdates = validateUpdates(JSON.parse(fs.readFileSync(path.join(ROOT, "data/page-content-updates.json"), "utf8")), BUILD_DATE);
   cleanGeneratedFiles();
 
   const rawListings = [...loadListings(CSV_FILE), ...loadManualListings()];
@@ -296,6 +300,8 @@ function main() {
       imageRightsListings: listings.filter(hasDocumentedImageRights).length,
     },
     pages: [],
+    contentUpdates,
+    localReviews: validateReviews(JSON.parse(fs.readFileSync(path.join(ROOT, "data/city-local-reviews.json"), "utf8")).cities, listings),
   };
 
   writeStaticAssets(context);
@@ -1341,6 +1347,7 @@ function writeCityPages(context) {
               <strong>${countLabel(city.count, "groomer")} found</strong>
               <div class="tag-cloud">${services.map((service) => `<a class="tag" href="${localServiceSearchUrl(city, service)}">${esc(service.short)}</a>`).join("")}</div>
             </div>
+            ${cityComparison(city.url, context.localReviews)}
             <div class="listing-stack" data-city-listings>${listings.map((item) => listingCard(item)).join("")}</div>
             ${cityQualitySection(city, services, nearby)}
             ${cityServicePlannerSection(city, services)}
@@ -1422,11 +1429,11 @@ function writeListingPages(context) {
       <dl class="detail-list">
         ${detailRow("Phone", listing.phone ? `<a href="tel:${escAttr(listing.phoneRaw || listing.phone)}">${esc(listing.phone)}</a>` : listing.email ? "Not listed; contact by email" : "Call to confirm")}${listing.email ? `
         ${detailRow("Email", `<a href="mailto:${escAttr(listing.email)}">${esc(listing.email)}</a>`)}` : ""}
-        ${detailRow("Website", listing.website ? `<a href="${escAttr(listing.website)}" target="_blank" rel="nofollow noopener">${esc(cleanDisplayUrl(listing.website))}</a>` : "Not listed")}
+        ${detailRow("Website", listing.website ? `<a data-enquiry-event="listing_website_click" href="${escAttr(listing.website)}" target="_blank" rel="nofollow noopener">${esc(cleanDisplayUrl(listing.website))}</a>` : "Not listed")}
         ${listing.addressHidden
           ? detailRow("Service area", `Mobile service in ${esc(serviceAreaText || `${listing.city}, ${listing.provinceCode}`)}. No street address is published at the business's request.`)
           : `${detailRow("Address", listing.address ? esc(listing.address) : `${esc(listing.city)}, ${esc(listing.province)}`)}
-        ${serviceAreaText ? `${detailRow("Service area", esc(serviceAreaText))}\n        ` : ""}${detailRow("Maps", listing.mapsUrl ? `<a href="${escAttr(listing.mapsUrl)}" target="_blank" rel="nofollow noopener">Open in Google Maps</a>` : "Map link not listed")}`}
+        ${serviceAreaText ? `${detailRow("Service area", esc(serviceAreaText))}\n        ` : ""}${detailRow("Maps", listing.mapsUrl ? `<a data-enquiry-event="directions_click" href="${escAttr(listing.mapsUrl)}" target="_blank" rel="nofollow noopener">Open in Google Maps</a>` : "Map link not listed")}`}
         ${detailRow("Category", esc(listing.category || "Pet groomer"))}
         ${detailRow("Status", listing.temporarilyClosed ? "Temporarily closed in source data" : !listing.phone && listing.email ? "Email business to confirm current availability" : "Call business to confirm current availability")}
       </dl>`;
@@ -1446,7 +1453,7 @@ function writeListingPages(context) {
               ${profileProvenanceLine(listing)}
               <p class="lead">${esc(listing.description)}</p>
               <div class="meta-line">${ratingLine(listing)}<span>${esc(listing.city)}, ${esc(listing.provinceCode)}</span></div>
-              <div class="tag-cloud" style="margin-top:18px">${listing.phone ? `<a class="btn btn-dark" href="tel:${escAttr(listing.phoneRaw || listing.phone)}">Call ${esc(listing.phone)}</a>` : ""}${listing.website ? `<a class="btn btn-primary" href="${escAttr(listing.website)}" target="_blank" rel="nofollow noopener">Visit Website</a>` : ""}${!listing.phone && !listing.website && listing.email ? `<a class="btn btn-primary" href="mailto:${escAttr(listing.email)}">Email business</a>` : ""}${listing.mapsUrl ? `<a class="btn btn-light" href="${escAttr(listing.mapsUrl)}" target="_blank" rel="nofollow noopener">Open Map</a>` : ""}<button class="btn btn-light shortlist-toggle" type="button" data-shortlist-toggle data-listing-url="${escAttr(listing.url)}" data-listing-name="${escAttr(listing.title)}" aria-label="Save ${escAttr(listing.title)} to compare" aria-pressed="false">☆ Save to compare</button></div>
+              <div class="tag-cloud" style="margin-top:18px">${listing.phone ? `<a class="btn btn-dark" href="tel:${escAttr(listing.phoneRaw || listing.phone)}">Call ${esc(listing.phone)}</a>` : ""}${listing.website ? `<a class="btn btn-primary" data-enquiry-event="listing_website_click" href="${escAttr(listing.website)}" target="_blank" rel="nofollow noopener">Visit Website</a>` : ""}${!listing.phone && !listing.website && listing.email ? `<a class="btn btn-primary" href="mailto:${escAttr(listing.email)}">Email business</a>` : ""}${listing.mapsUrl ? `<a class="btn btn-light" data-enquiry-event="directions_click" href="${escAttr(listing.mapsUrl)}" target="_blank" rel="nofollow noopener">Open Map</a>` : ""}<button class="btn btn-light shortlist-toggle" type="button" data-shortlist-toggle data-listing-url="${escAttr(listing.url)}" data-listing-name="${escAttr(listing.title)}" aria-label="Save ${escAttr(listing.title)} to compare" aria-pressed="false">☆ Save to compare</button></div>
             </div>
             <div class="profile-photo-wrap"><div class="profile-photo">${listing.image ? `<img src="${escAttr(listing.image)}" alt="${escAttr(listingImageAlt(listing, "profile"))}" loading="eager" referrerpolicy="no-referrer"${listingImageRightsAttr(listing)}${sameBusinessFallbackImage(listing) ? ` data-fallback-image="${escAttr(sameBusinessFallbackImage(listing))}" data-fallback-alt="${escAttr(listingImageAlt(listing, "profile"))}"` : ""}>` : imageUnavailable(listing, "profile")}</div>${listingImageSourceNote(listing)}</div>
           </div>
@@ -1458,7 +1465,7 @@ function writeListingPages(context) {
             <section>
               <h2>Business details</h2>
               ${contact}
-            </section>${listing.offer ? `
+            </section>${profileReview(listing.url, context.localReviews)}${listing.offer ? `
             ${listingOfferSection(listing)}` : ""}
             <section class="section">
               <h2>Services mentioned</h2>
@@ -2695,6 +2702,9 @@ function writeUtilityPages(context) {
     <section class="section">
       <h2>Advertising and independence</h2>
       <p>Listings are not endorsements and are not ranked because a business paid for placement. Advertising may appear on the site after review approval, but ads do not change directory facts, city pages, service pages, or correction handling.</p>
+      <h2 id="affiliate-links" style="scroll-margin-top:94px">Affiliate links in grooming guides</h2>
+      <p>As an Amazon Associate I earn from qualifying purchases.</p>
+      <p>Some guides include clearly labelled paid links to Amazon.ca. We choose shopping categories to support the task explained in the article and include practical selection criteria, limitations and alternatives to buying. These links do not change directory rankings or business facts. Our current shopping links open search results, not a list of products we have personally tested. Amazon determines the products displayed, sellers, prices and availability; check the individual listing before purchasing.</p>
       <p>The site does not currently serve display ads or reserve blank spaces for them.</p>
     </section>
     <section class="section">
@@ -2757,7 +2767,7 @@ function writeUtilityPages(context) {
       "Dog Groomers Canada is a directory that uses limited browser features to help visitors search, compare, and find nearby dog grooming pages.",
       `<div class="grid-3">
         <div class="info-card"><h2>Location and shortlist tools</h2><p>The near-me feature asks for your browser location only after you press the location button. Coordinates are used in your browser to sort nearby listings. Saved groomer shortlists and location preferences are kept in this site's local browser storage for convenience and are not submitted to us.</p></div>
-        <div class="info-card"><h2>Analytics</h2><p>We use Google Analytics to understand aggregate site usage, such as page visits and search or navigation patterns. Analytics may use cookies and device, browser, network, and interaction information.</p></div>
+        <div class="info-card"><h2>Analytics</h2><p>We use Google Analytics to understand aggregate site usage, such as page visits and search or navigation patterns. We also measure clicks to call, visit a business website, open directions or follow a booking link, and when the listing form prepares an email. These actions do not confirm a connected call, completed booking or sent email. Our custom enquiry events do not include phone numbers, email addresses or the values entered in the listing form. Analytics may use cookies and device, browser, network, and interaction information.</p></div>
         <div class="info-card"><h2>Grow by Mediavine</h2><p>Grow provides reader features such as saving, sharing, subscribing, and recommended content. It may use cookies, local storage, identifiers, and interaction data to provide those features and measure site engagement.</p></div>
       </div>
       <section class="section">
@@ -2779,13 +2789,17 @@ function writeUtilityPages(context) {
         <p>Business profile pages include public listing facts such as business name, city, contact details, services, ratings, hours, websites, and map links when available. We do not republish review text, reviewer names, or reviewer profiles. When enough comments are present, a profile may show a neutral summary of topics repeated across several comments. Businesses can request updates or corrections by contacting <a href="mailto:${CONTACT_EMAIL}">${CONTACT_EMAIL}</a>.</p>
       </section>
       <section class="section">
+        <h2>Amazon affiliate links</h2>
+        <p>Some grooming guides contain paid links to Amazon.ca. These links include our public Associate tracking ID so Amazon can attribute qualifying purchases and provide commission reports. Following a link takes you to Amazon, where its privacy notice and cookie choices apply. We do not receive your Amazon login or payment details. These are ordinary outbound links; we do not embed Amazon shopping widgets or tracking pixels on these guides.</p>
+      </section>
+      <section class="section">
         <h2>Contact by email</h2>
         <p>If you email a correction, removal request, or listing update, we receive the information you choose to send, such as your email address, business details, supporting source links, and requested changes.</p>
       </section>
       <section class="section">
         <h2>Data choices</h2>
         <p>You can clear saved location and groomer-shortlist data by using the shortlist's clear button or clearing this site's browser storage. You can also block or delete cookies in your browser settings and use Mediavine's available privacy and consent controls to manage advertising choices. Some Grow, analytics, or advertising features may work differently when storage is blocked. Grow users can use Mediavine's privacy request options, and you can contact <a href="mailto:${CONTACT_EMAIL}">${CONTACT_EMAIL}</a> about information sent directly to this site.</p>
-        <p class="muted">Last updated September 16, 2026.</p>
+        <p class="muted">Last updated September 21, 2026.</p>
       </section>`,
     ),
     breadcrumbSchema([{ label: "Home", url: "/" }, { label: "Privacy", url: "/privacy/" }]),
@@ -2920,7 +2934,7 @@ function writeSitemap(context) {
 
   const urls = context.pages
     .filter((page) => page.route !== "/404.html")
-    .map((page) => `  <url><loc>${escapeXml(absoluteUrl(page.route))}</loc><lastmod>${CONTENT_UPDATED_DATE}</lastmod></url>`)
+    .map((page) => `  <url><loc>${escapeXml(absoluteUrl(page.route))}</loc>${lastmodTag(page.route, context.contentUpdates)}</url>`)
     .join("\n");
   fs.writeFileSync(
     path.join(ROOT, "sitemap.xml"),
@@ -2994,6 +3008,7 @@ function pageHtml(route, title, description, body, schema = [], options = {}) {
   <link rel="preload" href="/assets/site.css?v=${ASSET_VERSION}" as="style">
   <link rel="stylesheet" href="/assets/site.css?v=${ASSET_VERSION}">
   ${schemaItems.map((item) => `<script type="application/ld+json">${safeJson(item)}</script>`).join("\n  ")}
+  <script src="/assets/enquiries.js?v=${ASSET_VERSION}" defer></script>
   <script src="/assets/main.js?v=${ASSET_VERSION}" defer></script>
   ${includeJourney ? journeyInitializerScript() : ""}
 </head>
@@ -3062,7 +3077,7 @@ function searchForm() {
 function listingCard(item, compact = false) {
   const actions = [];
   if (item.phone) actions.push(`<a class="plain-action" href="tel:${escAttr(item.phoneRaw || item.phone)}">${phoneIcon()} ${esc(item.phone)}</a>`);
-  if (item.website) actions.push(`<a class="plain-action" href="${escAttr(item.website)}" target="_blank" rel="nofollow noopener">${globeIcon()} Website</a>`);
+  if (item.website) actions.push(`<a class="plain-action" data-enquiry-event="listing_website_click" href="${escAttr(item.website)}" target="_blank" rel="nofollow noopener">${globeIcon()} Website</a>`);
   actions.push(`<button class="plain-action shortlist-toggle" type="button" data-shortlist-toggle data-listing-url="${escAttr(item.url)}" data-listing-name="${escAttr(item.title)}" aria-label="Save ${escAttr(item.title)} to compare" aria-pressed="false">☆ Save to compare</button>`);
   actions.push(`<a class="btn btn-primary" href="${item.url}">View Profile</a>`);
 
@@ -3199,6 +3214,7 @@ function guideReadTime(article) {
     article.title,
     article.description,
     article.summary,
+    ...guideShoppingText(article),
     ...(article.keywords || []),
     ...article.sections.flatMap((section) => [section.heading, ...(section.paragraphs || []), ...(section.bullets || [])]),
     ...(article.faqs || []).flatMap((faq) => [faq.question, faq.answer]),
@@ -3229,7 +3245,7 @@ function guideArticleBody(article, context) {
   const inlineToolIndex = Math.min(2, articleSections.length);
   const toc = article.sections
     .map((section, index) => `<a href="#${escAttr(guideSectionId(section, index))}">${esc(section.heading)}</a>`)
-    .join("");
+    .join("") + (shopping.guides[article.slug] ? `<a href="#choosing-grooming-tools">${esc(shopping.guides[article.slug].heading)}</a>` : "");
   return `
     <section class="page-intro article-intro">
       <div class="wrap">
@@ -3240,7 +3256,7 @@ function guideArticleBody(article, context) {
           <span>Dog Groomers Canada</span>
           <span>${esc(category.name)}</span>
           <span>${guideReadTime(article)}</span>
-          <span>Updated ${esc(CONTENT_UPDATED_DATE)}</span>
+          <span>Updated ${esc(guideUpdatedDate(article))}</span>
         </div>
         <div class="tag-cloud article-tags">${(article.keywords || []).map((keyword) => `<span class="tag">${esc(keyword)}</span>`).join("")}</div>
       </div>
@@ -3250,10 +3266,12 @@ function guideArticleBody(article, context) {
         <main>
           <article class="article-content">
             <p class="article-summary">${esc(article.description)}</p>
+            ${guideShoppingDisclosure(article)}
             ${guideAuthorBox(article)}
             ${articleSections.slice(0, inlineToolIndex).join("")}
             ${guideRelevantToolCard(relevantTool)}
             ${articleSections.slice(inlineToolIndex).join("")}
+            ${guideShoppingSection(article)}
             ${guideFaqSection(article)}
             <section class="article-section">
               <h2>Find a groomer for this need</h2>
@@ -3317,7 +3335,7 @@ function guideAuthorBox(article) {
   return `<aside class="author-box" aria-label="Article publisher information">
       <div>
         <strong>Written and maintained by Dog Groomers Canada</strong>
-        <p>Prepared for Canadian dog owners comparing groomers, coat care, seasonal risks, breed needs, costs, and booking questions. Updated ${esc(CONTENT_UPDATED_DATE)} in the ${esc(category.name)} section.</p>
+        <p>Prepared for Canadian dog owners comparing groomers, coat care, seasonal risks, breed needs, costs, and booking questions. Updated ${esc(guideUpdatedDate(article))} in the ${esc(category.name)} section.</p>
       </div>
       <div class="author-links"><a class="link-arrow" href="/about/">About the publisher -></a><a class="link-arrow" href="/editorial-policy/">Editorial standards -></a></div>
     </aside>`;
@@ -4094,7 +4112,7 @@ function listingSpecificSignalsSection(listing) {
   if (bookingLink) {
     rows.push(profileSignalRow(
       "Appointments",
-      `<a href="${escAttr(bookingLink.url)}" target="_blank" rel="nofollow noopener">${esc(bookingLink.name)}</a> <span class="signal-qualifier">link included in the source listing</span>`,
+      `<a data-enquiry-event="booking_click" href="${escAttr(bookingLink.url)}" target="_blank" rel="nofollow noopener">${esc(bookingLink.name)}</a> <span class="signal-qualifier">link included in the source listing</span>`,
     ));
   }
   if (listing.accessibility && listing.accessibility.length) {
@@ -4772,6 +4790,10 @@ function mobileGroomingFaqSchema(service) {
   };
 }
 
+function guideUpdatedDate(article) {
+  return shopping.guides[article.slug]?.reviewedAt || CONTENT_UPDATED_DATE;
+}
+
 function guideArticleSchema(article) {
   const category = guideCategoryBySlug(article.category);
   return {
@@ -4780,7 +4802,7 @@ function guideArticleSchema(article) {
     headline: article.title,
     description: article.description,
     datePublished: CONTENT_UPDATED_DATE,
-    dateModified: CONTENT_UPDATED_DATE,
+    dateModified: guideUpdatedDate(article),
     author: {
       "@type": "Organization",
       name: BRAND_NAME,
@@ -4827,6 +4849,7 @@ function articleWordCount(article) {
     article.title,
     article.description,
     article.summary,
+    ...guideShoppingText(article),
     ...article.sections.flatMap((section) => [section.heading, ...(section.paragraphs || []), ...(section.bullets || [])]),
     ...(article.faqs || []).flatMap((faq) => [faq.question, faq.answer]),
   ]

@@ -1,0 +1,80 @@
+{
+  "associateTag": "doggroomersca-20",
+  "guides": {
+    "line-brushing-curly-coated-dogs": {
+      "reviewedAt": "2026-09-21",
+      "heading": "Choosing a brush and comb for line brushing",
+      "intro": "A brush and a comb do different jobs: the brush works through a small section, while the comb helps check what remains underneath. Start with the tools your groomer has demonstrated on your dog's coat. If your current pair works comfortably, there is no need to replace it just to buy a matching set.",
+      "items": [
+        {
+          "name": "A slicker brush sized for the area you are grooming",
+          "advice": "Compare head dimensions, pin length and handle shape. A head that is easy to move around a small dog's legs can be more useful than a large brush that covers the back quickly. Ask your groomer which pin type suits the coat; a product labelled for doodles is not automatically right for every poodle mix.",
+          "caution": "Use light pressure and short strokes. A firmer brush is not a solution for a painful mat, and repeated scraping can irritate skin.",
+          "query": "dog slicker brush",
+          "linkLabel": "Compare dog slicker brushes on Amazon.ca"
+        },
+        {
+          "name": "A metal comb with coarse and fine spacing",
+          "advice": "Look for smooth, rounded teeth and dimensions you can control. Coarser spacing is useful for an initial check; finer spacing can reveal smaller tangles after brushing. Check the length of the teeth against your dog's coat rather than choosing only by the overall comb length.",
+          "caution": "The comb should pass through a finished section without forcing it. If it catches, pause and reassess instead of pulling a knot toward the skin.",
+          "query": "dog grooming metal comb",
+          "linkLabel": "Compare metal grooming combs on Amazon.ca"
+        }
+      ],
+      "sources": [
+        { "label": "AKC: matching brushes to coat type", "url": "https://www.akc.org/expert-advice/health/types-dog-brushes-shedding/" },
+        { "label": "AKC: building a grooming kit", "url": "https://s3.amazonaws.com/cdn-origin-etr.akc.org/wp-content/uploads/2023/04/11120114/ebook_GroomingKit.pdf" }
+      ]
+    },
+    "bath-and-brush-dog-grooming-guide": {
+      "reviewedAt": "2026-09-21",
+      "heading": "A simple setup for bath day",
+      "intro": "Before buying more bath products, check footing and drying supplies. Set everything within reach before bringing your dog to the bath. A clean towel you already own may be enough; the useful upgrade is one that solves a specific problem with your current routine.",
+      "items": [
+        {
+          "name": "An absorbent towel you can wash and dry easily",
+          "advice": "Compare the actual towel dimensions with your dog's size and check the care instructions. A lightweight microfibre towel can be convenient for repeated paw drying or travel, while an ordinary clean bath towel is also a practical starting point. Having a second dry towel ready may help more than buying a larger bundle.",
+          "caution": "Squeeze and blot the coat gently. Towel drying does not guarantee that a dense coat is dry underneath; ask your groomer about a suitable drying routine.",
+          "query": "microfiber dog drying towel",
+          "linkLabel": "Compare dog drying towels on Amazon.ca"
+        },
+        {
+          "name": "A non-slip mat that fits your bath surface",
+          "advice": "Measure the standing area and read the surface-compatibility instructions before ordering. Suction-cup designs may require a smooth tub and may not secure properly to textured surfaces. Choose a mat that can be rinsed, cleaned and dried after each use.",
+          "caution": "Test that the mat stays in place before adding your dog. A mat does not make it safe to leave a dog unattended or to force a frightened dog into the bath.",
+          "query": "non slip dog bath mat",
+          "linkLabel": "Compare non-slip bath mats on Amazon.ca"
+        }
+      ],
+      "sources": [
+        { "label": "AKC: preparing for a dog bath", "url": "https://www.akc.org/expert-advice/health/the-soap-and-water-of-dog-ownership/" },
+        { "label": "AKC: bath footing and grooming precautions", "url": "https://www.akc.org/expert-advice/health/at-home-grooming-tips-summer/" }
+      ]
+    },
+    "dog-nail-trimming-grinding-guide": {
+      "reviewedAt": "2026-09-21",
+      "heading": "Choosing between clippers and a nail grinder",
+      "intro": "Buy for your dog's nail size and tolerance, not the number of accessories in a kit. A groomer or veterinary team can demonstrate handling and help decide whether home maintenance is appropriate. If your dog is distressed by paw handling, work on that first; a new tool does not resolve the fear.",
+      "items": [
+        {
+          "name": "Dog nail clippers with a comfortable grip",
+          "advice": "Check the stated nail-size range, handle size and replacement or sharpening guidance. Manual clippers avoid motor noise but still require careful positioning and a steady view of the nail. A safety stop is a positioning aid, not a reliable way to locate the quick.",
+          "caution": "Do not assume a guard makes a full-depth cut safe. Ask for a demonstration and stop if your dog pulls away or you cannot position the tool confidently.",
+          "query": "dog nail clippers",
+          "linkLabel": "Compare dog nail clippers on Amazon.ca"
+        },
+        {
+          "name": "A pet nail grinder with suitable controls",
+          "advice": "Compare adjustable speeds, grip, charging requirements and the availability of replacement sanding parts. A grinder can smooth an edge, but the noise and vibration need a gradual introduction. A light or guard may help you see or position the nail; neither prevents over-trimming.",
+          "caution": "Follow the tool's instructions, keep loose coat away from moving parts and use brief contact to limit heat. Neither grinding nor clipping should continue through pain, panic or bleeding.",
+          "query": "dog nail grinder",
+          "linkLabel": "Compare pet nail grinders on Amazon.ca"
+        }
+      ],
+      "sources": [
+        { "label": "VCA: handling practice before nail care", "url": "https://vcahospitals.com/know-your-pet/handling-exercises-for-trimming-nails-and-brushing-teeth" },
+        { "label": "Dremel: pet nail grooming instructions", "url": "https://images-na.ssl-images-amazon.com/images/I/C13jUvxfBoS.pdf" }
+      ]
+    }
+  }
+}
