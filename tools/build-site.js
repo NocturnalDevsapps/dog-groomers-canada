@@ -20,6 +20,7 @@ const CONTENT_UPDATED_DATE = "2026-07-20";
 const ASSET_VERSION = process.env.ASSET_VERSION || new Date().toISOString().replace(/[-:T.Z]/g, "").slice(0, 12);
 const BRAND_NAME = "Dog Groomers Canada";
 const THEME_COLOR = "#073b2a";
+const PINTEREST_DOMAIN_VERIFY = "2b59af390cf890268de4bec3d743ca9c";
 const CONTACT_EMAIL = "nocturnaldevs@gmail.com";
 const LOGO_MARK_PATH = "/assets/logo-mark-realistic.png";
 const LOGO_PATH = "/assets/logo-mark-realistic.png";
@@ -2988,6 +2989,7 @@ function pageHtml(route, title, description, body, schema = [], options = {}) {
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="dgc-base-path" content="">
+  ${routePath === "/" ? `<meta name="p:domain_verify" content="${PINTEREST_DOMAIN_VERIFY}"/>` : ""}
   <meta name="theme-color" content="${THEME_COLOR}">
   ${siteIntegrationHead()}
   <title>${esc(title)}</title>
