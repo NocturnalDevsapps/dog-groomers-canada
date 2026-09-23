@@ -1,6 +1,53 @@
 {
   "listings": [
     {
+      "id": "kindred-paws-dog-grooming-port-colborne",
+      "title": "Kindred Paws Dog Grooming",
+      "category": "Home-based dog groomer",
+      "city": "Port Colborne",
+      "province": "Ontario",
+      "provinceCode": "ON",
+      "countryCode": "CA",
+      "phone": "+1 289-931-7646",
+      "phoneRaw": "+12899317646",
+      "email": "emilyknutt@hotmail.com",
+      "website": "https://www.facebook.com/profile.php?id=61565271150208",
+      "websiteLabel": "Facebook page",
+      "addressHidden": true,
+      "locationModel": "home_based",
+      "description": "Kindred Paws Dog Grooming is Emily's home-based, one-on-one dog grooming service in the Morgan's Point area of Port Colborne, Ontario. In her September 2026 submission, she described welcoming dogs of all breeds and sizes from the Niagara region. Her Facebook introduction says she works with one dog at a time and welcomes both single- and double-coated dogs; the page also says dogs with different temperaments are welcome. Public posts show bath-and-groom visits, tidy-ups, and coat brush-outs, though these examples are not a complete service menu. The page invites owners to book by Facebook message or text. Ask what a visit includes for your dog's coat and handling needs, the current price and availability, and the exact home appointment location. The business supplied three photos with permission to display them here.",
+      "services": [
+        "One-on-one dog grooming",
+        "Bath and groom appointments",
+        "Tidy-up grooming"
+      ],
+      "convenienceText": "One dog at a time in a home-based setting near Morgan's Point; book by Facebook message or text and ask for the exact address before visiting.",
+      "websiteCrawlStatus": "owner_provided",
+      "image": "/assets/listings/kindred-paws-dog-grooming-at-work.webp",
+      "photos": [
+        "/assets/listings/kindred-paws-dog-grooming-at-work.webp",
+        "/assets/listings/kindred-paws-dog-grooming-black-dog.webp",
+        "/assets/listings/kindred-paws-dog-grooming-tan-dog.webp"
+      ],
+      "photoAlts": [
+        "Groomer tending to a black-and-white dog at Kindred Paws",
+        "Black dog standing on a grooming table after a visit to Kindred Paws",
+        "Tan dog standing on a grooming table after a visit to Kindred Paws"
+      ],
+      "imageCredit": "Photos supplied by Kindred Paws Dog Grooming and used with permission.",
+      "imageRights": {
+        "status": "owner_permission",
+        "grantedAt": "2026-09-22",
+        "credit": "Photos supplied by Kindred Paws Dog Grooming and used with permission."
+      },
+      "businessSubmission": {
+        "receivedAt": "2026-09-22",
+        "label": "Business-submitted listing",
+        "source": "Business name, location, contact email, one-on-one service details, and three authorized photos supplied directly by the business; public phone, booking method, coat types, and grooming examples checked against its Facebook page on 2026-09-22"
+      },
+      "updatedAt": "2026-09-22"
+    },
+    {
       "id": "groomarts-academy-edmonton",
       "title": "GroomArts Academy",
       "category": "Dog grooming school and student grooming service",

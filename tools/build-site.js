@@ -454,6 +454,7 @@ function loadManualListings() {
 
     const phone = clean(item.phone);
     const addressHidden = Boolean(item.addressHidden);
+    const locationModel = item.locationModel === "home_based" ? "home_based" : "";
     const serviceAreas = unique(cleanSignalArray(item.serviceAreas)).slice(0, 12);
     const website = sanitizeBusinessWebsite(clean(item.website));
     const services = unique((Array.isArray(item.services) ? item.services : []).map(clean)).filter(Boolean).slice(0, 8);
@@ -464,6 +465,7 @@ function loadManualListings() {
     const sourcePhotos = (Array.isArray(item.photos) ? item.photos : []).map(normalizeListingImageUrl).filter(Boolean);
     const image = normalizeListingImageUrl(item.image || sourcePhotos[0]);
     const photos = unique([image, ...sourcePhotos]).filter(Boolean).slice(0, 8);
+    const photoAlts = (Array.isArray(item.photoAlts) ? item.photoAlts : []).map(clean).slice(0, 8);
     const imageRights = normalizeImageRights(item.imageRights, item.imageCredit, item.imageSourceUrl);
     const offerTitle = clean(item.offer && item.offer.title);
     const offerDescription = clean(item.offer && item.offer.description);
@@ -492,6 +494,7 @@ function loadManualListings() {
       phoneRaw: clean(item.phoneRaw) || phone.replace(/[^\d+]/g, ""),
       email: clean(item.email),
       website,
+      websiteLabel: clean(item.websiteLabel),
       mapsUrl: addressHidden ? "" : clean(item.mapsUrl),
       rating: numberOrNull(item.rating),
       reviews: integerOrZero(item.reviews),
@@ -499,6 +502,7 @@ function loadManualListings() {
       lng: addressHidden ? null : numberOrNull(item.lng),
       image,
       photos,
+      photoAlts,
       imageRights,
       imageCredit: clean(item.imageCredit),
       imageSourceUrl: sanitizeBusinessWebsite(clean(item.imageSourceUrl)),
@@ -527,6 +531,7 @@ function loadManualListings() {
       businessSubmission: normalizeBusinessSubmission(item.businessSubmission),
       serviceAreas,
       addressHidden,
+      locationModel,
       keepIndexed: false,
       offer,
       temporarilyClosed: Boolean(item.temporarilyClosed),
@@ -1409,9 +1414,9 @@ function writeListingPages(context) {
     const indexable = shouldIndexListing(listing);
     const photos = listing.photos.length
       ? `<section class="section"><h2>Photos</h2><div class="photo-grid">${listing.photos
-          .map((photo) => {
+          .map((photo, index) => {
             const fallbackImage = sameBusinessFallbackImage(listing, photo);
-            return `<a href="${escAttr(photo)}" target="_blank" rel="noopener nofollow"><img src="${escAttr(photo)}" alt="${escAttr(listing.title)} photo" loading="lazy" referrerpolicy="no-referrer"${listingImageRightsAttr(listing)}${fallbackImage ? ` data-fallback-image="${escAttr(fallbackImage)}" data-fallback-alt="${escAttr(listingImageAlt(listing, "profile"))}"` : ""}></a>`;
+            return `<a href="${escAttr(photo)}" target="_blank" rel="noopener nofollow"><img src="${escAttr(photo)}" alt="${escAttr((listing.photoAlts || [])[index] || `${listing.title} photo`)}" loading="lazy" referrerpolicy="no-referrer"${listingImageRightsAttr(listing)}${fallbackImage ? ` data-fallback-image="${escAttr(fallbackImage)}" data-fallback-alt="${escAttr(listingImageAlt(listing, "profile"))}"` : ""}></a>`;
           })
           .join("")}</div>${listingImageSourceNote(listing, "photos")}</section>`
       : "";
@@ -1429,9 +1434,11 @@ function writeListingPages(context) {
       <dl class="detail-list">
         ${detailRow("Phone", listing.phone ? `<a href="tel:${escAttr(listing.phoneRaw || listing.phone)}">${esc(listing.phone)}</a>` : listing.email ? "Not listed; contact by email" : "Call to confirm")}${listing.email ? `
         ${detailRow("Email", `<a href="mailto:${escAttr(listing.email)}">${esc(listing.email)}</a>`)}` : ""}
-        ${detailRow("Website", listing.website ? `<a data-enquiry-event="listing_website_click" href="${escAttr(listing.website)}" target="_blank" rel="nofollow noopener">${esc(cleanDisplayUrl(listing.website))}</a>` : "Not listed")}
+        ${detailRow(listing.websiteLabel || "Website", listing.website ? `<a data-enquiry-event="listing_website_click" href="${escAttr(listing.website)}" target="_blank" rel="nofollow noopener">${esc(cleanDisplayUrl(listing.website))}</a>` : "Not listed")}
         ${listing.addressHidden
-          ? detailRow("Service area", `Mobile service in ${esc(serviceAreaText || `${listing.city}, ${listing.provinceCode}`)}. No street address is published at the business's request.`)
+          ? listing.locationModel === "home_based"
+            ? detailRow("Location", `Home-based grooming in ${esc(listing.city)}, ${esc(listing.provinceCode)}. Ask the business for its appointment address when booking.`)
+            : detailRow("Service area", `Mobile service in ${esc(serviceAreaText || `${listing.city}, ${listing.provinceCode}`)}. No street address is published at the business's request.`)
           : `${detailRow("Address", listing.address ? esc(listing.address) : `${esc(listing.city)}, ${esc(listing.province)}`)}
         ${serviceAreaText ? `${detailRow("Service area", esc(serviceAreaText))}\n        ` : ""}${detailRow("Maps", listing.mapsUrl ? `<a data-enquiry-event="directions_click" href="${escAttr(listing.mapsUrl)}" target="_blank" rel="nofollow noopener">Open in Google Maps</a>` : "Map link not listed")}`}
         ${detailRow("Category", esc(listing.category || "Pet groomer"))}
@@ -1453,9 +1460,9 @@ function writeListingPages(context) {
               ${profileProvenanceLine(listing)}
               <p class="lead">${esc(listing.description)}</p>
               <div class="meta-line">${ratingLine(listing)}<span>${esc(listing.city)}, ${esc(listing.provinceCode)}</span></div>
-              <div class="tag-cloud" style="margin-top:18px">${listing.phone ? `<a class="btn btn-dark" href="tel:${escAttr(listing.phoneRaw || listing.phone)}">Call ${esc(listing.phone)}</a>` : ""}${listing.website ? `<a class="btn btn-primary" data-enquiry-event="listing_website_click" href="${escAttr(listing.website)}" target="_blank" rel="nofollow noopener">Visit Website</a>` : ""}${!listing.phone && !listing.website && listing.email ? `<a class="btn btn-primary" href="mailto:${escAttr(listing.email)}">Email business</a>` : ""}${listing.mapsUrl ? `<a class="btn btn-light" data-enquiry-event="directions_click" href="${escAttr(listing.mapsUrl)}" target="_blank" rel="nofollow noopener">Open Map</a>` : ""}<button class="btn btn-light shortlist-toggle" type="button" data-shortlist-toggle data-listing-url="${escAttr(listing.url)}" data-listing-name="${escAttr(listing.title)}" aria-label="Save ${escAttr(listing.title)} to compare" aria-pressed="false">☆ Save to compare</button></div>
+              <div class="tag-cloud" style="margin-top:18px">${listing.phone ? `<a class="btn btn-dark" href="tel:${escAttr(listing.phoneRaw || listing.phone)}">Call ${esc(listing.phone)}</a>` : ""}${listing.website ? `<a class="btn btn-primary" data-enquiry-event="listing_website_click" href="${escAttr(listing.website)}" target="_blank" rel="nofollow noopener">${listing.websiteLabel === "Facebook page" ? "View Facebook Page" : "Visit Website"}</a>` : ""}${!listing.phone && !listing.website && listing.email ? `<a class="btn btn-primary" href="mailto:${escAttr(listing.email)}">Email business</a>` : ""}${listing.mapsUrl ? `<a class="btn btn-light" data-enquiry-event="directions_click" href="${escAttr(listing.mapsUrl)}" target="_blank" rel="nofollow noopener">Open Map</a>` : ""}<button class="btn btn-light shortlist-toggle" type="button" data-shortlist-toggle data-listing-url="${escAttr(listing.url)}" data-listing-name="${escAttr(listing.title)}" aria-label="Save ${escAttr(listing.title)} to compare" aria-pressed="false">☆ Save to compare</button></div>
             </div>
-            <div class="profile-photo-wrap"><div class="profile-photo">${listing.image ? `<img src="${escAttr(listing.image)}" alt="${escAttr(listingImageAlt(listing, "profile"))}" loading="eager" referrerpolicy="no-referrer"${listingImageRightsAttr(listing)}${sameBusinessFallbackImage(listing) ? ` data-fallback-image="${escAttr(sameBusinessFallbackImage(listing))}" data-fallback-alt="${escAttr(listingImageAlt(listing, "profile"))}"` : ""}>` : imageUnavailable(listing, "profile")}</div>${listingImageSourceNote(listing)}</div>
+            <div class="profile-photo-wrap"><div class="profile-photo">${listing.image ? `<img src="${escAttr(listing.image)}" alt="${escAttr((listing.photoAlts || [])[0] || listingImageAlt(listing, "profile"))}" loading="eager" referrerpolicy="no-referrer"${listingImageRightsAttr(listing)}${sameBusinessFallbackImage(listing) ? ` data-fallback-image="${escAttr(sameBusinessFallbackImage(listing))}" data-fallback-alt="${escAttr(listingImageAlt(listing, "profile"))}"` : ""}>` : imageUnavailable(listing, "profile")}</div>${listingImageSourceNote(listing)}</div>
           </div>
         </div>
       </section>
@@ -4171,9 +4178,12 @@ function listingSpecificSignalsSection(listing) {
     ));
   }
 
+  const signalIntro = listing.websiteLabel === "Facebook page"
+    ? "These details distinguish business-submitted information from facts on its public Facebook page. They support comparison, but are not an endorsement or a guarantee that every detail is still current."
+    : "These details separate core profile data from findings on a business website when website evidence is available. They support comparison, but they are not an endorsement or a guarantee that every detail is still current.";
   return `<section class="section profile-signals" data-profile-signals${hasThinWebsiteEnrichment ? " data-official-website-enrichment" : ""}${websiteResearchMethod ? ` data-website-research-method="${escAttr(websiteResearchMethod)}"` : ""}>
       <h2>Business-specific signals</h2>
-      <p>These details separate core profile data from findings on a business website when website evidence is available. They support comparison, but they are not an endorsement or a guarantee that every detail is still current.</p>
+      <p>${esc(signalIntro)}</p>
       <dl class="profile-signal-list">${rows.join("")}</dl>
     </section>`;
 }
@@ -4215,7 +4225,7 @@ function limitedListingGuidanceSection(listing, related, correctionUrl) {
     `${listing.city}, ${listing.provinceCode} location`,
     listing.address ? "a listed street address" : "",
     listing.phone ? "a phone number" : "",
-    listing.website ? "a business website" : "",
+    listing.website ? (listing.websiteLabel === "Facebook page" ? "a Facebook page" : "a business website") : "",
     listing.rating ? `${listing.rating.toFixed(1)} stars${listing.reviews ? ` from ${countLabel(listing.reviews, "review")}` : ""}` : "",
     services.length ? `named services including ${joinWithAnd(services.slice(0, 4))}` : "",
     listing.hours.length ? "listed hours" : "",
@@ -4302,15 +4312,18 @@ function profileCostAndQuoteSection(listing, city, province, costMap) {
   const contactText = [
     listing.phone ? "phone number" : "",
     listing.email ? "email address" : "",
-    listing.website ? "website" : "",
+    listing.website ? (listing.websiteLabel === "Facebook page" ? "Facebook page" : "website") : "",
     listing.hours.length ? "listed hours" : "",
     listing.mapsUrl ? "map link" : "",
   ].filter(Boolean);
+  const profileRatingText = listing.websiteLabel === "Facebook page" && !listing.rating
+    ? `No rating was included in the source data for this ${esc(listing.city)}, ${esc(listing.provinceCode)} listing.`
+    : `This listing shows ${esc(ratingText)} in ${esc(listing.city)}, ${esc(listing.provinceCode)}.`;
   return `<section class="section">
       <h2>Cost and quote notes for ${esc(listing.title)}</h2>
       <p>Use this profile to prepare a specific quote request instead of asking for a vague grooming price. Share your dog's size, coat type, coat condition, last groom date, temperament, and the finish you want.</p>
       <div class="grid-3">
-        <div class="info-card"><h3>Profile signals</h3><p>This listing shows ${esc(ratingText)} in ${esc(listing.city)}, ${esc(listing.provinceCode)}. Service signals include ${esc(serviceText)}.</p></div>
+        <div class="info-card"><h3>Profile signals</h3><p>${profileRatingText} Service signals include ${esc(serviceText)}.</p></div>
         <div class="info-card"><h3>Contact completeness</h3><p>${contactText.length ? `Available follow-up signals include ${esc(joinWithAnd(contactText))}.` : "Public contact signals are limited, so confirm details from another trusted source if needed."} Directory details can change.</p></div>
         <div class="info-card"><h3>Local cost context</h3><p>Review local planning ranges before calling so you can compare package scope, add-ons, and coat-condition fees fairly.</p><a class="link-arrow" href="${costUrl}">Open cost guide -></a></div>
       </div>
@@ -5160,7 +5173,7 @@ function listingContactSignals(listing) {
   return [
     listing.phone ? "a phone number" : "",
     listing.email ? "an email address" : "",
-    listing.website ? "a business website" : "",
+    listing.website ? (listing.websiteLabel === "Facebook page" ? "a Facebook page" : "a business website") : "",
     preferredBookingLink(listing) ? "an appointment link" : "",
     listing.hours && listing.hours.length ? "listed hours" : "",
     listing.mapsUrl ? "a map link" : "",

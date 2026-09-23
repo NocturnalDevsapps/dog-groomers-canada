@@ -1775,11 +1775,7 @@ body[data-page="winter-paw-tool"] .page-intro {
   }
 }
 
-@media (max-width: 760px) {
-  body {
-    font-size: 15px;
-  }
-
+@media (max-width: 900px) {
   .header-inner {
     min-height: 62px;
     padding: 0 16px;
@@ -1806,6 +1802,12 @@ body[data-page="winter-paw-tool"] .page-intro {
 
   .site-nav a {
     padding: 10px 0;
+  }
+}
+
+@media (max-width: 760px) {
+  body {
+    font-size: 15px;
   }
 
   .wrap {
