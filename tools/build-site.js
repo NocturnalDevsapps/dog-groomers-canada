@@ -848,11 +848,16 @@ function applyImageOverrides(listings, overrides) {
     if (!imageRights) return listing;
     const image = normalizeListingImageUrl(override.image);
     if (!image) return listing;
-    const photos = unique([image, ...listing.photos]).slice(0, 8);
+    // A documented licence or owner submission applies to the supplied images,
+    // not to photos collected from the original directory data.
+    const suppliedPhotos = Array.isArray(override.photos) ? override.photos : [];
+    const photos = unique([image, ...suppliedPhotos.map(normalizeListingImageUrl)]).filter(Boolean).slice(0, 8);
+    const photoAlts = Array.isArray(override.photoAlts) ? override.photoAlts.map(clean).slice(0, 8) : [];
     return {
       ...listing,
       image,
       photos,
+      photoAlts,
       imageRights,
       imageCredit: imageRights.credit,
       imageSourceUrl: imageRights.sourceUrl,

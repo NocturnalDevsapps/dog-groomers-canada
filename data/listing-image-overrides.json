@@ -6479,6 +6479,27 @@
       "image": "https://graph.facebook.com/PetValuSalmonArm/picture?width=720&height=720",
       "source": "official Facebook profile image",
       "sourcePage": "https://www.facebook.com/PetValuSalmonArm/"
+    },
+    {
+      "title": "Dog Grooming By Karley",
+      "url": "/groomers/new-brunswick/penobsquis/dog-grooming-by-karley-penobsquis-nb-4833cd0b/",
+      "image": "/assets/listings/dog-grooming-by-karley/tan-curly-dog.webp",
+      "photos": [
+        "/assets/listings/dog-grooming-by-karley/tan-curly-dog.webp",
+        "/assets/listings/dog-grooming-by-karley/light-poodle.webp",
+        "/assets/listings/dog-grooming-by-karley/black-white-dog.webp"
+      ],
+      "photoAlts": [
+        "Small light-coloured curly dog sitting on a grooming table at Dog Grooming By Karley",
+        "Light-coloured dog with a short trim standing on a grooming table at Dog Grooming By Karley",
+        "Black-and-white fluffy dog standing on a grooming table at Dog Grooming By Karley"
+      ],
+      "imageRights": {
+        "status": "owner_permission",
+        "grantedAt": "2026-09-23",
+        "credit": "Photos supplied by Dog Grooming By Karley and used with permission."
+      },
+      "permissionReference": "Owner email dated 2026-09-23 with three original photo attachments."
     }
   ]
 }
