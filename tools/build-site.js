@@ -669,6 +669,7 @@ function applyListingCorrections(listings, corrections) {
     if (Object.hasOwn(fields, "serviceAreas")) {
       updates.serviceAreas = unique(cleanSignalArray(fields.serviceAreas)).slice(0, 12);
     }
+    if (Object.hasOwn(fields, "services")) updates.services = cleanSignalArray(fields.services);
     if (Object.hasOwn(fields, "addressHidden")) updates.addressHidden = fields.addressHidden === true;
 
     let updated = { ...listing, ...updates };
@@ -693,7 +694,9 @@ function applyListingCorrections(listings, corrections) {
       if (listing.url !== updated.url) redirects.push({ from: listing.url, to: updated.url });
     }
     updated.businessSubmission = normalizeBusinessSubmission(correction.businessSubmission) || listing.businessSubmission;
-    updated.description = updated.descriptionIsCustom ? listing.description : buildListingDescription(updated);
+    const correctedDescription = clean(correction.description);
+    updated.description = correctedDescription || (updated.descriptionIsCustom ? listing.description : buildListingDescription(updated));
+    if (correctedDescription) updated.descriptionIsCustom = true;
     updated.score = qualityScore(updated);
     corrected.push(updated);
   }
@@ -810,11 +813,22 @@ function normalizeBusinessSubmission(value) {
   if (!value || typeof value !== "object") return null;
   const receivedAt = clean(value.receivedAt);
   if (!receivedAt) return null;
+  const contactCheck = value.contactCheck && typeof value.contactCheck === "object" ? value.contactCheck : {};
+  const contactSourceUrl = safeHttpUrl(contactCheck.sourceUrl);
   return {
     receivedAt,
     label: clean(value.label) || "Business-submitted update",
     source: clean(value.source) || "Details supplied directly to Dog Groomers Canada",
     services: unique(cleanSignalArray(value.services)).slice(0, 12),
+    contactCheck: contactSourceUrl && clean(contactCheck.checkedAt) && clean(contactCheck.summary) ? {
+      sourceUrl: contactSourceUrl,
+      sourceLabel: clean(contactCheck.sourceLabel) || "Public source",
+      checkedAt: clean(contactCheck.checkedAt),
+      summary: clean(contactCheck.summary),
+    } : null,
+    bookingNotes: (Array.isArray(value.bookingNotes) ? value.bookingNotes : [])
+      .map((item) => ({ title: clean(item && item.title).slice(0, 80), text: clean(item && item.text).slice(0, 600) }))
+      .filter((item) => item.title && item.text).slice(0, 4),
   };
 }
 
@@ -4146,6 +4160,11 @@ function listingSpecificSignalsSection(listing) {
       "Business-submitted details",
       `${esc(listing.businessSubmission.source)}. Received ${esc(listing.businessSubmission.receivedAt)}; this label records provenance and does not imply paid placement or third-party certification.`,
     ));
+    const contactCheck = listing.businessSubmission.contactCheck;
+    if (contactCheck) rows.push(profileSignalRow(
+      "Contact cross-check",
+      `${esc(contactCheck.summary)} <a href="${escAttr(contactCheck.sourceUrl)}" target="_blank" rel="nofollow noopener">${esc(contactCheck.sourceLabel)}</a>, checked ${esc(contactCheck.checkedAt)}.`,
+    ));
   }
   if (listing.serviceAreas && listing.serviceAreas.length) {
     rows.push(profileSignalRow(
@@ -4215,6 +4234,14 @@ function listingReviewThemesSection(listing) {
 }
 
 function listingGuidanceSection(listing, related, correctionUrl) {
+  const bookingNotes = listing.businessSubmission && listing.businessSubmission.bookingNotes;
+  if (bookingNotes && bookingNotes.length) {
+    return `<section class="section">
+      <h2>Choosing an appointment at ${esc(listing.title)}</h2>
+      <p>Use the business's submitted service list to decide what to request. These booking questions help clarify the package for your pet.</p>
+      <div class="grid-3">${bookingNotes.map((note) => `<div class="info-card"><h3>${esc(note.title)}</h3><p>${esc(note.text)}</p></div>`).join("")}</div>
+    </section>`;
+  }
   if (isLimitedInformationListing(listing)) return limitedListingGuidanceSection(listing, related, correctionUrl);
   const profileServices = listingProfileServices(listing);
   const serviceText = profileServices.length ? profileServices.slice(0, 5).join(", ") : "bath, haircut, nail trim, de-shedding, de-matting, and puppy grooming";

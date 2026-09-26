@@ -175,6 +175,59 @@
         "email": "mobilepetspaw@gmail.com",
         "website": "https://mobilepetspaw.ca/"
       }
+    },
+    {
+      "url": "/groomers/saskatchewan/swift-current/r6-grooming-1711-chaplin-st-e-swift-current-sk-swift-current-sk-e870c36b/",
+      "note": "Business update received September 25, 2026. Address and phone match the authorized business-card image and City of Swift Current directory retrieved using Crawl4AI on September 26. Use the owner-supplied email; the municipal record omits the letter r. Preserve the existing route.",
+      "description": "R6 Grooming is a dog and cat grooming business at 1711 A Chaplin Street East in Swift Current, Saskatchewan. In its September 25, 2026 update, the business described services ranging from nail trims to full-service pet grooms, including breed-specific styles and grooming for large farm dogs. This gives owners separate options to discuss for a nail-care visit, a styled groom, or a pet arriving with a dirty outdoor coat. The business also confirms cat grooming; contact it about the cat services and handling your pet needs. Phone 306-774-4369 or email glrpuppies@gmail.com to ask about availability, package inclusions and a current quote. The supplied image shows the salon's business cards, reception and decor.",
+      "businessSubmission": {
+        "receivedAt": "2026-09-25",
+        "label": "Business-submitted update",
+        "source": "Business name, email, services, and authorized salon collage supplied directly to Dog Groomers Canada",
+        "services": [
+          "Nail trims",
+          "Full-service pet grooming",
+          "Breed-specific grooming",
+          "Grooming for large farm dogs",
+          "Cat grooming"
+        ],
+        "contactCheck": {
+          "sourceUrl": "https://www.swiftcurrent.ca/Home/Components/BusinessDirectory/BusinessDirectory/14964/524?npage=41",
+          "sourceLabel": "City of Swift Current business directory",
+          "checkedAt": "2026-09-26",
+          "summary": "The municipal listing matches the Chaplin Street East location and 306-774-4369 phone number. The email above comes from the business’s newer direct submission."
+        },
+        "bookingNotes": [
+          {
+            "title": "Nail trim or full groom",
+            "text": "R6 lists both nail trims and full-service grooms. For nail care alone, ask whether a separate appointment is needed. For a full groom, request an itemized quote so you know which coat, nail and finishing work is included."
+          },
+          {
+            "title": "Breed style and farm-dog coats",
+            "text": "The business specifically welcomes breed-specific grooms and large farm dogs. Share your dog’s size, coat condition and preferred finish when enquiring. Mention mud, burrs or tangles in advance and ask how extra coat work affects the appointment length and price."
+          },
+          {
+            "title": "Booking for a cat",
+            "text": "Cat grooming is confirmed in the business’s update. Describe whether your cat needs coat maintenance, a trim or help with tangles, and ask which of those services R6 offers for cats. Confirm handling arrangements and any preparation instructions before bringing your cat."
+          }
+        ]
+      },
+      "fields": {
+        "title": "R6 Grooming",
+        "address": "1711 A Chaplin St E, Swift Current, SK S9H 1K9, Canada",
+        "street": "1711 A Chaplin St E",
+        "email": "glrpuppies@gmail.com",
+        "phone": "+1 306-774-4369",
+        "phoneRaw": "+13067744369",
+        "services": [
+          "Nail trims",
+          "Full-service pet grooming",
+          "Breed-specific grooming",
+          "Grooming for large farm dogs",
+          "Cat grooming"
+        ],
+        "serviceText": "Nail trims; Full-service pet grooming; Breed-specific grooming; Grooming for large farm dogs; Cat grooming"
+      }
     }
   ]
 }

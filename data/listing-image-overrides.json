@@ -6523,6 +6523,23 @@
         "credit": "Photos supplied by Dog Grooming By Karley and used with permission."
       },
       "permissionReference": "Owner email dated 2026-09-23 with three original photo attachments."
+    },
+    {
+      "title": "R6 Grooming",
+      "url": "/groomers/saskatchewan/swift-current/r6-grooming-1711-chaplin-st-e-swift-current-sk-swift-current-sk-e870c36b/",
+      "image": "/assets/listings/r6-grooming/salon-collage.webp",
+      "photos": [
+        "/assets/listings/r6-grooming/salon-collage.webp"
+      ],
+      "photoAlts": [
+        "R6 Grooming collage showing business cards, salon reception and dog-themed decor"
+      ],
+      "imageRights": {
+        "status": "owner_permission",
+        "grantedAt": "2026-09-25",
+        "credit": "Image supplied by R6 Grooming and used with permission."
+      },
+      "permissionReference": "Business email dated 2026-09-25 with attached 6896.jpg collage and explicit display authorization."
     }
   ]
 }
