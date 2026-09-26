@@ -2768,10 +2768,33 @@
       "source": "https://globalpetfoods.com/"
     },
     {
-      "title": "Mobile Pet S'Paw",
+      "title": "Mobile Pet S'Paw Inc",
       "url": "/groomers/ontario/brampton/mobile-pet-s-paw-brampton-on-4938d68e/",
-      "image": "https://mobilepetspaw.ca/cdn/shop/files/sink_image_copy_2048x.jpg?v=1613152199",
-      "source": "https://mobilepetspaw.ca/"
+      "image": "/assets/listings/mobile-pet-spaw/yorkshire-terrier.webp",
+      "photos": [
+        "/assets/listings/mobile-pet-spaw/yorkshire-terrier.webp",
+        "/assets/listings/mobile-pet-spaw/cream-poodle.webp",
+        "/assets/listings/mobile-pet-spaw/apricot-poodle.webp",
+        "/assets/listings/mobile-pet-spaw/cat-grooming.webp",
+        "/assets/listings/mobile-pet-spaw/dogs-at-pet-spaw.webp",
+        "/assets/listings/mobile-pet-spaw/engraved-pet-tags.webp",
+        "/assets/listings/mobile-pet-spaw/business-logo.webp"
+      ],
+      "photoAlts": [
+        "Yorkshire terrier groomed by Mobile Pet S’Paw Inc",
+        "Cream poodle on a grooming table at Mobile Pet S’Paw Inc",
+        "Apricot poodle on a grooming table at Mobile Pet S’Paw Inc",
+        "Two cats with trimmed coats in a photo supplied by Mobile Pet S’Paw Inc",
+        "Two groomed dogs beside the Mobile Pet S’Paw sign",
+        "Display of engraved pet ID tags at Mobile Pet S’Paw Inc",
+        "Mobile Pet S’Paw business logo"
+      ],
+      "imageRights": {
+        "status": "owner_permission",
+        "grantedAt": "2026-09-24",
+        "credit": "Photos and logo supplied by Mobile Pet S’Paw Inc and used with permission."
+      },
+      "permissionReference": "Business email dated 2026-09-24 with image attachments and explicit display authorization."
     },
     {
       "title": "Paradise Tails",

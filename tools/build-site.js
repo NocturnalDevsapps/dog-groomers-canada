@@ -814,6 +814,7 @@ function normalizeBusinessSubmission(value) {
     receivedAt,
     label: clean(value.label) || "Business-submitted update",
     source: clean(value.source) || "Details supplied directly to Dog Groomers Canada",
+    services: unique(cleanSignalArray(value.services)).slice(0, 12),
   };
 }
 
@@ -1433,7 +1434,10 @@ function writeListingPages(context) {
       : "";
     const profileServices = listingProfileServices(listing);
     const serviceAreaText = listingServiceAreaText(listing);
-    const services = profileServices.length
+    const submittedServices = listing.businessSubmission ? listing.businessSubmission.services : [];
+    const services = submittedServices.length
+      ? `<p>Services and products supplied by the business on ${esc(listing.businessSubmission.receivedAt)}:</p><ul>${submittedServices.map((item) => `<li>${esc(item)}</li>`).join("")}</ul>`
+      : profileServices.length
       ? `<div class="tag-cloud">${profileServices.map((item) => `<span class="tag">${esc(item)}</span>`).join("")}</div>`
       : `<p class="muted">Call ahead to confirm bath, haircut, nail trim, de-shedding, puppy groom, de-matting, and breed-specific services.</p>`;
     const contact = `
@@ -2993,8 +2997,7 @@ function pageHtml(route, title, description, body, schema = [], options = {}) {
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <meta name="dgc-base-path" content="">
-  ${routePath === "/" ? `<meta name="p:domain_verify" content="${PINTEREST_DOMAIN_VERIFY}"/>` : ""}
+  <meta name="dgc-base-path" content="">${routePath === "/" ? `\n  <meta name="p:domain_verify" content="${PINTEREST_DOMAIN_VERIFY}"/>` : ""}
   <meta name="theme-color" content="${THEME_COLOR}">
   ${siteIntegrationHead()}
   <title>${esc(title)}</title>

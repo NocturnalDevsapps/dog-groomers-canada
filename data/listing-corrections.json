@@ -152,6 +152,29 @@
       "url": "/groomers/saskatchewan/birch-hills/bark-inn-boarding-and-services-birch-hills-sk-a41cf366/",
       "note": "Owner-requested removal received August 2026; the business no longer offers grooming and requested removal of its contact and location details.",
       "exclude": true
+    },
+    {
+      "url": "/groomers/ontario/brampton/mobile-pet-s-paw-brampton-on-4938d68e/",
+      "note": "Business-provided contact and service update received September 24, 2026. Existing profile URL and address retained.",
+      "businessSubmission": {
+        "receivedAt": "2026-09-24",
+        "label": "Business-submitted update",
+        "source": "Business name, contact details, and service information supplied directly to Dog Groomers Canada",
+        "services": [
+          "Pet grooming for dogs and cats",
+          "Anesthesia-free dental cleaning",
+          "Dog boarding",
+          "Doggy ice cream and birthday cakes",
+          "Engraved pet ID tags"
+        ]
+      },
+      "fields": {
+        "title": "Mobile Pet S'Paw Inc",
+        "phone": "+1 647-708-7897",
+        "phoneRaw": "+16477087897",
+        "email": "mobilepetspaw@gmail.com",
+        "website": "https://mobilepetspaw.ca/"
+      }
     }
   ]
 }
