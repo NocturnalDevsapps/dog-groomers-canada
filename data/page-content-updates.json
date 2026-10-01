@@ -4,8 +4,44 @@
     "note": "Added three business-supplied grooming photos with documented display permission."
   },
   "/privacy/": {
-    "date": "2026-09-21",
-    "note": "Explain enquiry intent events, exclusion of form values, and Amazon affiliate-link attribution."
+    "date": "2026-10-01",
+    "note": "Replace Journey and Grow disclosures with the restored Google AdSense advertising and consent description."
+  },
+  "/grooming-tools/coat-maintenance-planner/": {
+    "date": "2026-10-01",
+    "note": "Added practical coat-check steps and linked veterinary guidance."
+  },
+  "/grooming-tools/dog-grooming-frequency-calculator/": {
+    "date": "2026-10-01",
+    "note": "Explained how to adjust the planning interval using coat and lifestyle context."
+  },
+  "/grooming-tools/matting-risk-checklist/": {
+    "date": "2026-10-01",
+    "note": "Added score interpretation and safe next steps for tangles and skin concerns."
+  },
+  "/grooming-tools/puppy-first-groom-planner/": {
+    "date": "2026-10-01",
+    "note": "Added positive home preparation and salon questions for a first puppy visit."
+  },
+  "/grooming-tools/winter-paw-care-checklist/": {
+    "date": "2026-10-01",
+    "note": "Added after-walk paw checks and veterinary source guidance."
+  },
+  "/guides/costs-and-booking/": {
+    "date": "2026-10-01",
+    "note": "Added a practical quote-comparison guide and source."
+  },
+  "/provinces/": {
+    "date": "2026-10-01",
+    "note": "Added instructions for comparing provincial and nearby-city listings."
+  },
+  "/search/": {
+    "date": "2026-10-01",
+    "note": "Added directory search guidance and verification steps."
+  },
+  "/services/": {
+    "date": "2026-10-01",
+    "note": "Clarified service categories and what owners should confirm with a groomer."
   },
   "/provinces/ontario/toronto/": {
     "date": "2026-09-21",

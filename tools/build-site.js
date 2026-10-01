@@ -40,9 +40,14 @@ self.addEventListener("activate", (event) => {
 });
 `;
 const GOOGLE_ANALYTICS_ID = "G-BY1BF23TD7";
-const JOURNEY_SITE_ID = "0268a860-d0bb-483b-b355-599bfc6e3594";
-const JOURNEY_ADS_FILE = path.join(ROOT, "data", "journey-ads.txt");
-const JOURNEY_EXCLUDED_ROUTES = new Set([
+const ADSENSE_CLIENT_ID = "ca-pub-2494233247909241";
+const ADSENSE_SELLER_RECORD = "google.com, pub-2494233247909241, DIRECT, f08c47fec0942fa0";
+const ADSENSE_SLOTS = Object.freeze({
+  leaderboard: "9035205346",
+  sidebar: "4819416718",
+  inContent: "8427489237",
+});
+const ADSENSE_EXCLUDED_ROUTES = new Set([
   "/about/",
   "/add-your-business/",
   "/contact/",
@@ -52,7 +57,6 @@ const JOURNEY_EXCLUDED_ROUTES = new Set([
   "/sitemap/",
   "/terms/",
 ]);
-const GROW_SITE_ID = "U2l0ZTo1OTBhOGFjZC1lOTEwLTQ2ZTQtODE3NS02YTVkZTE4MDhhYjM=";
 const DOCUMENTED_IMAGE_RIGHTS = new Set(["owner_permission", "licensed", "public_domain"]);
 
 const CITY_COST_PAGE_LIMIT = 120;
@@ -262,10 +266,6 @@ function main() {
     throw new Error(`CSV file not found: ${CSV_FILE}`);
   }
 
-  const journeyAdsTxt = fs.readFileSync(JOURNEY_ADS_FILE, "utf8");
-  if (!journeyAdsTxt.includes("ownerdomain=doggroomerscanada.ca") || !journeyAdsTxt.includes(`journeymv.com, ${JOURNEY_SITE_ID}, DIRECT`)) {
-    throw new Error("Journey ads.txt must match Dog Groomers Canada's site ID and domain.");
-  }
   const contentUpdates = validateUpdates(JSON.parse(fs.readFileSync(path.join(ROOT, "data/page-content-updates.json"), "utf8")), BUILD_DATE);
   cleanGeneratedFiles();
 
@@ -1164,6 +1164,7 @@ function writeHomePage(context) {
         </div>
       </div>
     </section>
+    ${adsenseLeaderboardBand()}
     ${homeGuideSection(context)}
     ${homeCostSection(context)}
     ${homeToolSection(context)}
@@ -1258,6 +1259,13 @@ function writeProvinceIndex(context) {
               `<a class="province-card" href="${province.url}"><span><strong>${esc(province.name)}</strong><span>${province.count.toLocaleString()} listings across ${province.cities.length.toLocaleString()} cities</span></span><span aria-hidden="true">&rarr;</span></a>`,
           )
           .join("")}
+      </div>
+    </section>
+    <section class="section">
+      <div class="wrap narrow-copy">
+        <h2>How to narrow the provincial directory</h2>
+        <p>Start with the province where you can travel for an appointment, then open its city list. A provincial total counts directory listings, not groomers with open appointments. City pages let you compare named businesses and their available phone, website, service and location details.</p>
+        <p>If your town has few matches, check a nearby city or use <a href="/search/">directory search</a> for a service such as nail trimming or mobile grooming. A business may serve more than one community; confirm its current service area, wait time and prices directly before you book. For help choosing a service, see the <a href="/services/">service guide</a>.</p>
       </div>
     </section>`;
   writePage(context, "/provinces/", "Dog Grooming by Province | Dog Groomers Canada", "Dog grooming by province in Canada: browse local dog groomers near you by city, rating, service, phone number, website, and profile page.", body, breadcrumbSchema([{ label: "Home", url: "/" }, { label: "Provinces", url: "/provinces/" }]));
@@ -1503,6 +1511,7 @@ function writeListingPages(context) {
               ${services}
               <p class="muted" style="margin-top:14px">Service information is summarized from available listing data and may not be complete. Confirm current services and prices directly with the groomer.</p>
             </section>
+            ${indexable ? adsenseAd("inContent", "in-content") : ""}
             ${listingSpecificSignalsSection(listing)}
             ${editorialProfileReviewSection(listing)}
             ${listingReviewThemesSection(listing)}
@@ -1605,6 +1614,13 @@ function writeServicePages(context) {
             `<a class="province-card" href="${service.url}"><span><strong>${esc(service.name)}</strong><span>${service.count.toLocaleString()} matching listings</span></span><span aria-hidden="true">&rarr;</span></a>`,
         )
         .join("")}</div>
+    </section>
+    <section class="section">
+      <div class="wrap narrow-copy">
+        <h2>Choose the service that matches your dog's need</h2>
+        <p>A bath and brush is a different request from a haircut, and a nail trim may be offered as a standalone visit. De-shedding targets loose undercoat; de-matting needs an assessment of coat condition and comfort. Puppy grooming may focus on a gentle introduction rather than a full adult-style groom. Mobile grooming also depends on the provider's travel area.</p>
+        <p>These pages group businesses by services mentioned in their listings; they do not confirm a current menu or appointment slot. Open a profile, describe your dog's coat, size and last groom, then ask what the quoted package includes. If you are unsure where to begin, use the <a href="/grooming-tools/dog-groomer-call-script/">booking question tool</a> or browse <a href="/provinces/">by province</a>.</p>
+      </div>
     </section>`;
   writePage(context, "/services/", "Dog Grooming Services in Canada | Dog Groomers Canada", "Dog grooming services in Canada: compare haircuts, nail trims, puppy grooming, bath and brush, de-shedding, mobile grooming, and local groomers.", indexBody, breadcrumbSchema([{ label: "Home", url: "/" }, { label: "Services", url: "/services/" }]));
 
@@ -2224,7 +2240,12 @@ function writeGuidePages(context) {
         <div class="wrap">
           <div class="guide-grid">${articles.map((article) => guideCard(article)).join("")}</div>
         </div>
-      </section>`;
+      </section>
+      ${category.slug === "costs-and-booking" ? `<section class="section"><div class="wrap narrow-copy">
+        <h2>Compare a quote before choosing an appointment</h2>
+        <p>Read the cost guide for a planning range, then use the appointment and comparison guides to prepare the same questions for each groomer. Tell them your dog's size, coat type, last groom, tangles, behaviour or handling needs and the finish you want. Ask whether bathing, drying, nails, ears, de-matting, taxes and travel are included or extra.</p>
+        <p>Price alone cannot show how a salon handles a nervous puppy, a senior dog or a heavily tangled coat. Ask about the visit length, drop-off and pickup arrangements, vaccine requirements and what happens if the groomer cannot safely complete the requested style. <a href="https://www.akc.org/expert-advice/health/questions-ask-potential-groomers/">AKC's groomer questions</a> provide another checklist; confirm policies with each Canadian business.</p>
+      </div></section>` : ""}`;
     writePage(
       context,
       `/guides/${category.slug}/`,
@@ -2653,7 +2674,13 @@ function writeUtilityPages(context) {
         <p class="muted"><span data-result-count></span></p>
       </div>
     </section>
-    <section class="section" id="results"><div class="wrap"><div class="listing-stack search-results" data-search-results></div></div></section>`;
+    <section class="section" id="results"><div class="wrap"><div class="listing-stack search-results" data-search-results></div></div></section>
+    <section class="section"><div class="wrap narrow-copy">
+      <h2>Get useful results from the directory</h2>
+      <p>Try a city or business name first, then narrow by province or service. Searching a nearby city can help when your town has few listings. A result may have a phone number, website or only basic location information; open its profile to see the details available for that business.</p>
+      <p>Enter a business name or service in the first field and a city or postal code in the second. The location button can search near you if you allow your browser to share your location; typing a city works if you prefer not to use it. Save promising results to compare them before calling.</p>
+      <p>Directory matches do not confirm that a groomer is accepting clients or that every listed service is currently offered. Contact the business with your dog's size, coat condition and preferred appointment window. If you need a starting point, <a href="/provinces/">browse provinces</a> or compare <a href="/services/">service types</a>.</p>
+    </div></section>`;
   writePage(context, "/search/", "Search Dog Groomers Canada", "Search dog grooming in Canada by business name, city, province, service, rating, phone number, website, and local profile page.", searchBody, breadcrumbSchema([{ label: "Home", url: "/" }, { label: "Search", url: "/search/" }]), { bodyAttrs: 'data-page="search"' });
 
   writePage(context, "/near-me/", "Dog Grooming Near Me | Dog Groomers Canada", nearMeMetaDescription(), nearMeBody(context), breadcrumbSchema([{ label: "Home", url: "/" }, { label: "Dog Grooming Near Me", url: "/dog-grooming-near-me/" }]), { bodyAttrs: 'data-page="near-me"', canonicalRoute: "/dog-grooming-near-me/", noSitemap: true });
@@ -2799,21 +2826,15 @@ function writeUtilityPages(context) {
       `<div class="grid-3">
         <div class="info-card"><h2>Location and shortlist tools</h2><p>The near-me feature asks for your browser location only after you press the location button. Coordinates are used in your browser to sort nearby listings. Saved groomer shortlists and location preferences are kept in this site's local browser storage for convenience and are not submitted to us.</p></div>
         <div class="info-card"><h2>Analytics</h2><p>We use Google Analytics to understand aggregate site usage, such as page visits and search or navigation patterns. We also measure clicks to call, visit a business website, open directions or follow a booking link, and when the listing form prepares an email. These actions do not confirm a connected call, completed booking or sent email. Our custom enquiry events do not include phone numbers, email addresses or the values entered in the listing form. Analytics may use cookies and device, browser, network, and interaction information.</p></div>
-        <div class="info-card"><h2>Grow by Mediavine</h2><p>Grow provides reader features such as saving, sharing, subscribing, and recommended content. It may use cookies, local storage, identifiers, and interaction data to provide those features and measure site engagement.</p></div>
+        <div class="info-card"><h2>Google AdSense</h2><p>AdSense may display advertising on eligible pages. Google and its advertising partners may use cookies, identifiers, device and browser information, page information, and interaction data to deliver and measure ads.</p></div>
       </div>
-      <section class="section">
-        <h2>Grow and Mediavine data</h2>
-        <p>Grow by Mediavine helps readers save content, receive recommendations, and choose whether to subscribe. If you use a Grow feature, Mediavine may process information needed to provide it, including account or subscription information you choose to submit and information about how you interact with this site.</p>
-        <p>Learn more in the <a href="https://www.mediavine.com/legal-and-privacy-center/" rel="nofollow noopener" target="_blank">Mediavine Legal and Privacy Center</a>, which includes privacy notices and request options for Grow users.</p>
-      </section>
       <section class="section">
         <h2>Google Analytics</h2>
         <p>Google Analytics helps us measure aggregate traffic and understand which directory, guide, and tool pages are useful. Google may process cookies, IP addresses, device and browser information, page URLs, and interaction events for this purpose. Learn more about <a href="https://policies.google.com/technologies/partner-sites" rel="nofollow noopener" target="_blank">how Google uses information from sites that use its services</a>.</p>
       </section>
       <section class="section">
-        <h2>Advertising by Journey by Mediavine</h2>
-        <p>Journey by Mediavine manages programmatic advertising on this site. Mediavine and its advertising partners may use cookies, identifiers, device and browser information, page information, and interaction data to deliver and measure advertising. Use the privacy and consent controls provided by Mediavine to manage available advertising choices.</p>
-        <p>Mediavine supplies additional advertising privacy disclosures through its script on this page. For more information and privacy request options, visit the <a href="https://www.mediavine.com/legal-and-privacy-center/" rel="nofollow noopener" target="_blank">Mediavine Legal and Privacy Center</a>.</p>
+        <h2>Google AdSense advertising</h2>
+        <p>Google AdSense may serve ads on eligible pages. Google and its advertising partners may use cookies, device identifiers, IP addresses, page information, and interaction data to deliver, limit, personalize, and measure advertising. Where a Google privacy message is available, visitors can use it to manage advertising consent choices. Learn more about <a href="https://policies.google.com/technologies/ads" rel="nofollow noopener" target="_blank">Google's advertising technologies</a>.</p>
       </section>
       <section class="section">
         <h2>Directory information</h2>
@@ -2829,8 +2850,8 @@ function writeUtilityPages(context) {
       </section>
       <section class="section">
         <h2>Data choices</h2>
-        <p>You can clear saved location and groomer-shortlist data by using the shortlist's clear button or clearing this site's browser storage. You can also block or delete cookies in your browser settings and use Mediavine's available privacy and consent controls to manage advertising choices. Some Grow, analytics, or advertising features may work differently when storage is blocked. Grow users can use Mediavine's privacy request options, and you can contact <a href="mailto:${CONTACT_EMAIL}">${CONTACT_EMAIL}</a> about information sent directly to this site.</p>
-        <p class="muted">Last updated September 21, 2026.</p>
+        <p>You can clear saved location and groomer-shortlist data by using the shortlist's clear button or clearing this site's browser storage. You can also block or delete cookies in your browser settings and use an available Google privacy message to manage advertising consent choices. Analytics and advertising may work differently when storage is blocked. Contact <a href="mailto:${CONTACT_EMAIL}">${CONTACT_EMAIL}</a> about information sent directly to this site.</p>
+        <p class="muted">Last updated October 1, 2026.</p>
       </section>`,
     ),
     breadcrumbSchema([{ label: "Home", url: "/" }, { label: "Privacy", url: "/privacy/" }]),
@@ -2975,7 +2996,7 @@ function writeSitemap(context) {
 
 function writeRobotsAndDomain() {
   fs.writeFileSync(path.join(ROOT, "robots.txt"), `User-agent: *\nAllow: /\nSitemap: ${SITE_URL}/sitemap.xml\n`);
-  fs.copyFileSync(JOURNEY_ADS_FILE, path.join(ROOT, "ads.txt"));
+  fs.writeFileSync(path.join(ROOT, "ads.txt"), ADSENSE_SELLER_RECORD + "\n");
   fs.writeFileSync(path.join(ROOT, "sw.js"), LEGACY_AD_SERVICE_WORKER_TOMBSTONE);
   fs.writeFileSync(path.join(ROOT, "CNAME"), "doggroomerscanada.ca\n");
   fs.writeFileSync(path.join(ROOT, ".nojekyll"), "");
@@ -3002,8 +3023,8 @@ function pageHtml(route, title, description, body, schema = [], options = {}) {
   const canonical = options.canonicalUrl || absoluteUrl(options.canonicalRoute || routePath);
   const meta = metaDescription(description);
   const robotsContent = options.robotsContent || "index,follow,max-image-preview:large";
-  const includeJourney = routePath !== "/404.html" && !robotsContent.toLowerCase().includes("noindex");
-  const blockJourneyAds = includeJourney && JOURNEY_EXCLUDED_ROUTES.has(routePath);
+  const includeAdsense = routePath !== "/404.html" && !robotsContent.toLowerCase().includes("noindex") && !ADSENSE_EXCLUDED_ROUTES.has(routePath);
+  const renderedBody = includeAdsense ? adsenseSidebarPlacements(body) : body;
   const schemaItems = Array.isArray(schema) ? schema.filter(Boolean) : [schema].filter(Boolean);
   const pageContainerTag = /<main(?:\s|>)/i.test(body) ? "div" : "main";
   return `<!doctype html>
@@ -3013,7 +3034,7 @@ function pageHtml(route, title, description, body, schema = [], options = {}) {
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="dgc-base-path" content="">${routePath === "/" ? `\n  <meta name="p:domain_verify" content="${PINTEREST_DOMAIN_VERIFY}"/>` : ""}
   <meta name="theme-color" content="${THEME_COLOR}">
-  ${siteIntegrationHead()}
+  ${siteIntegrationHead({ includeAdsense })}
   <title>${esc(title)}</title>
   <meta name="description" content="${escAttr(meta)}">
   <link rel="canonical" href="${escAttr(canonical)}">
@@ -3041,12 +3062,11 @@ function pageHtml(route, title, description, body, schema = [], options = {}) {
   ${schemaItems.map((item) => `<script type="application/ld+json">${safeJson(item)}</script>`).join("\n  ")}
   <script src="/assets/enquiries.js?v=${ASSET_VERSION}" defer></script>
   <script src="/assets/main.js?v=${ASSET_VERSION}" defer></script>
-  ${includeJourney ? journeyInitializerScript() : ""}
 </head>
 <body ${options.bodyAttrs || ""}>
   <a class="skip-link" href="#main">Skip to content</a>
   ${header(route)}
-  <${pageContainerTag} id="main" class="page">${blockJourneyAds ? '<div id="ad-management-config-settings" data-blocklist-all="1"></div>' : ""}${body}</${pageContainerTag}>
+  <${pageContainerTag} id="main" class="page">${renderedBody}</${pageContainerTag}>
   ${footer()}
 </body>
 </html>
@@ -3300,6 +3320,7 @@ function guideArticleBody(article, context) {
             ${guideShoppingDisclosure(article)}
             ${guideAuthorBox(article)}
             ${articleSections.slice(0, inlineToolIndex).join("")}
+            ${adsenseAd("inContent", "in-content")}
             ${guideRelevantToolCard(relevantTool)}
             ${articleSections.slice(inlineToolIndex).join("")}
             ${guideShoppingSection(article)}
@@ -3536,6 +3557,11 @@ function frequencyToolBody(context) {
             <h2>Estimated grooming interval</h2>
             <p>Choose your dog's coat and care details to see a recommended professional grooming range and at-home maintenance notes.</p>
           </div>
+          <section class="section">
+            <h2>How to adjust the suggested interval</h2>
+            <p>The result is a starting point. A curly or long coat that tangles between visits may need more frequent brushing, comb checks or a shorter professional interval. A smooth coat can have a different maintenance routine even when nails and bathing still need attention. Wet walks, swimming and seasonal shedding can change the plan.</p>
+            <p>Check the coat and your dog's comfort between appointments, then discuss the interval with the groomer who sees the coat in person. <a href="https://vcahospitals.com/know-your-pet/grooming-and-coat-care-for-your-dog">VCA's coat-care guidance</a> explains why coat type, lifestyle and skin health matter. If skin is sore or irritated, ask a veterinarian before changing products or bathing frequency.</p>
+          </section>
         </main>
         <aside class="side-panel">
           <div class="info-card"><h2>Helpful guides</h2>${linkList(
@@ -3577,6 +3603,11 @@ function coatPlannerToolBody(context) {
             <h2>Your coat plan</h2>
             <p>Choose the coat and lifestyle details to see brushing frequency, comb-check zones, and appointment notes.</p>
           </div>
+          <section class="section">
+            <h2>Turn the plan into a gentle routine</h2>
+            <p>Use a brush suited to your dog's coat, then check with a comb where longer hair rubs behind the ears, under a harness and around the legs. A brush can smooth the surface while a tangle remains closer to the skin. After a wet or muddy outing, dry the coat and look for new knots before the next bath.</p>
+            <p>Do not pull through tight mats or cut close to the skin with scissors. Ask a groomer to assess a coat that the comb cannot pass through, and see a veterinarian if the skin looks sore. <a href="https://vcahospitals.com/know-your-pet/grooming-and-coat-care-for-your-dog">VCA's grooming guidance</a> covers brush selection and safe handling of tangles.</p>
+          </section>
         </main>
         <aside class="side-panel">
           <div class="info-card"><h2>Related guides</h2>${linkList(
@@ -3618,6 +3649,11 @@ function puppyPlannerToolBody(context) {
             <h2>First groom plan</h2>
             <p>Choose the puppy details to see appointment goals, questions, and home prep steps.</p>
           </div>
+          <section class="section">
+            <h2>Prepare for a comfortable first visit</h2>
+            <p>Practice brief, rewarded touches of paws, ears and coat at home. A few calm brush strokes are more useful than a long session that overwhelms the puppy. Tell the groomer what your puppy tolerates today and ask whether an introduction, bath and tidy is a better first goal than a full haircut.</p>
+            <p>Ask the salon which vaccinations or records it requires and check timing with your veterinarian; policies and individual puppy needs vary. <a href="https://www.akc.org/expert-advice/dog-breeding/setting-puppies-success-handling-grooming/">AKC's puppy handling advice</a> recommends short, positive grooming practice. If your puppy seems frightened, discuss a slower introduction rather than forcing a full session.</p>
+          </section>
         </main>
         <aside class="side-panel">
           <div class="info-card"><h2>Related guides</h2>${linkList(
@@ -3666,6 +3702,11 @@ function winterPawToolBody(context) {
             <h2>Winter paw risk score: 0</h2>
             <p>Check the items that apply. The result will update automatically.</p>
           </div>
+          <section class="section">
+            <h2>Check paws after a salted walk</h2>
+            <p>Look between the toes for ice balls and check whether pads are irritated or cracked. Wipe or rinse off de-icer residue with lukewarm water, then dry the paws. Boots or a suitable paw balm may help on repeated salted routes, but fit and your dog's tolerance matter.</p>
+            <p>If your dog limps, repeatedly lifts a paw, or has painful cracks, ask your veterinarian for advice. <a href="https://vcahospitals.com/resources/conditions-dog/skin-coat/four-strategies-for-cold-weather-paw-protection">VCA's winter paw-care guidance</a> explains the risks of ice and de-icers. Use the checklist before and after walks to decide whether a paw tidy, nail trim or change in walking route would help.</p>
+          </section>
         </main>
         <aside class="side-panel">
           <div class="info-card"><h2>Related guides</h2>${linkList(
@@ -3714,6 +3755,11 @@ function mattingToolBody(context) {
             <h2>Risk score: 0</h2>
             <p>Check the items that apply to your dog. The result will update automatically.</p>
           </div>
+          <section class="section">
+            <h2>What to do with a higher score</h2>
+            <p>A score points to conditions that make tangles more likely; it cannot diagnose the coat. Check whether a comb passes gently through the hair behind the ears, under the collar and harness, in the armpits and along the legs. Wet coats and friction can make a home routine harder to keep up.</p>
+            <p>If the comb catches on tight mats, avoid pulling or cutting near the skin. Ask a professional groomer about a comfortable, realistic trim; contact a veterinarian when skin is red, painful or irritated. <a href="https://vcahospitals.com/know-your-pet/grooming-and-coat-care-for-your-dog">VCA's matting guidance</a> explains when to seek professional care.</p>
+          </section>
         </main>
         <aside class="side-panel">
           <div class="info-card"><h2>Related guides</h2>${linkList(
@@ -5520,7 +5566,7 @@ function siteManifest() {
   )}\n`;
 }
 
-function siteIntegrationHead() {
+function siteIntegrationHead({ includeAdsense = false } = {}) {
   const scripts = [];
   if (GOOGLE_ANALYTICS_ID) {
     scripts.push(`<script async src="https://www.googletagmanager.com/gtag/js?id=${GOOGLE_ANALYTICS_ID}"></script>`);
@@ -5531,19 +5577,39 @@ function siteIntegrationHead() {
   gtag("config", "${GOOGLE_ANALYTICS_ID}");
 </script>`);
   }
-  if (GROW_SITE_ID) {
-    scripts.push(growInitializerScript());
+  if (includeAdsense) {
+    scripts.push(adsenseInitializerScript());
   }
   scripts.push(legacyAdServiceWorkerCleanupScript());
   return scripts.join("\n  ");
 }
 
-function journeyInitializerScript() {
-  return `<script type="text/javascript" async="async" data-noptimize="1" data-cfasync="false" src="//scripts.scriptwrapper.com/tags/${JOURNEY_SITE_ID}.js"></script>`;
+function adsenseInitializerScript() {
+  return `<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=${ADSENSE_CLIENT_ID}" crossorigin="anonymous"></script>`;
 }
 
-function growInitializerScript() {
-  return `<script data-grow-initializer="">!(function(){window.growMe||((window.growMe=function(e){window.growMe._.push(e);}),(window.growMe._=[]));var e=document.createElement("script");(e.type="text/javascript"),(e.src="https://faves.grow.me/main.js"),(e.defer=!0),e.setAttribute("data-grow-faves-site-id","${GROW_SITE_ID}");var t=document.getElementsByTagName("script")[0];t.parentNode.insertBefore(e,t);})();</script>`;
+function adsenseAd(slotName, placement = slotName) {
+  const slot = ADSENSE_SLOTS[slotName];
+  if (!slot) return "";
+  const format = placement === "sidebar" ? "rectangle" : "auto";
+  return `<div class="ad-placement ad-placement--${escAttr(placement)}" data-ad-placement="${escAttr(placement)}" aria-label="Advertisement">
+    <span class="ad-label">Advertisement</span>
+    <ins class="adsbygoogle"
+      style="display:block"
+      data-ad-client="${ADSENSE_CLIENT_ID}"
+      data-ad-slot="${slot}"
+      data-ad-format="${format}"
+      data-full-width-responsive="true"></ins>
+    <script>(adsbygoogle = window.adsbygoogle || []).push({});</script>
+  </div>`;
+}
+
+function adsenseLeaderboardBand() {
+  return `<aside class="ad-band" aria-label="Sponsored content"><div class="wrap">${adsenseAd("leaderboard")}</div></aside>`;
+}
+
+function adsenseSidebarPlacements(body) {
+  return body.replaceAll('<aside class="side-panel">', `<aside class="side-panel">\n            ${adsenseAd("sidebar")}`);
 }
 
 function legacyAdServiceWorkerCleanupScript() {
