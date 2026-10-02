@@ -143,6 +143,146 @@
         "Puppies three to six months old"
       ],
       "pricingAvailable": true
+    },
+    "/groomers/canada/la-niche-a-bengi-canada-ca-de532f7e/": {
+      "reviewedAt": "2026-10-02",
+      "sourcePages": [
+        "https://lanicheabengi.com/"
+      ],
+      "lead": "La Niche à Bengi publishes a mobile dog-grooming service and gives 438-831-1786 for calls or text messages, matching this directory record. Its official menu distinguishes a basic groom from short-coat and additional-care packages. The basic package lists bathing, brushing or detangling, clipping, nail trimming, and eye and ear cleaning. A puppy introduction section explains gradual familiarity with grooming tools. The business asks customers to send their town and street, plus the dog's name, age, breed and weight, when making contact. Full-groom prices depend on weight and coat condition; confirm route coverage, appointment availability, package scope and a current quote before booking.",
+      "summary": "The official menu helps owners compare a basic groom with short-coat care and optional extras rather than assuming every visit includes the same work. The published contact number matches this record, and the mobile booking instructions identify the information needed for an initial enquiry. The site does not establish one fixed full-groom price or a complete service-area list.",
+      "facts": [
+        {
+          "label": "Identity and contact",
+          "value": "The official website names La Niche à Bengi and gives 438-831-1786 for calls or text messages, matching the directory record.",
+          "sourceUrl": "https://lanicheabengi.com/"
+        },
+        {
+          "label": "Mobile appointment",
+          "value": "The business describes a self-contained mobile service and asks for the customer’s town and street when arranging a visit; confirm that the route covers the requested address.",
+          "sourceUrl": "https://lanicheabengi.com/"
+        },
+        {
+          "label": "Basic package",
+          "value": "The published basic package lists a bath, brushing or detangling, clipping, nail trimming, eye cleaning and ear cleaning.",
+          "sourceUrl": "https://lanicheabengi.com/"
+        },
+        {
+          "label": "Package differences",
+          "value": "The short-coat package lists bathing, thorough brushing, eye and ear cleaning, and tooth brushing. Other packages add specific care options; ask which package fits the dog.",
+          "sourceUrl": "https://lanicheabengi.com/"
+        },
+        {
+          "label": "Quote preparation",
+          "value": "The business requests the dog’s name, age, breed and weight and explains that full-groom prices vary with weight and coat condition. No business-specific price is estimated here.",
+          "sourceUrl": "https://lanicheabengi.com/"
+        }
+      ],
+      "services": [
+        "Bath or bath-and-brush",
+        "Full groom or haircut",
+        "Nail trim or grinding",
+        "Ear cleaning",
+        "De-matting",
+        "Teeth brushing"
+      ],
+      "convenience": [
+        "Mobile grooming"
+      ],
+      "breedExperience": [],
+      "pricingAvailable": true
+    },
+    "/groomers/canada/toilettage-comportemental-avec-roxie-canada-ca-77adc7ca/": {
+      "reviewedAt": "2026-10-02",
+      "sourcePages": [
+        "https://tcroxie.com/"
+      ],
+      "lead": "Toilettage comportemental avec Roxie is operated by Roxane and publishes 514-808-4523, matching this directory record. The official website describes bathing, haircuts and maintenance alongside a gradual approach to handling dogs that are anxious or have had difficult grooming experiences. Its puppy-care programme introduces handling, tools and grooming sensations in short sessions adapted to the puppy. Roxane also describes offering grooming in a salon and at home. The website does not provide a complete package menu, full-groom prices, a street address or a defined travel area. Call to confirm the location, service coverage, appointment fit and current quote before booking.",
+      "summary": "The first-party information gives owners a concrete reason to ask about gradual handling and puppy preparation when comparing grooming options. It identifies the operator, verifies the contact number and distinguishes salon and home appointments. The described approach is the business’s own account, not an independently verified outcome or a guarantee of stress-free care. The directory therefore keeps prices, precise service coverage and package inclusions open for confirmation rather than filling those gaps with assumptions.",
+      "facts": [
+        {
+          "label": "Identity and contact",
+          "value": "The official website identifies the business as Toilettage comportemental avec Roxie, names Roxane as the operator and publishes 514-808-4523, matching this record.",
+          "sourceUrl": "https://tcroxie.com/"
+        },
+        {
+          "label": "Published services",
+          "value": "The business describes baths, haircuts and maintenance within its behavioural-grooming approach. Confirm the detailed package before booking.",
+          "sourceUrl": "https://tcroxie.com/"
+        },
+        {
+          "label": "Puppy introduction",
+          "value": "The puppy programme describes short sessions that gradually introduce handling, grooming tools, sounds and sensations, adjusted to the puppy’s age and attention.",
+          "sourceUrl": "https://tcroxie.com/"
+        },
+        {
+          "label": "Handling approach",
+          "value": "The business describes gradual desensitisation and positive associations for dogs that find grooming or handling difficult; this describes its stated method rather than guaranteeing results.",
+          "sourceUrl": "https://tcroxie.com/"
+        },
+        {
+          "label": "Appointment setting",
+          "value": "Roxane states that she offers services in a salon and at home. Confirm the current location, travel coverage and availability directly.",
+          "sourceUrl": "https://tcroxie.com/"
+        }
+      ],
+      "services": [
+        "Bath or bath-and-brush",
+        "Full groom or haircut",
+        "Puppy grooming"
+      ],
+      "convenience": [
+        "In-home grooming"
+      ],
+      "breedExperience": [],
+      "pricingAvailable": false
+    },
+    "/groomers/canada/vet-tech-plus-canada-ca-fc4f2cee/": {
+      "reviewedAt": "2026-10-02",
+      "sourcePages": [
+        "https://www.vettechplus.net/",
+        "https://www.vettechplus.net/services"
+      ],
+      "lead": "Vet Tech Plus describes in-home pet care in Sudbury and publishes 705-688-8588, matching this directory record. Its service menu separates sanitary trimming, nail trimming, ear cleaning and mat removal into individual house-call services. These are specific care appointments, so this profile does not assume that the business offers a complete salon haircut package. The site identifies Michelle Lefevre as a registered veterinary technician and also describes nursing services, which should be discussed separately from a grooming enquiry. Confirm travel coverage, suitability, availability and the current quote directly. The business states that it does not diagnose, prescribe or perform surgery and directs medical emergencies to veterinary care.",
+      "summary": "The official house-call menu allows owners to ask for a specific grooming-related task without mistaking the listing for a conventional full-groom salon. The matching phone number and stated Sudbury service context support the business identity. Sanitary trims, nail trims, ear cleaning and mat removal are explicitly listed; broader nursing services are not presented as grooming package inclusions. The site’s stated medical boundary is retained so customers do not use a grooming appointment as a substitute for veterinary assessment.",
+      "facts": [
+        {
+          "label": "Identity and contact",
+          "value": "The official site names Vet Tech Plus, describes services in Sudbury and publishes 705-688-8588, matching the directory record.",
+          "sourceUrl": "https://www.vettechplus.net/"
+        },
+        {
+          "label": "House-call menu",
+          "value": "The service page lists sanitary trimming, nail trimming, ear cleaning and mat removal as separate house-call services.",
+          "sourceUrl": "https://www.vettechplus.net/services"
+        },
+        {
+          "label": "Package scope",
+          "value": "The published menu lists individual care services; it does not establish that a complete salon haircut package is available. Confirm the exact task and suitability when enquiring.",
+          "sourceUrl": "https://www.vettechplus.net/services"
+        },
+        {
+          "label": "Named operator",
+          "value": "The site identifies Michelle Lefevre as a registered veterinary technician. This is the business’s published credential description, not a registry verification by this directory.",
+          "sourceUrl": "https://www.vettechplus.net/"
+        },
+        {
+          "label": "Medical boundary",
+          "value": "The business states that it does not diagnose, prescribe or perform surgery and directs medical emergencies to veterinary care.",
+          "sourceUrl": "https://www.vettechplus.net/"
+        }
+      ],
+      "services": [
+        "Sanitary trim",
+        "Nail trim or grinding",
+        "Ear cleaning",
+        "De-matting"
+      ],
+      "convenience": [
+        "In-home appointments"
+      ],
+      "breedExperience": [],
+      "pricingAvailable": true
     }
   }
 }

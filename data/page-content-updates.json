@@ -154,5 +154,21 @@
   "/groomers/saskatchewan/swift-current/r6-grooming-1711-chaplin-st-e-swift-current-sk-swift-current-sk-e870c36b/": {
     "date": "2026-09-26",
     "note": "Added owner-confirmed services and email, authorized salon collage, municipal contact cross-check and practical appointment guidance."
+  },
+  "/groomers/canada/la-niche-a-bengi-canada-ca-de532f7e/": {
+    "date": "2026-10-02",
+    "note": "Added a manual synthesis of current official business services and booking boundaries, verified using local Crawl4AI; profile now meets the unchanged indexing quality gate."
+  },
+  "/groomers/canada/toilettage-comportemental-avec-roxie-canada-ca-77adc7ca/": {
+    "date": "2026-10-02",
+    "note": "Added a manual synthesis of current official business services and booking boundaries, verified using local Crawl4AI; profile now meets the unchanged indexing quality gate."
+  },
+  "/groomers/canada/vet-tech-plus-canada-ca-fc4f2cee/": {
+    "date": "2026-10-02",
+    "note": "Added a manual synthesis of current official business services and booking boundaries, verified using local Crawl4AI; profile now meets the unchanged indexing quality gate."
+  },
+  "/groomers/canada/le-valeureux-compagnon-canada-ca-95f8837a/": {
+    "date": "2026-10-02",
+    "note": "Removed a formerly linked business website after verifying that the domain now serves unrelated casino content; noindex quality hold retained."
   }
 }

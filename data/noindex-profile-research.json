@@ -1,0 +1,1909 @@
+{
+  "reviewedAt": "2026-10-02",
+  "domain": "https://doggroomerscanada.ca",
+  "scope": "87 current quality-held profiles; 3 legacy redirects excluded and preserved",
+  "researchTool": "Local Crawl4AI HTTP service 0.5.1-d1, check_robots_txt enabled; cached bounded crawling plus public source discovery",
+  "promoted": 3,
+  "stillHeld": 84,
+  "legacyRedirects": 3,
+  "currentExplicitNoindex": 87,
+  "reasonCounts": {
+    "no_verified_first_party_menu": 69,
+    "not_a_verified_grooming_provider": 1,
+    "official_site_unavailable": 2,
+    "promoted_with_official_review": 3,
+    "duplicate_business_record": 1,
+    "unrelated_domain": 1,
+    "identity_only_source": 5,
+    "insufficient_current_business_evidence": 1,
+    "identity_insufficient": 2,
+    "insufficient_source_content": 1,
+    "identity_mismatch": 1
+  },
+  "limits": "All 87 original held records received external discovery attempts after follow-up: 79 initial name/location searches, two later phone-only searches for ambiguous names, and six direct linked-site crawls without an initial search. Eight phone searches and eight additional identity searches were performed in the follow-up. Crawl4AI checked candidate URLs for 16 profiles; the other 71 were not crawled. This bounded review is not comprehensive source discovery. Successful crawler responses do not imply matching, useful evidence. Quality gate and keep-index exceptions were unchanged. No publication, account changes, owner messages or indexing requests. Raw cached crawl responses remain under /tmp/dgc-crawl4ai-20261002/.",
+  "profiles": [
+    {
+      "route": "/groomers/alberta/lac-la-biche/amazin-paws-and-claws-spa-lac-la-biche-ab-960b7017/",
+      "businessName": "Amazin Paws&Claws Spa",
+      "city": "Lac la Biche",
+      "originalWebsite": "",
+      "decision": "noindex",
+      "reasonCode": "no_verified_first_party_menu",
+      "reason": "Public source discovery did not establish a matching, accessible first-party grooming menu with enough useful business-specific facts.",
+      "sourcePages": [],
+      "crawlResults": [],
+      "discovery": "Actual public business-name/location search attempted. A search attempt does not establish complete result coverage or a verified source. Social snippets and copied directories were not used as verified enrichment.",
+      "discoveryCoverage": {
+        "initialNameLocationSearchAttempted": true,
+        "initialLinkedSourceCrawlAttempted": false,
+        "followupSearchQueries": [
+          "\"780-404-1580\" grooming"
+        ],
+        "candidateCrawlAttempted": false
+      }
+    },
+    {
+      "route": "/groomers/alberta/taber/tender-loving-paws-taber-ab-2a96b1b8/",
+      "businessName": "Tender Loving Paws",
+      "city": "Taber",
+      "originalWebsite": "https://m.facebook.com/TenderLovingPaws/",
+      "decision": "noindex",
+      "reasonCode": "no_verified_first_party_menu",
+      "reason": "Only a social, directory or search link was present/discovered; no accessible matching first-party menu was verified. Snippets and copied directory records were not used to promote the profile.",
+      "sourcePages": [],
+      "crawlResults": [],
+      "discovery": "Actual public business-name/location search attempted. A search attempt does not establish complete result coverage or a verified source. Social snippets and copied directories were not used as verified enrichment.",
+      "discoveryCoverage": {
+        "initialNameLocationSearchAttempted": true,
+        "initialLinkedSourceCrawlAttempted": false,
+        "followupSearchQueries": [],
+        "candidateCrawlAttempted": false
+      }
+    },
+    {
+      "route": "/groomers/british-columbia/duncan/zoomies-duncan-bc-fcba9065/",
+      "businessName": "Zoomies",
+      "city": "Duncan",
+      "originalWebsite": "",
+      "decision": "noindex",
+      "reasonCode": "no_verified_first_party_menu",
+      "reason": "Public source discovery did not establish a matching, accessible first-party grooming menu with enough useful business-specific facts.",
+      "sourcePages": [],
+      "crawlResults": [],
+      "discovery": "Actual public business-name/location search attempted. A search attempt does not establish complete result coverage or a verified source. Social snippets and copied directories were not used as verified enrichment.",
+      "discoveryCoverage": {
+        "initialNameLocationSearchAttempted": true,
+        "initialLinkedSourceCrawlAttempted": false,
+        "followupSearchQueries": [],
+        "candidateCrawlAttempted": false
+      }
+    },
+    {
+      "route": "/groomers/british-columbia/terrace/groomin-tails-by-jan-terrace-bc-184b1f1f/",
+      "businessName": "Groomin' Tails By Jan",
+      "city": "Terrace",
+      "originalWebsite": "",
+      "decision": "noindex",
+      "reasonCode": "no_verified_first_party_menu",
+      "reason": "Public source discovery did not establish a matching, accessible first-party grooming menu with enough useful business-specific facts.",
+      "sourcePages": [],
+      "crawlResults": [],
+      "discovery": "Actual public business-name/location search attempted. A search attempt does not establish complete result coverage or a verified source. Social snippets and copied directories were not used as verified enrichment.",
+      "discoveryCoverage": {
+        "initialNameLocationSearchAttempted": true,
+        "initialLinkedSourceCrawlAttempted": false,
+        "followupSearchQueries": [],
+        "candidateCrawlAttempted": false
+      }
+    },
+    {
+      "route": "/groomers/canada/all-my-pets-canada-canada-ca-684962a9/",
+      "businessName": "All My Pets Canada",
+      "city": "Canada",
+      "originalWebsite": "https://www.allmypets.ca/",
+      "decision": "noindex",
+      "reasonCode": "not_a_verified_grooming_provider",
+      "reason": "Official site describes pet transport, training and pet care; no matching grooming menu was verified.",
+      "sourcePages": [
+        "https://www.allmypets.ca/",
+        "https://www.allmypets.ca/services/"
+      ],
+      "crawlResults": [
+        {
+          "requested_url": "https://www.allmypets.ca/",
+          "url": "https://www.allmypets.ca/",
+          "success": true,
+          "status_code": 200,
+          "error_message": ""
+        },
+        {
+          "requested_url": "https://www.allmypets.ca/services/",
+          "url": "https://www.allmypets.ca/services/",
+          "success": true,
+          "status_code": 200,
+          "error_message": ""
+        }
+      ],
+      "discovery": "Existing linked public website checked directly through Crawl4AI; no initial name/location web search.",
+      "discoveryCoverage": {
+        "initialNameLocationSearchAttempted": false,
+        "initialLinkedSourceCrawlAttempted": true,
+        "followupSearchQueries": [],
+        "candidateCrawlAttempted": true
+      }
+    },
+    {
+      "route": "/groomers/canada/aux-pattes-chics-canada-ca-2cb13ce2/",
+      "businessName": "Aux pattes Chics",
+      "city": "Canada",
+      "originalWebsite": "http://auxpatteschics.com/",
+      "decision": "noindex",
+      "reasonCode": "official_site_unavailable",
+      "reason": "Linked official domain failed Crawl4AI on HTTP and HTTPS; social snippets are insufficient.",
+      "sourcePages": [],
+      "crawlResults": [
+        {
+          "requested_url": "https://auxpatteschics.com/",
+          "url": null,
+          "success": false,
+          "status_code": null,
+          "error_message": "HTTP Error 500: Internal Server Error"
+        }
+      ],
+      "discovery": "Actual public business-name/location search attempted. A search attempt does not establish complete result coverage or a verified source. Social snippets and copied directories were not used as verified enrichment.",
+      "discoveryCoverage": {
+        "initialNameLocationSearchAttempted": true,
+        "initialLinkedSourceCrawlAttempted": false,
+        "followupSearchQueries": [],
+        "candidateCrawlAttempted": true
+      }
+    },
+    {
+      "route": "/groomers/canada/jenny-brien-toilettage-canin-canada-ca-30746d5a/",
+      "businessName": "Jenny Brien Toilettage Canin",
+      "city": "Canada",
+      "originalWebsite": "https://fb.me/15jenbri",
+      "decision": "noindex",
+      "reasonCode": "no_verified_first_party_menu",
+      "reason": "Only a social, directory or search link was present/discovered; no accessible matching first-party menu was verified. Snippets and copied directory records were not used to promote the profile.",
+      "sourcePages": [],
+      "crawlResults": [],
+      "discovery": "Actual public business-name/location search attempted. A search attempt does not establish complete result coverage or a verified source. Social snippets and copied directories were not used as verified enrichment.",
+      "discoveryCoverage": {
+        "initialNameLocationSearchAttempted": true,
+        "initialLinkedSourceCrawlAttempted": false,
+        "followupSearchQueries": [],
+        "candidateCrawlAttempted": false
+      }
+    },
+    {
+      "route": "/groomers/canada/l-eden-toilettage-pour-chats-canada-ca-832c3f79/",
+      "businessName": "L'Eden Toilettage pour chats!",
+      "city": "Canada",
+      "originalWebsite": "http://www.facebook.com/Gabrielleetseschats",
+      "decision": "noindex",
+      "reasonCode": "no_verified_first_party_menu",
+      "reason": "Only a social, directory or search link was present/discovered; no accessible matching first-party menu was verified. Snippets and copied directory records were not used to promote the profile.",
+      "sourcePages": [],
+      "crawlResults": [],
+      "discovery": "Actual public business-name/location search attempted. A search attempt does not establish complete result coverage or a verified source. Social snippets and copied directories were not used as verified enrichment.",
+      "discoveryCoverage": {
+        "initialNameLocationSearchAttempted": true,
+        "initialLinkedSourceCrawlAttempted": false,
+        "followupSearchQueries": [],
+        "candidateCrawlAttempted": false
+      }
+    },
+    {
+      "route": "/groomers/canada/la-niche-a-bengi-canada-ca-de532f7e/",
+      "businessName": "La Niche à Bengi",
+      "city": "Canada",
+      "originalWebsite": "http://www.lanicheabengi.com/",
+      "decision": "index",
+      "reasonCode": "promoted_with_official_review",
+      "reason": "Matching official business name and phone plus useful service/booking facts; manually synthesized from successful Crawl4AI pages.",
+      "sourcePages": [
+        "https://lanicheabengi.com/"
+      ],
+      "crawlResults": [
+        {
+          "requested_url": "https://lanicheabengi.com/",
+          "url": "https://lanicheabengi.com/",
+          "success": true,
+          "status_code": 200,
+          "error_message": ""
+        }
+      ],
+      "discovery": "Existing linked public website checked directly through Crawl4AI; no initial name/location web search.",
+      "discoveryCoverage": {
+        "initialNameLocationSearchAttempted": false,
+        "initialLinkedSourceCrawlAttempted": true,
+        "followupSearchQueries": [],
+        "candidateCrawlAttempted": true
+      }
+    },
+    {
+      "route": "/groomers/canada/la-niche-a-bengi-canada-ca-f463981c/",
+      "businessName": "La Niche à Bengi",
+      "city": "Canada",
+      "originalWebsite": "http://www.lanicheabengi.com/",
+      "decision": "noindex",
+      "reasonCode": "duplicate_business_record",
+      "reason": "Same business name, phone and official website as the reviewed Bengi record; kept held to avoid indexing duplicate content.",
+      "sourcePages": [
+        "https://lanicheabengi.com/"
+      ],
+      "crawlResults": [
+        {
+          "requested_url": "https://lanicheabengi.com/",
+          "url": "https://lanicheabengi.com/",
+          "success": true,
+          "status_code": 200,
+          "error_message": ""
+        }
+      ],
+      "discovery": "Existing linked public website checked directly through Crawl4AI; no initial name/location web search.",
+      "discoveryCoverage": {
+        "initialNameLocationSearchAttempted": false,
+        "initialLinkedSourceCrawlAttempted": true,
+        "followupSearchQueries": [],
+        "candidateCrawlAttempted": true
+      }
+    },
+    {
+      "route": "/groomers/canada/le-valeureux-compagnon-canada-ca-95f8837a/",
+      "businessName": "Le Valeureux Compagnon",
+      "city": "Canada",
+      "originalWebsite": "https://levaleureuxcompagnon.com/",
+      "decision": "noindex",
+      "reasonCode": "unrelated_domain",
+      "reason": "Formerly linked domain serves casino content; unsupported website link removed and quality hold retained.",
+      "sourcePages": [
+        "https://levaleureuxcompagnon.com/"
+      ],
+      "crawlResults": [
+        {
+          "requested_url": "https://levaleureuxcompagnon.com/",
+          "url": "https://levaleureuxcompagnon.com/",
+          "success": true,
+          "status_code": 200,
+          "error_message": ""
+        }
+      ],
+      "discovery": "Existing linked public website checked directly through Crawl4AI; no initial name/location web search.",
+      "discoveryCoverage": {
+        "initialNameLocationSearchAttempted": false,
+        "initialLinkedSourceCrawlAttempted": true,
+        "followupSearchQueries": [],
+        "candidateCrawlAttempted": true
+      }
+    },
+    {
+      "route": "/groomers/canada/life-of-the-pawty-canada-ca-88e197f9/",
+      "businessName": "Life of the Pawty",
+      "city": "Canada",
+      "originalWebsite": "",
+      "decision": "noindex",
+      "reasonCode": "no_verified_first_party_menu",
+      "reason": "Public source discovery did not establish a matching, accessible first-party grooming menu with enough useful business-specific facts.",
+      "sourcePages": [],
+      "crawlResults": [],
+      "discovery": "Actual public business-name/location search attempted. A search attempt does not establish complete result coverage or a verified source. Social snippets and copied directories were not used as verified enrichment.",
+      "discoveryCoverage": {
+        "initialNameLocationSearchAttempted": true,
+        "initialLinkedSourceCrawlAttempted": false,
+        "followupSearchQueries": [],
+        "candidateCrawlAttempted": false
+      }
+    },
+    {
+      "route": "/groomers/canada/mousse-et-moustaches-toilettage-mobile-canada-ca-b0cb2c3a/",
+      "businessName": "Mousse et Moustaches toilettage mobile",
+      "city": "Canada",
+      "originalWebsite": "https://www.facebook.com/share/1CMEMdJSzS/",
+      "decision": "noindex",
+      "reasonCode": "no_verified_first_party_menu",
+      "reason": "Only a social, directory or search link was present/discovered; no accessible matching first-party menu was verified. Snippets and copied directory records were not used to promote the profile.",
+      "sourcePages": [],
+      "crawlResults": [],
+      "discovery": "Actual public business-name/location search attempted. A search attempt does not establish complete result coverage or a verified source. Social snippets and copied directories were not used as verified enrichment.",
+      "discoveryCoverage": {
+        "initialNameLocationSearchAttempted": true,
+        "initialLinkedSourceCrawlAttempted": false,
+        "followupSearchQueries": [],
+        "candidateCrawlAttempted": false
+      }
+    },
+    {
+      "route": "/groomers/canada/salon-de-toilettage-aux-petits-soins-d-amours-canada-ca-69ccec20/",
+      "businessName": "Salon de Toilettage Aux Petits Soins D'Amours",
+      "city": "Canada",
+      "originalWebsite": "https://www.facebook.com/Salon-de-Toilettage-Aux-petits-soins-DAmours-108288731624246/",
+      "decision": "noindex",
+      "reasonCode": "no_verified_first_party_menu",
+      "reason": "Only a social, directory or search link was present/discovered; no accessible matching first-party menu was verified. Snippets and copied directory records were not used to promote the profile.",
+      "sourcePages": [],
+      "crawlResults": [],
+      "discovery": "Actual public business-name/location search attempted. A search attempt does not establish complete result coverage or a verified source. Social snippets and copied directories were not used as verified enrichment.",
+      "discoveryCoverage": {
+        "initialNameLocationSearchAttempted": true,
+        "initialLinkedSourceCrawlAttempted": false,
+        "followupSearchQueries": [],
+        "candidateCrawlAttempted": false
+      }
+    },
+    {
+      "route": "/groomers/canada/studio-calins-v-i-p-canada-ca-d596d533/",
+      "businessName": "Studio Câlins V.I.P",
+      "city": "Canada",
+      "originalWebsite": "",
+      "decision": "noindex",
+      "reasonCode": "no_verified_first_party_menu",
+      "reason": "Public source discovery did not establish a matching, accessible first-party grooming menu with enough useful business-specific facts.",
+      "sourcePages": [],
+      "crawlResults": [],
+      "discovery": "Actual public business-name/location search attempted. A search attempt does not establish complete result coverage or a verified source. Social snippets and copied directories were not used as verified enrichment.",
+      "discoveryCoverage": {
+        "initialNameLocationSearchAttempted": true,
+        "initialLinkedSourceCrawlAttempted": false,
+        "followupSearchQueries": [],
+        "candidateCrawlAttempted": false
+      }
+    },
+    {
+      "route": "/groomers/canada/the-cat-s-tail-canada-ca-14513310/",
+      "businessName": "The Cat’s Tail",
+      "city": "Canada",
+      "originalWebsite": "",
+      "decision": "noindex",
+      "reasonCode": "identity_only_source",
+      "reason": "A public regional pet-service directory matches the phone and names The Grooming Shop/Cat’s Tail in Deep River, but provides only contact/location information. Current identity, location and detailed services remain unverified.",
+      "sourcePages": [
+        "https://www.petawawapets.ca/services/"
+      ],
+      "crawlResults": [
+        {
+          "requested_url": "https://www.petawawapets.ca/services/",
+          "url": "https://www.petawawapets.ca/services/",
+          "success": true,
+          "status_code": 200,
+          "error_message": ""
+        }
+      ],
+      "discovery": "Actual public business-name/location search attempted. A search attempt does not establish complete result coverage or a verified source. Social snippets and copied directories were not used as verified enrichment.",
+      "discoveryCoverage": {
+        "initialNameLocationSearchAttempted": true,
+        "initialLinkedSourceCrawlAttempted": false,
+        "followupSearchQueries": [
+          "\"613-602-7387\" grooming",
+          "\"Cat’s Tail\" \"Cheryl\" grooming website"
+        ],
+        "candidateCrawlAttempted": true
+      }
+    },
+    {
+      "route": "/groomers/canada/toilettage-a-domicile-tonte-chat-mini-canada-ca-6b3a5487/",
+      "businessName": "Toilettage à domicile Tonte Chat Mini",
+      "city": "Canada",
+      "originalWebsite": "",
+      "decision": "noindex",
+      "reasonCode": "no_verified_first_party_menu",
+      "reason": "Public source discovery did not establish a matching, accessible first-party grooming menu with enough useful business-specific facts.",
+      "sourcePages": [],
+      "crawlResults": [],
+      "discovery": "Actual public business-name/location search attempted. A search attempt does not establish complete result coverage or a verified source. Social snippets and copied directories were not used as verified enrichment.",
+      "discoveryCoverage": {
+        "initialNameLocationSearchAttempted": true,
+        "initialLinkedSourceCrawlAttempted": false,
+        "followupSearchQueries": [],
+        "candidateCrawlAttempted": false
+      }
+    },
+    {
+      "route": "/groomers/canada/toilettage-au-chien-bleu-canada-ca-4e001420/",
+      "businessName": "Toilettage au chien bleu",
+      "city": "Canada",
+      "originalWebsite": "",
+      "decision": "noindex",
+      "reasonCode": "no_verified_first_party_menu",
+      "reason": "Public source discovery did not establish a matching, accessible first-party grooming menu with enough useful business-specific facts.",
+      "sourcePages": [],
+      "crawlResults": [],
+      "discovery": "Actual public business-name/location search attempted. A search attempt does not establish complete result coverage or a verified source. Social snippets and copied directories were not used as verified enrichment.",
+      "discoveryCoverage": {
+        "initialNameLocationSearchAttempted": true,
+        "initialLinkedSourceCrawlAttempted": false,
+        "followupSearchQueries": [],
+        "candidateCrawlAttempted": false
+      }
+    },
+    {
+      "route": "/groomers/canada/toilettage-beauharnois-canada-ca-13843b04/",
+      "businessName": "Toilettage Beauharnois",
+      "city": "Canada",
+      "originalWebsite": "",
+      "decision": "noindex",
+      "reasonCode": "no_verified_first_party_menu",
+      "reason": "Public source discovery did not establish a matching, accessible first-party grooming menu with enough useful business-specific facts.",
+      "sourcePages": [],
+      "crawlResults": [],
+      "discovery": "Actual public business-name/location search attempted. A search attempt does not establish complete result coverage or a verified source. Social snippets and copied directories were not used as verified enrichment.",
+      "discoveryCoverage": {
+        "initialNameLocationSearchAttempted": true,
+        "initialLinkedSourceCrawlAttempted": false,
+        "followupSearchQueries": [],
+        "candidateCrawlAttempted": false
+      }
+    },
+    {
+      "route": "/groomers/canada/toilettage-bulles-and-bisous-canada-ca-52323db0/",
+      "businessName": "Toilettage Bulles & Bisous",
+      "city": "Canada",
+      "originalWebsite": "",
+      "decision": "noindex",
+      "reasonCode": "no_verified_first_party_menu",
+      "reason": "Public source discovery did not establish a matching, accessible first-party grooming menu with enough useful business-specific facts.",
+      "sourcePages": [],
+      "crawlResults": [],
+      "discovery": "Actual public business-name/location search attempted. A search attempt does not establish complete result coverage or a verified source. Social snippets and copied directories were not used as verified enrichment.",
+      "discoveryCoverage": {
+        "initialNameLocationSearchAttempted": true,
+        "initialLinkedSourceCrawlAttempted": false,
+        "followupSearchQueries": [],
+        "candidateCrawlAttempted": false
+      }
+    },
+    {
+      "route": "/groomers/canada/toilettage-chaguichou-canada-ca-761b40a1/",
+      "businessName": "Toilettage Chaguichou",
+      "city": "Canada",
+      "originalWebsite": "https://www.pagesjaunes.ca/bus/Quebec/Salaberry-de-Valleyfield/Toilettage-Chaguichou/101651934.html?what=Toilettage+Chaguichou&where=SALABERRY+DE+VALLEYFIELD+PQ+",
+      "decision": "noindex",
+      "reasonCode": "no_verified_first_party_menu",
+      "reason": "Only a social, directory or search link was present/discovered; no accessible matching first-party menu was verified. Snippets and copied directory records were not used to promote the profile.",
+      "sourcePages": [],
+      "crawlResults": [],
+      "discovery": "Actual public business-name/location search attempted. A search attempt does not establish complete result coverage or a verified source. Social snippets and copied directories were not used as verified enrichment.",
+      "discoveryCoverage": {
+        "initialNameLocationSearchAttempted": true,
+        "initialLinkedSourceCrawlAttempted": false,
+        "followupSearchQueries": [],
+        "candidateCrawlAttempted": false
+      }
+    },
+    {
+      "route": "/groomers/canada/toilettage-comportemental-avec-roxie-canada-ca-77adc7ca/",
+      "businessName": "Toilettage comportemental avec Roxie",
+      "city": "Canada",
+      "originalWebsite": "https://tcroxie.com/",
+      "decision": "index",
+      "reasonCode": "promoted_with_official_review",
+      "reason": "Matching official business name and phone plus useful service/booking facts; manually synthesized from successful Crawl4AI pages.",
+      "sourcePages": [
+        "https://tcroxie.com/"
+      ],
+      "crawlResults": [
+        {
+          "requested_url": "https://tcroxie.com/",
+          "url": "https://tcroxie.com/",
+          "success": true,
+          "status_code": 200,
+          "error_message": ""
+        }
+      ],
+      "discovery": "Existing linked public website checked directly through Crawl4AI; no initial name/location web search.",
+      "discoveryCoverage": {
+        "initialNameLocationSearchAttempted": false,
+        "initialLinkedSourceCrawlAttempted": true,
+        "followupSearchQueries": [],
+        "candidateCrawlAttempted": true
+      }
+    },
+    {
+      "route": "/groomers/canada/toilettage-dominique-maillette-obomuso-canada-ca-e1010e1b/",
+      "businessName": "Toilettage Dominique Maillette OBOMUSO",
+      "city": "Canada",
+      "originalWebsite": "http://toilettagedominiquemailletteobomuso.com/",
+      "decision": "noindex",
+      "reasonCode": "insufficient_current_business_evidence",
+      "reason": "Linked official domain failed; regional directory has an older location without a current detailed matching grooming menu.",
+      "sourcePages": [
+        "https://explorez.mrcacton.ca/entreprise/1244-rue-boulay-toilettage-dominique-maillette-obomuso/",
+        "https://explorez.mrcacton.ca/a-propos/"
+      ],
+      "crawlResults": [
+        {
+          "requested_url": "https://explorez.mrcacton.ca/entreprise/1244-rue-boulay-toilettage-dominique-maillette-obomuso/",
+          "url": "https://explorez.mrcacton.ca/entreprise/1244-rue-boulay-toilettage-dominique-maillette-obomuso/",
+          "success": true,
+          "status_code": 200,
+          "error_message": ""
+        },
+        {
+          "requested_url": "https://explorez.mrcacton.ca/a-propos/",
+          "url": "https://explorez.mrcacton.ca/a-propos/",
+          "success": true,
+          "status_code": 200,
+          "error_message": ""
+        }
+      ],
+      "discovery": "Actual public business-name/location search attempted. A search attempt does not establish complete result coverage or a verified source. Social snippets and copied directories were not used as verified enrichment.",
+      "discoveryCoverage": {
+        "initialNameLocationSearchAttempted": true,
+        "initialLinkedSourceCrawlAttempted": false,
+        "followupSearchQueries": [],
+        "candidateCrawlAttempted": true
+      }
+    },
+    {
+      "route": "/groomers/canada/unknown-canada-ca-60a060ef/",
+      "businessName": "Unknown",
+      "city": "Canada",
+      "originalWebsite": "",
+      "decision": "noindex",
+      "reasonCode": "identity_insufficient",
+      "reason": "Unknown has no distinctive business name or specific location. A phone search returned the existing directory profile and unrelated lookup pages, without a reliable business identity. No promotion or identity correction.",
+      "sourcePages": [],
+      "crawlResults": [],
+      "discovery": "Initial local identity assessment only because the listing name was not distinctive; followed by an actual phone-based public source search. Search results are discovery leads, not verified business facts.",
+      "discoveryCoverage": {
+        "initialNameLocationSearchAttempted": false,
+        "initialLinkedSourceCrawlAttempted": false,
+        "followupSearchQueries": [
+          "\"780-555-1111\" groomer"
+        ],
+        "candidateCrawlAttempted": false
+      }
+    },
+    {
+      "route": "/groomers/canada/vet-tech-plus-canada-ca-fc4f2cee/",
+      "businessName": "Vet Tech Plus",
+      "city": "Canada",
+      "originalWebsite": "http://vettechplus.net/",
+      "decision": "index",
+      "reasonCode": "promoted_with_official_review",
+      "reason": "Matching official business name and phone plus useful service/booking facts; manually synthesized from successful Crawl4AI pages.",
+      "sourcePages": [
+        "https://www.vettechplus.net/",
+        "https://www.vettechplus.net/services"
+      ],
+      "crawlResults": [
+        {
+          "requested_url": "https://www.vettechplus.net/",
+          "url": "https://www.vettechplus.net/",
+          "success": true,
+          "status_code": 200,
+          "error_message": ""
+        },
+        {
+          "requested_url": "https://www.vettechplus.net/about",
+          "url": "https://www.vettechplus.net/about",
+          "success": true,
+          "status_code": 200,
+          "error_message": ""
+        },
+        {
+          "requested_url": "https://www.vettechplus.net/services",
+          "url": "https://www.vettechplus.net/services",
+          "success": true,
+          "status_code": 200,
+          "error_message": ""
+        }
+      ],
+      "discovery": "Existing linked public website checked directly through Crawl4AI; no initial name/location web search.",
+      "discoveryCoverage": {
+        "initialNameLocationSearchAttempted": false,
+        "initialLinkedSourceCrawlAttempted": true,
+        "followupSearchQueries": [],
+        "candidateCrawlAttempted": true
+      }
+    },
+    {
+      "route": "/groomers/canada/waf-waf-canada-ca-3291ac56/",
+      "businessName": "Waf waf",
+      "city": "Canada",
+      "originalWebsite": "",
+      "decision": "noindex",
+      "reasonCode": "no_verified_first_party_menu",
+      "reason": "Public source discovery did not establish a matching, accessible first-party grooming menu with enough useful business-specific facts.",
+      "sourcePages": [],
+      "crawlResults": [],
+      "discovery": "Actual public business-name/location search attempted. A search attempt does not establish complete result coverage or a verified source. Social snippets and copied directories were not used as verified enrichment.",
+      "discoveryCoverage": {
+        "initialNameLocationSearchAttempted": true,
+        "initialLinkedSourceCrawlAttempted": false,
+        "followupSearchQueries": [
+          "\"438-522-8240\" toilettage",
+          "\"Waf waf\" \"toilettage\" Québec Canada"
+        ],
+        "candidateCrawlAttempted": false
+      }
+    },
+    {
+      "route": "/groomers/canada/wn-toilettage-a-domicile-riviere-du-loup-canada-ca-0a7e981c/",
+      "businessName": "WN toilettage à domicile Rivière-du-loup",
+      "city": "Canada",
+      "originalWebsite": "",
+      "decision": "noindex",
+      "reasonCode": "no_verified_first_party_menu",
+      "reason": "Public source discovery did not establish a matching, accessible first-party grooming menu with enough useful business-specific facts.",
+      "sourcePages": [],
+      "crawlResults": [],
+      "discovery": "Actual public business-name/location search attempted. A search attempt does not establish complete result coverage or a verified source. Social snippets and copied directories were not used as verified enrichment.",
+      "discoveryCoverage": {
+        "initialNameLocationSearchAttempted": true,
+        "initialLinkedSourceCrawlAttempted": false,
+        "followupSearchQueries": [
+          "\"418-234-6550\" toilettage",
+          "\"WN\" \"toilettage\" \"Rivière-du-loup\"",
+          "\"WN toilettage\" website"
+        ],
+        "candidateCrawlAttempted": false
+      }
+    },
+    {
+      "route": "/groomers/manitoba/beulah/cally-s-clippers-and-kennels-beulah-mb-c7cee75b/",
+      "businessName": "Cally's Clippers and Kennels",
+      "city": "Beulah",
+      "originalWebsite": "",
+      "decision": "noindex",
+      "reasonCode": "identity_only_source",
+      "reason": "A municipal business-directory entry matches the phone, names Callaghan Glass and describes grooming, boarding and shelter support near Miniota. It supplies no detailed grooming package or current booking evidence; its listed website is Facebook. The broad description was insufficient for a substantive profile review.",
+      "sourcePages": [
+        "https://myprairieview.ca/p/business-directory",
+        "https://myprairieview.ca/Home/GetBusinessLocations?BusinessName=Cally"
+      ],
+      "crawlResults": [
+        {
+          "requested_url": "https://myprairieview.ca/p/business-directory",
+          "url": "https://myprairieview.ca/p/business-directory",
+          "success": true,
+          "status_code": 200,
+          "error_message": ""
+        },
+        {
+          "requested_url": "https://myprairieview.ca/Home/GetBusinessLocations?BusinessName=Cally",
+          "url": "https://myprairieview.ca/Home/GetBusinessLocations?BusinessName=Cally",
+          "success": true,
+          "status_code": 200,
+          "error_message": ""
+        }
+      ],
+      "discovery": "Actual public business-name/location search attempted. A search attempt does not establish complete result coverage or a verified source. Social snippets and copied directories were not used as verified enrichment.",
+      "discoveryCoverage": {
+        "initialNameLocationSearchAttempted": true,
+        "initialLinkedSourceCrawlAttempted": false,
+        "followupSearchQueries": [
+          "\"204-512-0406\" grooming",
+          "\"Cally's Clippers and Kennels\" Beulah Manitoba",
+          "\"Cally\" \"Clippers\" Beulah website"
+        ],
+        "candidateCrawlAttempted": true
+      }
+    },
+    {
+      "route": "/groomers/new-brunswick/bloomfield/k-9-clean-bloomfield-nb-d580dde0/",
+      "businessName": "K-9 Clean",
+      "city": "Bloomfield",
+      "originalWebsite": "",
+      "decision": "noindex",
+      "reasonCode": "no_verified_first_party_menu",
+      "reason": "Public source discovery did not establish a matching, accessible first-party grooming menu with enough useful business-specific facts.",
+      "sourcePages": [],
+      "crawlResults": [],
+      "discovery": "Actual public business-name/location search attempted. A search attempt does not establish complete result coverage or a verified source. Social snippets and copied directories were not used as verified enrichment.",
+      "discoveryCoverage": {
+        "initialNameLocationSearchAttempted": true,
+        "initialLinkedSourceCrawlAttempted": false,
+        "followupSearchQueries": [
+          "\"506-567-3565\" grooming",
+          "\"K-9 Clean\" \"Bloomfield\" \"New Brunswick\""
+        ],
+        "candidateCrawlAttempted": false
+      }
+    },
+    {
+      "route": "/groomers/new-brunswick/south-esk/rae-s-pampered-pets-south-esk-nb-79f5130c/",
+      "businessName": "Rae’s Pampered Pets",
+      "city": "South Esk",
+      "originalWebsite": "",
+      "decision": "noindex",
+      "reasonCode": "no_verified_first_party_menu",
+      "reason": "Public source discovery did not establish a matching, accessible first-party grooming menu with enough useful business-specific facts.",
+      "sourcePages": [],
+      "crawlResults": [],
+      "discovery": "Actual public business-name/location search attempted. A search attempt does not establish complete result coverage or a verified source. Social snippets and copied directories were not used as verified enrichment.",
+      "discoveryCoverage": {
+        "initialNameLocationSearchAttempted": true,
+        "initialLinkedSourceCrawlAttempted": false,
+        "followupSearchQueries": [],
+        "candidateCrawlAttempted": false
+      }
+    },
+    {
+      "route": "/groomers/newfoundland-and-labrador/conception-bay-south/coastal-k-9-spaw-conception-bay-south-nl-18f0450c/",
+      "businessName": "Coastal K-9 Spaw",
+      "city": "Conception Bay South",
+      "originalWebsite": "https://www.facebook.com/CoastalK9Spaw/",
+      "decision": "noindex",
+      "reasonCode": "no_verified_first_party_menu",
+      "reason": "Only a social, directory or search link was present/discovered; no accessible matching first-party menu was verified. Snippets and copied directory records were not used to promote the profile.",
+      "sourcePages": [],
+      "crawlResults": [],
+      "discovery": "Actual public business-name/location search attempted. A search attempt does not establish complete result coverage or a verified source. Social snippets and copied directories were not used as verified enrichment.",
+      "discoveryCoverage": {
+        "initialNameLocationSearchAttempted": true,
+        "initialLinkedSourceCrawlAttempted": false,
+        "followupSearchQueries": [],
+        "candidateCrawlAttempted": false
+      }
+    },
+    {
+      "route": "/groomers/nova-scotia/head-of-chezzetcook/scruff-to-fluff-head-of-chezzetcook-ns-5da0d380/",
+      "businessName": "Scruff To Fluff",
+      "city": "Head of Chezzetcook",
+      "originalWebsite": "",
+      "decision": "noindex",
+      "reasonCode": "no_verified_first_party_menu",
+      "reason": "Public source discovery did not establish a matching, accessible first-party grooming menu with enough useful business-specific facts.",
+      "sourcePages": [],
+      "crawlResults": [],
+      "discovery": "Actual public business-name/location search attempted. A search attempt does not establish complete result coverage or a verified source. Social snippets and copied directories were not used as verified enrichment.",
+      "discoveryCoverage": {
+        "initialNameLocationSearchAttempted": true,
+        "initialLinkedSourceCrawlAttempted": false,
+        "followupSearchQueries": [],
+        "candidateCrawlAttempted": false
+      }
+    },
+    {
+      "route": "/groomers/ontario/chelmsford/just-for-pets-chelmsford-on-91093065/",
+      "businessName": "Just For Pets",
+      "city": "Chelmsford",
+      "originalWebsite": "",
+      "decision": "noindex",
+      "reasonCode": "no_verified_first_party_menu",
+      "reason": "Public source discovery did not establish a matching, accessible first-party grooming menu with enough useful business-specific facts.",
+      "sourcePages": [],
+      "crawlResults": [],
+      "discovery": "Actual public business-name/location search attempted. A search attempt does not establish complete result coverage or a verified source. Social snippets and copied directories were not used as verified enrichment.",
+      "discoveryCoverage": {
+        "initialNameLocationSearchAttempted": true,
+        "initialLinkedSourceCrawlAttempted": false,
+        "followupSearchQueries": [],
+        "candidateCrawlAttempted": false
+      }
+    },
+    {
+      "route": "/groomers/ontario/fort-erie/kim-s-pet-spa-fort-erie-on-cada0717/",
+      "businessName": "Kim's Pet Spa",
+      "city": "Fort Erie",
+      "originalWebsite": "",
+      "decision": "noindex",
+      "reasonCode": "no_verified_first_party_menu",
+      "reason": "Public source discovery did not establish a matching, accessible first-party grooming menu with enough useful business-specific facts.",
+      "sourcePages": [],
+      "crawlResults": [],
+      "discovery": "Actual public business-name/location search attempted. A search attempt does not establish complete result coverage or a verified source. Social snippets and copied directories were not used as verified enrichment.",
+      "discoveryCoverage": {
+        "initialNameLocationSearchAttempted": true,
+        "initialLinkedSourceCrawlAttempted": false,
+        "followupSearchQueries": [],
+        "candidateCrawlAttempted": false
+      }
+    },
+    {
+      "route": "/groomers/ontario/hawkesbury/vip-hawkesbury-on-fabe0376/",
+      "businessName": "VIP",
+      "city": "Hawkesbury",
+      "originalWebsite": "",
+      "decision": "noindex",
+      "reasonCode": "no_verified_first_party_menu",
+      "reason": "Public source discovery did not establish a matching, accessible first-party grooming menu with enough useful business-specific facts.",
+      "sourcePages": [],
+      "crawlResults": [],
+      "discovery": "Actual public business-name/location search attempted. A search attempt does not establish complete result coverage or a verified source. Social snippets and copied directories were not used as verified enrichment.",
+      "discoveryCoverage": {
+        "initialNameLocationSearchAttempted": true,
+        "initialLinkedSourceCrawlAttempted": false,
+        "followupSearchQueries": [],
+        "candidateCrawlAttempted": false
+      }
+    },
+    {
+      "route": "/groomers/ontario/mountain/silverstone-kennels-regd-mountain-on-a31a1f4f/",
+      "businessName": "Silverstone Kennels Regd",
+      "city": "Mountain",
+      "originalWebsite": "",
+      "decision": "noindex",
+      "reasonCode": "no_verified_first_party_menu",
+      "reason": "Public source discovery did not establish a matching, accessible first-party grooming menu with enough useful business-specific facts.",
+      "sourcePages": [],
+      "crawlResults": [],
+      "discovery": "Actual public business-name/location search attempted. A search attempt does not establish complete result coverage or a verified source. Social snippets and copied directories were not used as verified enrichment.",
+      "discoveryCoverage": {
+        "initialNameLocationSearchAttempted": true,
+        "initialLinkedSourceCrawlAttempted": false,
+        "followupSearchQueries": [],
+        "candidateCrawlAttempted": false
+      }
+    },
+    {
+      "route": "/groomers/ontario/orillia/graham-swales-dog-orillia-on-84b42f79/",
+      "businessName": "Graham Swales Dog",
+      "city": "Orillia",
+      "originalWebsite": "",
+      "decision": "noindex",
+      "reasonCode": "no_verified_first_party_menu",
+      "reason": "Public source discovery did not establish a matching, accessible first-party grooming menu with enough useful business-specific facts.",
+      "sourcePages": [],
+      "crawlResults": [],
+      "discovery": "Actual public business-name/location search attempted. A search attempt does not establish complete result coverage or a verified source. Social snippets and copied directories were not used as verified enrichment.",
+      "discoveryCoverage": {
+        "initialNameLocationSearchAttempted": true,
+        "initialLinkedSourceCrawlAttempted": false,
+        "followupSearchQueries": [],
+        "candidateCrawlAttempted": false
+      }
+    },
+    {
+      "route": "/groomers/ontario/port-colborne/mutts-cutts-port-colborne-on-d8bf81ed/",
+      "businessName": "Mutts Cutts",
+      "city": "Port Colborne",
+      "originalWebsite": "",
+      "decision": "noindex",
+      "reasonCode": "no_verified_first_party_menu",
+      "reason": "Public source discovery did not establish a matching, accessible first-party grooming menu with enough useful business-specific facts.",
+      "sourcePages": [],
+      "crawlResults": [],
+      "discovery": "Actual public business-name/location search attempted. A search attempt does not establish complete result coverage or a verified source. Social snippets and copied directories were not used as verified enrichment.",
+      "discoveryCoverage": {
+        "initialNameLocationSearchAttempted": true,
+        "initialLinkedSourceCrawlAttempted": false,
+        "followupSearchQueries": [],
+        "candidateCrawlAttempted": false
+      }
+    },
+    {
+      "route": "/groomers/ontario/st-catharines/bff-groomer-all-species-pets-st-catharines-on-ea6dcfcd/",
+      "businessName": "BFF Groomer - All Species Pets",
+      "city": "St. Catharines",
+      "originalWebsite": "https://www.facebook.com/bffgroomer",
+      "decision": "noindex",
+      "reasonCode": "no_verified_first_party_menu",
+      "reason": "Only a social, directory or search link was present/discovered; no accessible matching first-party menu was verified. Snippets and copied directory records were not used to promote the profile.",
+      "sourcePages": [],
+      "crawlResults": [],
+      "discovery": "Actual public business-name/location search attempted. A search attempt does not establish complete result coverage or a verified source. Social snippets and copied directories were not used as verified enrichment.",
+      "discoveryCoverage": {
+        "initialNameLocationSearchAttempted": true,
+        "initialLinkedSourceCrawlAttempted": false,
+        "followupSearchQueries": [],
+        "candidateCrawlAttempted": false
+      }
+    },
+    {
+      "route": "/groomers/ontario/thornloe/tammy-s-pet-salon-thornloe-on-a8a2a17c/",
+      "businessName": "Tammy's Pet Salon",
+      "city": "Thornloe",
+      "originalWebsite": "",
+      "decision": "noindex",
+      "reasonCode": "no_verified_first_party_menu",
+      "reason": "Public source discovery did not establish a matching, accessible first-party grooming menu with enough useful business-specific facts.",
+      "sourcePages": [],
+      "crawlResults": [],
+      "discovery": "Actual public business-name/location search attempted. A search attempt does not establish complete result coverage or a verified source. Social snippets and copied directories were not used as verified enrichment.",
+      "discoveryCoverage": {
+        "initialNameLocationSearchAttempted": true,
+        "initialLinkedSourceCrawlAttempted": false,
+        "followupSearchQueries": [],
+        "candidateCrawlAttempted": false
+      }
+    },
+    {
+      "route": "/groomers/quebec/alma/a-poils-raccourcis-alma-qc-828ca587/",
+      "businessName": "A Poils Raccourcis",
+      "city": "Alma",
+      "originalWebsite": "",
+      "decision": "noindex",
+      "reasonCode": "no_verified_first_party_menu",
+      "reason": "Public source discovery did not establish a matching, accessible first-party grooming menu with enough useful business-specific facts.",
+      "sourcePages": [],
+      "crawlResults": [],
+      "discovery": "Actual public business-name/location search attempted. A search attempt does not establish complete result coverage or a verified source. Social snippets and copied directories were not used as verified enrichment.",
+      "discoveryCoverage": {
+        "initialNameLocationSearchAttempted": true,
+        "initialLinkedSourceCrawlAttempted": false,
+        "followupSearchQueries": [],
+        "candidateCrawlAttempted": false
+      }
+    },
+    {
+      "route": "/groomers/quebec/champlain/atelier-de-toilettage-julie-gelinas-champlain-qc-50c35ac6/",
+      "businessName": "Atelier De Toilettage Julie Gélinas",
+      "city": "Champlain",
+      "originalWebsite": "",
+      "decision": "noindex",
+      "reasonCode": "identity_only_source",
+      "reason": "Municipal record confirms name, address and phone but provides no detailed package or booking evidence.",
+      "sourcePages": [
+        "https://www.municipalite.champlain.qc.ca/fr/repertoire/5046/atelier-de-toilettage-julie-gelinas",
+        "https://www.municipalite.champlain.qc.ca/fr/services-aux-citoyens/urbanisme/demande-de-permis-et-certificats",
+        "https://www.municipalite.champlain.qc.ca/fr/loisirs-culture-et-vie-communautaire/loisirs/prets-d-equipements"
+      ],
+      "crawlResults": [
+        {
+          "requested_url": "https://www.municipalite.champlain.qc.ca/fr/repertoire/5046/atelier-de-toilettage-julie-gelinas",
+          "url": "https://www.municipalite.champlain.qc.ca/fr/repertoire/5046/atelier-de-toilettage-julie-gelinas",
+          "success": true,
+          "status_code": 200,
+          "error_message": ""
+        },
+        {
+          "requested_url": "https://www.municipalite.champlain.qc.ca/fr/services-aux-citoyens/urbanisme/demande-de-permis-et-certificats",
+          "url": "https://www.municipalite.champlain.qc.ca/fr/services-aux-citoyens/urbanisme/demande-de-permis-et-certificats",
+          "success": true,
+          "status_code": 200,
+          "error_message": ""
+        },
+        {
+          "requested_url": "https://www.municipalite.champlain.qc.ca/fr/loisirs-culture-et-vie-communautaire/loisirs/prets-d-equipements",
+          "url": "https://www.municipalite.champlain.qc.ca/fr/loisirs-culture-et-vie-communautaire/loisirs/prets-d-equipements",
+          "success": true,
+          "status_code": 200,
+          "error_message": ""
+        }
+      ],
+      "discovery": "Actual public business-name/location search attempted. A search attempt does not establish complete result coverage or a verified source. Social snippets and copied directories were not used as verified enrichment.",
+      "discoveryCoverage": {
+        "initialNameLocationSearchAttempted": true,
+        "initialLinkedSourceCrawlAttempted": false,
+        "followupSearchQueries": [],
+        "candidateCrawlAttempted": true
+      }
+    },
+    {
+      "route": "/groomers/quebec/charny/chez-alinours-charny-qc-1022c410/",
+      "businessName": "Chez Alinours",
+      "city": "Charny",
+      "originalWebsite": "",
+      "decision": "noindex",
+      "reasonCode": "no_verified_first_party_menu",
+      "reason": "Public source discovery did not establish a matching, accessible first-party grooming menu with enough useful business-specific facts.",
+      "sourcePages": [],
+      "crawlResults": [],
+      "discovery": "Actual public business-name/location search attempted. A search attempt does not establish complete result coverage or a verified source. Social snippets and copied directories were not used as verified enrichment.",
+      "discoveryCoverage": {
+        "initialNameLocationSearchAttempted": true,
+        "initialLinkedSourceCrawlAttempted": false,
+        "followupSearchQueries": [],
+        "candidateCrawlAttempted": false
+      }
+    },
+    {
+      "route": "/groomers/quebec/chicoutimi/amour-and-betes-chicoutimi-qc-e43138f4/",
+      "businessName": "Amour & Bêtes",
+      "city": "Chicoutimi",
+      "originalWebsite": "",
+      "decision": "noindex",
+      "reasonCode": "no_verified_first_party_menu",
+      "reason": "Public source discovery did not establish a matching, accessible first-party grooming menu with enough useful business-specific facts.",
+      "sourcePages": [],
+      "crawlResults": [],
+      "discovery": "Actual public business-name/location search attempted. A search attempt does not establish complete result coverage or a verified source. Social snippets and copied directories were not used as verified enrichment.",
+      "discoveryCoverage": {
+        "initialNameLocationSearchAttempted": true,
+        "initialLinkedSourceCrawlAttempted": false,
+        "followupSearchQueries": [],
+        "candidateCrawlAttempted": false
+      }
+    },
+    {
+      "route": "/groomers/quebec/chicoutimi/toilettage-mb-chicoutimi-qc-25088c41/",
+      "businessName": "Toilettage MB",
+      "city": "Chicoutimi",
+      "originalWebsite": "https://www.facebook.com/profile.php?id=61567388303427",
+      "decision": "noindex",
+      "reasonCode": "no_verified_first_party_menu",
+      "reason": "Only a social, directory or search link was present/discovered; no accessible matching first-party menu was verified. Snippets and copied directory records were not used to promote the profile.",
+      "sourcePages": [],
+      "crawlResults": [],
+      "discovery": "Actual public business-name/location search attempted. A search attempt does not establish complete result coverage or a verified source. Social snippets and copied directories were not used as verified enrichment.",
+      "discoveryCoverage": {
+        "initialNameLocationSearchAttempted": true,
+        "initialLinkedSourceCrawlAttempted": false,
+        "followupSearchQueries": [],
+        "candidateCrawlAttempted": false
+      }
+    },
+    {
+      "route": "/groomers/quebec/desbiens/toilettage-chez-k-wouaf-toutou-desbiens-qc-4a87f208/",
+      "businessName": "Toilettage chez k'wouaf toutou",
+      "city": "Desbiens",
+      "originalWebsite": "",
+      "decision": "noindex",
+      "reasonCode": "identity_only_source",
+      "reason": "Municipal record confirms business and contact details but provides no detailed grooming menu.",
+      "sourcePages": [
+        "https://www.ville.desbiens.qc.ca/organismes-et-commerces/toilettage-chez-kwouaf-toutou",
+        "https://www.ville.desbiens.qc.ca/equipe-administrative",
+        "https://www.ville.desbiens.qc.ca/services-aux-citoyens"
+      ],
+      "crawlResults": [
+        {
+          "requested_url": "https://www.ville.desbiens.qc.ca/organismes-et-commerces/toilettage-chez-kwouaf-toutou",
+          "url": "https://www.ville.desbiens.qc.ca/organismes-et-commerces/toilettage-chez-kwouaf-toutou",
+          "success": true,
+          "status_code": 200,
+          "error_message": ""
+        },
+        {
+          "requested_url": "https://www.ville.desbiens.qc.ca/equipe-administrative",
+          "url": "https://www.ville.desbiens.qc.ca/equipe-administrative",
+          "success": true,
+          "status_code": 200,
+          "error_message": ""
+        },
+        {
+          "requested_url": "https://www.ville.desbiens.qc.ca/services-aux-citoyens",
+          "url": "https://www.ville.desbiens.qc.ca/services-aux-citoyens",
+          "success": true,
+          "status_code": 200,
+          "error_message": ""
+        }
+      ],
+      "discovery": "Actual public business-name/location search attempted. A search attempt does not establish complete result coverage or a verified source. Social snippets and copied directories were not used as verified enrichment.",
+      "discoveryCoverage": {
+        "initialNameLocationSearchAttempted": true,
+        "initialLinkedSourceCrawlAttempted": false,
+        "followupSearchQueries": [],
+        "candidateCrawlAttempted": true
+      }
+    },
+    {
+      "route": "/groomers/quebec/east-angus/toilettage-les-pattes-d-or-east-angus-qc-b87a48a3/",
+      "businessName": "Toilettage les pattes d’or",
+      "city": "East Angus",
+      "originalWebsite": "",
+      "decision": "noindex",
+      "reasonCode": "no_verified_first_party_menu",
+      "reason": "Public source discovery did not establish a matching, accessible first-party grooming menu with enough useful business-specific facts.",
+      "sourcePages": [],
+      "crawlResults": [],
+      "discovery": "Actual public business-name/location search attempted. A search attempt does not establish complete result coverage or a verified source. Social snippets and copied directories were not used as verified enrichment.",
+      "discoveryCoverage": {
+        "initialNameLocationSearchAttempted": true,
+        "initialLinkedSourceCrawlAttempted": false,
+        "followupSearchQueries": [],
+        "candidateCrawlAttempted": false
+      }
+    },
+    {
+      "route": "/groomers/quebec/gatineau/toilettage-chez-guylaine-gatineau-qc-cc60b6be/",
+      "businessName": "Toilettage Chez Guylaine",
+      "city": "Gatineau",
+      "originalWebsite": "http://toilettagechezguylaine.ca/",
+      "decision": "noindex",
+      "reasonCode": "official_site_unavailable",
+      "reason": "Linked site returned HTTP 409; no usable matching official service content was verified.",
+      "sourcePages": [],
+      "crawlResults": [
+        {
+          "requested_url": "http://toilettagechezguylaine.ca/",
+          "url": "http://toilettagechezguylaine.ca/",
+          "success": true,
+          "status_code": 409,
+          "error_message": ""
+        }
+      ],
+      "discovery": "Actual public business-name/location search attempted. A search attempt does not establish complete result coverage or a verified source. Social snippets and copied directories were not used as verified enrichment.",
+      "discoveryCoverage": {
+        "initialNameLocationSearchAttempted": true,
+        "initialLinkedSourceCrawlAttempted": false,
+        "followupSearchQueries": [],
+        "candidateCrawlAttempted": true
+      }
+    },
+    {
+      "route": "/groomers/quebec/granby/inactif-granby-qc-0efff636/",
+      "businessName": "Inactif",
+      "city": "Granby",
+      "originalWebsite": "",
+      "decision": "noindex",
+      "reasonCode": "identity_insufficient",
+      "reason": "The initial name Inactif is not a distinctive business identity. A phone search surfaced ManJo toilettage et massothérapie/ManJo Salon de toilettage at the same street in Facebook and map-directory snippets, but current identity, activity and a substantive service menu were not verified. No name correction or promotion.",
+      "sourcePages": [],
+      "crawlResults": [],
+      "discovery": "Initial local identity assessment only because the listing name was not distinctive; followed by an actual phone-based public source search. Search results are discovery leads, not verified business facts.",
+      "discoveryCoverage": {
+        "initialNameLocationSearchAttempted": false,
+        "initialLinkedSourceCrawlAttempted": false,
+        "followupSearchQueries": [
+          "\"450-204-6242\" toilettage",
+          "\"ManJo\" \"toilettage\" Granby site officiel"
+        ],
+        "candidateCrawlAttempted": false
+      },
+      "unverifiedDiscoveryCandidates": [
+        "https://www.facebook.com/p/ManJo-toilettage-et-massoth%C3%A9rapie-100063644796180/",
+        "https://ca.maptons.com/p/2117854072"
+      ]
+    },
+    {
+      "route": "/groomers/quebec/granby/toilettage-doux-pitous-granby-qc-526de843/",
+      "businessName": "Toilettage Doux Pitous",
+      "city": "Granby",
+      "originalWebsite": "",
+      "decision": "noindex",
+      "reasonCode": "no_verified_first_party_menu",
+      "reason": "Public source discovery did not establish a matching, accessible first-party grooming menu with enough useful business-specific facts.",
+      "sourcePages": [],
+      "crawlResults": [],
+      "discovery": "Actual public business-name/location search attempted. A search attempt does not establish complete result coverage or a verified source. Social snippets and copied directories were not used as verified enrichment.",
+      "discoveryCoverage": {
+        "initialNameLocationSearchAttempted": true,
+        "initialLinkedSourceCrawlAttempted": false,
+        "followupSearchQueries": [],
+        "candidateCrawlAttempted": false
+      }
+    },
+    {
+      "route": "/groomers/quebec/grande-riviere/salon-toilettage-chez-pounky-grande-riviere-qc-6bca0484/",
+      "businessName": "Salon Toilettage Chez Pounky",
+      "city": "Grande-Rivière",
+      "originalWebsite": "",
+      "decision": "noindex",
+      "reasonCode": "no_verified_first_party_menu",
+      "reason": "Public source discovery did not establish a matching, accessible first-party grooming menu with enough useful business-specific facts.",
+      "sourcePages": [],
+      "crawlResults": [],
+      "discovery": "Actual public business-name/location search attempted. A search attempt does not establish complete result coverage or a verified source. Social snippets and copied directories were not used as verified enrichment.",
+      "discoveryCoverage": {
+        "initialNameLocationSearchAttempted": true,
+        "initialLinkedSourceCrawlAttempted": false,
+        "followupSearchQueries": [],
+        "candidateCrawlAttempted": false
+      }
+    },
+    {
+      "route": "/groomers/quebec/herouxville/toilettage-sabrina-herouxville-qc-8fa31efc/",
+      "businessName": "Toilettage Sabrina",
+      "city": "Hérouxville",
+      "originalWebsite": "https://www.facebook.com/Toilettage-Sabrina-1159553597394057/",
+      "decision": "noindex",
+      "reasonCode": "no_verified_first_party_menu",
+      "reason": "Only a social, directory or search link was present/discovered; no accessible matching first-party menu was verified. Snippets and copied directory records were not used to promote the profile.",
+      "sourcePages": [],
+      "crawlResults": [],
+      "discovery": "Actual public business-name/location search attempted. A search attempt does not establish complete result coverage or a verified source. Social snippets and copied directories were not used as verified enrichment.",
+      "discoveryCoverage": {
+        "initialNameLocationSearchAttempted": true,
+        "initialLinkedSourceCrawlAttempted": false,
+        "followupSearchQueries": [],
+        "candidateCrawlAttempted": false
+      }
+    },
+    {
+      "route": "/groomers/quebec/la-baie/toilettage-mousso-poils-la-baie-qc-f5033630/",
+      "businessName": "Toilettage MoussO'Poils",
+      "city": "La Baie",
+      "originalWebsite": "https://www.facebook.com/moussopoils",
+      "decision": "noindex",
+      "reasonCode": "no_verified_first_party_menu",
+      "reason": "Only a social, directory or search link was present/discovered; no accessible matching first-party menu was verified. Snippets and copied directory records were not used to promote the profile.",
+      "sourcePages": [],
+      "crawlResults": [],
+      "discovery": "Actual public business-name/location search attempted. A search attempt does not establish complete result coverage or a verified source. Social snippets and copied directories were not used as verified enrichment.",
+      "discoveryCoverage": {
+        "initialNameLocationSearchAttempted": true,
+        "initialLinkedSourceCrawlAttempted": false,
+        "followupSearchQueries": [],
+        "candidateCrawlAttempted": false
+      }
+    },
+    {
+      "route": "/groomers/quebec/la-sarre/bazi-muzo-la-sarre-qc-e90101bb/",
+      "businessName": "Bazi Muzo",
+      "city": "La Sarre",
+      "originalWebsite": "",
+      "decision": "noindex",
+      "reasonCode": "no_verified_first_party_menu",
+      "reason": "Public source discovery did not establish a matching, accessible first-party grooming menu with enough useful business-specific facts.",
+      "sourcePages": [],
+      "crawlResults": [],
+      "discovery": "Actual public business-name/location search attempted. A search attempt does not establish complete result coverage or a verified source. Social snippets and copied directories were not used as verified enrichment.",
+      "discoveryCoverage": {
+        "initialNameLocationSearchAttempted": true,
+        "initialLinkedSourceCrawlAttempted": false,
+        "followupSearchQueries": [],
+        "candidateCrawlAttempted": false
+      }
+    },
+    {
+      "route": "/groomers/quebec/la-sarre/le-carrefour-canin-la-sarre-qc-d356131f/",
+      "businessName": "Le Carrefour Canin",
+      "city": "La Sarre",
+      "originalWebsite": "",
+      "decision": "noindex",
+      "reasonCode": "no_verified_first_party_menu",
+      "reason": "Public source discovery did not establish a matching, accessible first-party grooming menu with enough useful business-specific facts.",
+      "sourcePages": [],
+      "crawlResults": [],
+      "discovery": "Actual public business-name/location search attempted. A search attempt does not establish complete result coverage or a verified source. Social snippets and copied directories were not used as verified enrichment.",
+      "discoveryCoverage": {
+        "initialNameLocationSearchAttempted": true,
+        "initialLinkedSourceCrawlAttempted": false,
+        "followupSearchQueries": [],
+        "candidateCrawlAttempted": false
+      }
+    },
+    {
+      "route": "/groomers/quebec/mascouche/toilettage-aux-petites-moustaches-mascouche-qc-1bd240cc/",
+      "businessName": "Toilettage aux petites moustaches",
+      "city": "Mascouche",
+      "originalWebsite": "",
+      "decision": "noindex",
+      "reasonCode": "no_verified_first_party_menu",
+      "reason": "Public source discovery did not establish a matching, accessible first-party grooming menu with enough useful business-specific facts.",
+      "sourcePages": [],
+      "crawlResults": [],
+      "discovery": "Actual public business-name/location search attempted. A search attempt does not establish complete result coverage or a verified source. Social snippets and copied directories were not used as verified enrichment.",
+      "discoveryCoverage": {
+        "initialNameLocationSearchAttempted": true,
+        "initialLinkedSourceCrawlAttempted": false,
+        "followupSearchQueries": [],
+        "candidateCrawlAttempted": false
+      }
+    },
+    {
+      "route": "/groomers/quebec/mont-tremblant/tonte-toilettage-canin-mont-tremblant-qc-5396a388/",
+      "businessName": "Tonte Toilettage Canin",
+      "city": "Mont-Tremblant",
+      "originalWebsite": "",
+      "decision": "noindex",
+      "reasonCode": "no_verified_first_party_menu",
+      "reason": "Public source discovery did not establish a matching, accessible first-party grooming menu with enough useful business-specific facts.",
+      "sourcePages": [],
+      "crawlResults": [],
+      "discovery": "Actual public business-name/location search attempted. A search attempt does not establish complete result coverage or a verified source. Social snippets and copied directories were not used as verified enrichment.",
+      "discoveryCoverage": {
+        "initialNameLocationSearchAttempted": true,
+        "initialLinkedSourceCrawlAttempted": false,
+        "followupSearchQueries": [],
+        "candidateCrawlAttempted": false
+      }
+    },
+    {
+      "route": "/groomers/quebec/napierville/studio-poils-et-bulles-toilettage-napierville-napierville-qc-d3a4ae60/",
+      "businessName": "Studio Poils et Bulles(Toilettage Napierville)",
+      "city": "Napierville",
+      "originalWebsite": "https://www.facebook.com/profile.php?id=100087135222768&mibextid=LQQJ4d",
+      "decision": "noindex",
+      "reasonCode": "no_verified_first_party_menu",
+      "reason": "Only a social, directory or search link was present/discovered; no accessible matching first-party menu was verified. Snippets and copied directory records were not used to promote the profile.",
+      "sourcePages": [],
+      "crawlResults": [],
+      "discovery": "Actual public business-name/location search attempted. A search attempt does not establish complete result coverage or a verified source. Social snippets and copied directories were not used as verified enrichment.",
+      "discoveryCoverage": {
+        "initialNameLocationSearchAttempted": true,
+        "initialLinkedSourceCrawlAttempted": false,
+        "followupSearchQueries": [],
+        "candidateCrawlAttempted": false
+      }
+    },
+    {
+      "route": "/groomers/quebec/plessisville/dube-yvon-plessisville-qc-ddd75f7e/",
+      "businessName": "Dubé Yvon",
+      "city": "Plessisville",
+      "originalWebsite": "",
+      "decision": "noindex",
+      "reasonCode": "no_verified_first_party_menu",
+      "reason": "Public source discovery did not establish a matching, accessible first-party grooming menu with enough useful business-specific facts.",
+      "sourcePages": [],
+      "crawlResults": [],
+      "discovery": "Actual public business-name/location search attempted. A search attempt does not establish complete result coverage or a verified source. Social snippets and copied directories were not used as verified enrichment.",
+      "discoveryCoverage": {
+        "initialNameLocationSearchAttempted": true,
+        "initialLinkedSourceCrawlAttempted": false,
+        "followupSearchQueries": [],
+        "candidateCrawlAttempted": false
+      }
+    },
+    {
+      "route": "/groomers/quebec/quebec-city/toilettage-toubo-toubelle-quebec-city-qc-e4290c05/",
+      "businessName": "Toilettage Toubo Toubelle",
+      "city": "Québec City",
+      "originalWebsite": "",
+      "decision": "noindex",
+      "reasonCode": "no_verified_first_party_menu",
+      "reason": "Public source discovery did not establish a matching, accessible first-party grooming menu with enough useful business-specific facts.",
+      "sourcePages": [],
+      "crawlResults": [],
+      "discovery": "Actual public business-name/location search attempted. A search attempt does not establish complete result coverage or a verified source. Social snippets and copied directories were not used as verified enrichment.",
+      "discoveryCoverage": {
+        "initialNameLocationSearchAttempted": true,
+        "initialLinkedSourceCrawlAttempted": false,
+        "followupSearchQueries": [],
+        "candidateCrawlAttempted": false
+      }
+    },
+    {
+      "route": "/groomers/quebec/roberval/le-paradis-de-vos-pitous-roberval-qc-facc59a6/",
+      "businessName": "Le Paradis de Vos Pitous",
+      "city": "Roberval",
+      "originalWebsite": "",
+      "decision": "noindex",
+      "reasonCode": "no_verified_first_party_menu",
+      "reason": "Public source discovery did not establish a matching, accessible first-party grooming menu with enough useful business-specific facts.",
+      "sourcePages": [],
+      "crawlResults": [],
+      "discovery": "Actual public business-name/location search attempted. A search attempt does not establish complete result coverage or a verified source. Social snippets and copied directories were not used as verified enrichment.",
+      "discoveryCoverage": {
+        "initialNameLocationSearchAttempted": true,
+        "initialLinkedSourceCrawlAttempted": false,
+        "followupSearchQueries": [],
+        "candidateCrawlAttempted": false
+      }
+    },
+    {
+      "route": "/groomers/quebec/roberval/salon-de-toilettage-aux-pattes-enchantees-roberval-qc-52462001/",
+      "businessName": "Salon de toilettage - Aux Pattes Enchantées",
+      "city": "Roberval",
+      "originalWebsite": "",
+      "decision": "noindex",
+      "reasonCode": "no_verified_first_party_menu",
+      "reason": "Public source discovery did not establish a matching, accessible first-party grooming menu with enough useful business-specific facts.",
+      "sourcePages": [],
+      "crawlResults": [],
+      "discovery": "Actual public business-name/location search attempted. A search attempt does not establish complete result coverage or a verified source. Social snippets and copied directories were not used as verified enrichment.",
+      "discoveryCoverage": {
+        "initialNameLocationSearchAttempted": true,
+        "initialLinkedSourceCrawlAttempted": false,
+        "followupSearchQueries": [],
+        "candidateCrawlAttempted": false
+      }
+    },
+    {
+      "route": "/groomers/quebec/rouyn-noranda/o-chien-malin-rouyn-noranda-qc-3e2600cb/",
+      "businessName": "Ô Chien Malin",
+      "city": "Rouyn-Noranda",
+      "originalWebsite": "https://m.facebook.com/%C3%94-Chien-Malin-106012432022214/?ref=bookmarks",
+      "decision": "noindex",
+      "reasonCode": "no_verified_first_party_menu",
+      "reason": "Only a social, directory or search link was present/discovered; no accessible matching first-party menu was verified. Snippets and copied directory records were not used to promote the profile.",
+      "sourcePages": [],
+      "crawlResults": [],
+      "discovery": "Actual public business-name/location search attempted. A search attempt does not establish complete result coverage or a verified source. Social snippets and copied directories were not used as verified enrichment.",
+      "discoveryCoverage": {
+        "initialNameLocationSearchAttempted": true,
+        "initialLinkedSourceCrawlAttempted": false,
+        "followupSearchQueries": [],
+        "candidateCrawlAttempted": false
+      }
+    },
+    {
+      "route": "/groomers/quebec/rouyn-noranda/toilettage-amethyste-rouyn-noranda-qc-94ab9b99/",
+      "businessName": "Toilettage Améthyste",
+      "city": "Rouyn-Noranda",
+      "originalWebsite": "",
+      "decision": "noindex",
+      "reasonCode": "no_verified_first_party_menu",
+      "reason": "Public source discovery did not establish a matching, accessible first-party grooming menu with enough useful business-specific facts.",
+      "sourcePages": [],
+      "crawlResults": [],
+      "discovery": "Actual public business-name/location search attempted. A search attempt does not establish complete result coverage or a verified source. Social snippets and copied directories were not used as verified enrichment.",
+      "discoveryCoverage": {
+        "initialNameLocationSearchAttempted": true,
+        "initialLinkedSourceCrawlAttempted": false,
+        "followupSearchQueries": [],
+        "candidateCrawlAttempted": false
+      }
+    },
+    {
+      "route": "/groomers/quebec/roxton-pond/toilettage-jl-roxton-pond-qc-153dfa37/",
+      "businessName": "Toilettage JL",
+      "city": "Roxton Pond",
+      "originalWebsite": "https://www.facebook.com/profile.php?id=61554143078069&mibextid=LQQJ4d",
+      "decision": "noindex",
+      "reasonCode": "no_verified_first_party_menu",
+      "reason": "Only a social, directory or search link was present/discovered; no accessible matching first-party menu was verified. Snippets and copied directory records were not used to promote the profile.",
+      "sourcePages": [],
+      "crawlResults": [],
+      "discovery": "Actual public business-name/location search attempted. A search attempt does not establish complete result coverage or a verified source. Social snippets and copied directories were not used as verified enrichment.",
+      "discoveryCoverage": {
+        "initialNameLocationSearchAttempted": true,
+        "initialLinkedSourceCrawlAttempted": false,
+        "followupSearchQueries": [],
+        "candidateCrawlAttempted": false
+      }
+    },
+    {
+      "route": "/groomers/quebec/sacre-coeur/salon-toilettage-passion-canine-sacre-coeur-qc-e0a50e3e/",
+      "businessName": "Salon toilettage Passion Canine",
+      "city": "Sacré-Coeur",
+      "originalWebsite": "",
+      "decision": "noindex",
+      "reasonCode": "no_verified_first_party_menu",
+      "reason": "Public source discovery did not establish a matching, accessible first-party grooming menu with enough useful business-specific facts.",
+      "sourcePages": [],
+      "crawlResults": [],
+      "discovery": "Actual public business-name/location search attempted. A search attempt does not establish complete result coverage or a verified source. Social snippets and copied directories were not used as verified enrichment.",
+      "discoveryCoverage": {
+        "initialNameLocationSearchAttempted": true,
+        "initialLinkedSourceCrawlAttempted": false,
+        "followupSearchQueries": [],
+        "candidateCrawlAttempted": false
+      }
+    },
+    {
+      "route": "/groomers/quebec/saint-basile/salon-de-toilettage-distingue-saint-basile-qc-b816ca8f/",
+      "businessName": "Salon De Toilettage Distingué",
+      "city": "Saint-Basile",
+      "originalWebsite": "",
+      "decision": "noindex",
+      "reasonCode": "insufficient_source_content",
+      "reason": "Public Planimo page exposes only the business name; no substantive matching service details were available.",
+      "sourcePages": [
+        "https://www.planimo.ca/salon-de-toilettage-distingue/"
+      ],
+      "crawlResults": [
+        {
+          "requested_url": "https://www.planimo.ca/salon-de-toilettage-distingue/",
+          "url": "https://www.planimo.ca/salon-de-toilettage-distingue/",
+          "success": true,
+          "status_code": 200,
+          "error_message": ""
+        }
+      ],
+      "discovery": "Actual public business-name/location search attempted. A search attempt does not establish complete result coverage or a verified source. Social snippets and copied directories were not used as verified enrichment.",
+      "discoveryCoverage": {
+        "initialNameLocationSearchAttempted": true,
+        "initialLinkedSourceCrawlAttempted": false,
+        "followupSearchQueries": [],
+        "candidateCrawlAttempted": true
+      }
+    },
+    {
+      "route": "/groomers/quebec/saint-cyrille-de-wendover/loup-prestige-saint-cyrille-de-wendover-qc-0af91922/",
+      "businessName": "Loup Prestige",
+      "city": "Saint-Cyrille-de-Wendover",
+      "originalWebsite": "https://www.facebook.com/share/1Axa4WTxoD/",
+      "decision": "noindex",
+      "reasonCode": "no_verified_first_party_menu",
+      "reason": "Only a social, directory or search link was present/discovered; no accessible matching first-party menu was verified. Snippets and copied directory records were not used to promote the profile.",
+      "sourcePages": [],
+      "crawlResults": [],
+      "discovery": "Actual public business-name/location search attempted. A search attempt does not establish complete result coverage or a verified source. Social snippets and copied directories were not used as verified enrichment.",
+      "discoveryCoverage": {
+        "initialNameLocationSearchAttempted": true,
+        "initialLinkedSourceCrawlAttempted": false,
+        "followupSearchQueries": [],
+        "candidateCrawlAttempted": false
+      }
+    },
+    {
+      "route": "/groomers/quebec/saint-felix-de-valois/toilettage-chic-poil-saint-felix-de-valois-qc-e34c88bc/",
+      "businessName": "Toilettage Chic Poil",
+      "city": "Saint-Félix-de-Valois",
+      "originalWebsite": "",
+      "decision": "noindex",
+      "reasonCode": "no_verified_first_party_menu",
+      "reason": "Public source discovery did not establish a matching, accessible first-party grooming menu with enough useful business-specific facts.",
+      "sourcePages": [],
+      "crawlResults": [],
+      "discovery": "Actual public business-name/location search attempted. A search attempt does not establish complete result coverage or a verified source. Social snippets and copied directories were not used as verified enrichment.",
+      "discoveryCoverage": {
+        "initialNameLocationSearchAttempted": true,
+        "initialLinkedSourceCrawlAttempted": false,
+        "followupSearchQueries": [],
+        "candidateCrawlAttempted": false
+      }
+    },
+    {
+      "route": "/groomers/quebec/saint-georges/catherine-roy-toilettage-saint-georges-qc-ec14dc7d/",
+      "businessName": "Catherine Roy Toilettage",
+      "city": "Saint-Georges",
+      "originalWebsite": "",
+      "decision": "noindex",
+      "reasonCode": "no_verified_first_party_menu",
+      "reason": "Public source discovery did not establish a matching, accessible first-party grooming menu with enough useful business-specific facts.",
+      "sourcePages": [],
+      "crawlResults": [],
+      "discovery": "Actual public business-name/location search attempted. A search attempt does not establish complete result coverage or a verified source. Social snippets and copied directories were not used as verified enrichment.",
+      "discoveryCoverage": {
+        "initialNameLocationSearchAttempted": true,
+        "initialLinkedSourceCrawlAttempted": false,
+        "followupSearchQueries": [],
+        "candidateCrawlAttempted": false
+      }
+    },
+    {
+      "route": "/groomers/quebec/saint-hippolyte/toilettage-magoo-saint-hippolyte-qc-7d5e84ed/",
+      "businessName": "Toilettage Magoo",
+      "city": "Saint-Hippolyte",
+      "originalWebsite": "",
+      "decision": "noindex",
+      "reasonCode": "no_verified_first_party_menu",
+      "reason": "Public source discovery did not establish a matching, accessible first-party grooming menu with enough useful business-specific facts.",
+      "sourcePages": [],
+      "crawlResults": [],
+      "discovery": "Actual public business-name/location search attempted. A search attempt does not establish complete result coverage or a verified source. Social snippets and copied directories were not used as verified enrichment.",
+      "discoveryCoverage": {
+        "initialNameLocationSearchAttempted": true,
+        "initialLinkedSourceCrawlAttempted": false,
+        "followupSearchQueries": [],
+        "candidateCrawlAttempted": false
+      }
+    },
+    {
+      "route": "/groomers/quebec/saint-ludger/salon-de-toilettage-et-education-canine-delsy-saint-ludger-qc-62459984/",
+      "businessName": "Salon de toilettage et éducation canine Delsy",
+      "city": "Saint-Ludger",
+      "originalWebsite": "",
+      "decision": "noindex",
+      "reasonCode": "no_verified_first_party_menu",
+      "reason": "Public source discovery did not establish a matching, accessible first-party grooming menu with enough useful business-specific facts.",
+      "sourcePages": [],
+      "crawlResults": [],
+      "discovery": "Actual public business-name/location search attempted. A search attempt does not establish complete result coverage or a verified source. Social snippets and copied directories were not used as verified enrichment.",
+      "discoveryCoverage": {
+        "initialNameLocationSearchAttempted": true,
+        "initialLinkedSourceCrawlAttempted": false,
+        "followupSearchQueries": [],
+        "candidateCrawlAttempted": false
+      }
+    },
+    {
+      "route": "/groomers/quebec/saint-martin/salon-de-tonte-bio-canin-saint-martin-qc-bef2208c/",
+      "businessName": "Salon de tonte Bio Canin",
+      "city": "Saint-Martin",
+      "originalWebsite": "",
+      "decision": "noindex",
+      "reasonCode": "no_verified_first_party_menu",
+      "reason": "Public source discovery did not establish a matching, accessible first-party grooming menu with enough useful business-specific facts.",
+      "sourcePages": [],
+      "crawlResults": [],
+      "discovery": "Actual public business-name/location search attempted. A search attempt does not establish complete result coverage or a verified source. Social snippets and copied directories were not used as verified enrichment.",
+      "discoveryCoverage": {
+        "initialNameLocationSearchAttempted": true,
+        "initialLinkedSourceCrawlAttempted": false,
+        "followupSearchQueries": [],
+        "candidateCrawlAttempted": false
+      }
+    },
+    {
+      "route": "/groomers/quebec/saint-nicephore/salon-de-toilettage-les-depeignes-saint-nicephore-qc-83bfcad8/",
+      "businessName": "Salon de toilettage Les Dépeignés",
+      "city": "Saint-Nicéphore",
+      "originalWebsite": "",
+      "decision": "noindex",
+      "reasonCode": "no_verified_first_party_menu",
+      "reason": "Public source discovery did not establish a matching, accessible first-party grooming menu with enough useful business-specific facts.",
+      "sourcePages": [],
+      "crawlResults": [],
+      "discovery": "Actual public business-name/location search attempted. A search attempt does not establish complete result coverage or a verified source. Social snippets and copied directories were not used as verified enrichment.",
+      "discoveryCoverage": {
+        "initialNameLocationSearchAttempted": true,
+        "initialLinkedSourceCrawlAttempted": false,
+        "followupSearchQueries": [],
+        "candidateCrawlAttempted": false
+      }
+    },
+    {
+      "route": "/groomers/quebec/saint-wenceslas/salon-de-beaute-animours-saint-wenceslas-qc-24f59131/",
+      "businessName": "Salon De Beauté Animours",
+      "city": "Saint-Wenceslas",
+      "originalWebsite": "",
+      "decision": "noindex",
+      "reasonCode": "identity_only_source",
+      "reason": "Municipal record confirms name and contacts but does not provide a detailed grooming menu.",
+      "sourcePages": [
+        "https://www.municipalitestwenceslas.com/fr/repertoire/3523/salon-de-beaute-animours",
+        "https://www.municipalitestwenceslas.com/fr/loisirs-et-culture/loisirs-sports-et-plein-air/parcs-et-espaces-verts",
+        "https://www.municipalitestwenceslas.com/fr/municipalite/equipe-municipale"
+      ],
+      "crawlResults": [
+        {
+          "requested_url": "https://www.municipalitestwenceslas.com/fr/repertoire/3523/salon-de-beaute-animours",
+          "url": "https://www.municipalitestwenceslas.com/fr/repertoire/3523/salon-de-beaute-animours",
+          "success": true,
+          "status_code": 200,
+          "error_message": ""
+        },
+        {
+          "requested_url": "https://www.municipalitestwenceslas.com/fr/loisirs-et-culture/loisirs-sports-et-plein-air/parcs-et-espaces-verts",
+          "url": "https://www.municipalitestwenceslas.com/fr/loisirs-et-culture/loisirs-sports-et-plein-air/parcs-et-espaces-verts",
+          "success": true,
+          "status_code": 200,
+          "error_message": ""
+        },
+        {
+          "requested_url": "https://www.municipalitestwenceslas.com/fr/municipalite/equipe-municipale",
+          "url": "https://www.municipalitestwenceslas.com/fr/municipalite/equipe-municipale",
+          "success": true,
+          "status_code": 200,
+          "error_message": ""
+        }
+      ],
+      "discovery": "Actual public business-name/location search attempted. A search attempt does not establish complete result coverage or a verified source. Social snippets and copied directories were not used as verified enrichment.",
+      "discoveryCoverage": {
+        "initialNameLocationSearchAttempted": true,
+        "initialLinkedSourceCrawlAttempted": false,
+        "followupSearchQueries": [],
+        "candidateCrawlAttempted": true
+      }
+    },
+    {
+      "route": "/groomers/quebec/sainte-anne-des-plaines/toilettage-lune-d-argent-sainte-anne-des-plaines-qc-eb7c1bca/",
+      "businessName": "Toilettage Lune d'argent",
+      "city": "Sainte-Anne-des-Plaines",
+      "originalWebsite": "",
+      "decision": "noindex",
+      "reasonCode": "no_verified_first_party_menu",
+      "reason": "Public source discovery did not establish a matching, accessible first-party grooming menu with enough useful business-specific facts.",
+      "sourcePages": [],
+      "crawlResults": [],
+      "discovery": "Actual public business-name/location search attempted. A search attempt does not establish complete result coverage or a verified source. Social snippets and copied directories were not used as verified enrichment.",
+      "discoveryCoverage": {
+        "initialNameLocationSearchAttempted": true,
+        "initialLinkedSourceCrawlAttempted": false,
+        "followupSearchQueries": [],
+        "candidateCrawlAttempted": false
+      }
+    },
+    {
+      "route": "/groomers/quebec/shawinigan/salon-wouf-shawinigan-qc-f7d94adc/",
+      "businessName": "Salon Wouf",
+      "city": "Shawinigan",
+      "originalWebsite": "",
+      "decision": "noindex",
+      "reasonCode": "no_verified_first_party_menu",
+      "reason": "Public source discovery did not establish a matching, accessible first-party grooming menu with enough useful business-specific facts.",
+      "sourcePages": [],
+      "crawlResults": [],
+      "discovery": "Actual public business-name/location search attempted. A search attempt does not establish complete result coverage or a verified source. Social snippets and copied directories were not used as verified enrichment.",
+      "discoveryCoverage": {
+        "initialNameLocationSearchAttempted": true,
+        "initialLinkedSourceCrawlAttempted": false,
+        "followupSearchQueries": [],
+        "candidateCrawlAttempted": false
+      }
+    },
+    {
+      "route": "/groomers/quebec/shawinigan-sud/toiletage-mobile-jocy-shawinigan-sud-qc-29d7e764/",
+      "businessName": "Toiletage Mobile Jocy",
+      "city": "Shawinigan-Sud",
+      "originalWebsite": "https://www.facebook.com/Toilettage-JOCY-164336370322807/",
+      "decision": "noindex",
+      "reasonCode": "no_verified_first_party_menu",
+      "reason": "Only a social, directory or search link was present/discovered; no accessible matching first-party menu was verified. Snippets and copied directory records were not used to promote the profile.",
+      "sourcePages": [],
+      "crawlResults": [],
+      "discovery": "Actual public business-name/location search attempted. A search attempt does not establish complete result coverage or a verified source. Social snippets and copied directories were not used as verified enrichment.",
+      "discoveryCoverage": {
+        "initialNameLocationSearchAttempted": true,
+        "initialLinkedSourceCrawlAttempted": false,
+        "followupSearchQueries": [],
+        "candidateCrawlAttempted": false
+      }
+    },
+    {
+      "route": "/groomers/quebec/shawinigan-sud/toilettage-truffes-et-moustaches-shawinigan-sud-qc-fd1899a3/",
+      "businessName": "Toilettage Truffes et Moustaches",
+      "city": "Shawinigan-Sud",
+      "originalWebsite": "",
+      "decision": "noindex",
+      "reasonCode": "no_verified_first_party_menu",
+      "reason": "Public source discovery did not establish a matching, accessible first-party grooming menu with enough useful business-specific facts.",
+      "sourcePages": [],
+      "crawlResults": [],
+      "discovery": "Actual public business-name/location search attempted. A search attempt does not establish complete result coverage or a verified source. Social snippets and copied directories were not used as verified enrichment.",
+      "discoveryCoverage": {
+        "initialNameLocationSearchAttempted": true,
+        "initialLinkedSourceCrawlAttempted": false,
+        "followupSearchQueries": [],
+        "candidateCrawlAttempted": false
+      }
+    },
+    {
+      "route": "/groomers/quebec/stoke/pension-toilettage-mon-fidele-compagnon-stoke-qc-3c662cde/",
+      "businessName": "Pension toilettage mon fidele compagnon",
+      "city": "Stoke",
+      "originalWebsite": "",
+      "decision": "noindex",
+      "reasonCode": "no_verified_first_party_menu",
+      "reason": "Public source discovery did not establish a matching, accessible first-party grooming menu with enough useful business-specific facts.",
+      "sourcePages": [],
+      "crawlResults": [],
+      "discovery": "Actual public business-name/location search attempted. A search attempt does not establish complete result coverage or a verified source. Social snippets and copied directories were not used as verified enrichment.",
+      "discoveryCoverage": {
+        "initialNameLocationSearchAttempted": true,
+        "initialLinkedSourceCrawlAttempted": false,
+        "followupSearchQueries": [],
+        "candidateCrawlAttempted": false
+      }
+    },
+    {
+      "route": "/groomers/quebec/temiscouata-sur-le-lac/garderie-les-amis-de-kimo-temiscouata-sur-le-lac-qc-199507ad/",
+      "businessName": "Garderie Les Amis De Kimo",
+      "city": "Témiscouata-sur-le-Lac",
+      "originalWebsite": "",
+      "decision": "noindex",
+      "reasonCode": "no_verified_first_party_menu",
+      "reason": "Public source discovery did not establish a matching, accessible first-party grooming menu with enough useful business-specific facts.",
+      "sourcePages": [],
+      "crawlResults": [],
+      "discovery": "Actual public business-name/location search attempted. A search attempt does not establish complete result coverage or a verified source. Social snippets and copied directories were not used as verified enrichment.",
+      "discoveryCoverage": {
+        "initialNameLocationSearchAttempted": true,
+        "initialLinkedSourceCrawlAttempted": false,
+        "followupSearchQueries": [],
+        "candidateCrawlAttempted": false
+      }
+    },
+    {
+      "route": "/groomers/quebec/thetford-mines/centre-canin-thetford-toilettage-educateur-canin-thetford-mines-qc-3f9c5518/",
+      "businessName": "Centre Canin Thetford | Toilettage, éducateur canin",
+      "city": "Thetford Mines",
+      "originalWebsite": "",
+      "decision": "noindex",
+      "reasonCode": "no_verified_first_party_menu",
+      "reason": "Public source discovery did not establish a matching, accessible first-party grooming menu with enough useful business-specific facts.",
+      "sourcePages": [],
+      "crawlResults": [],
+      "discovery": "Actual public business-name/location search attempted. A search attempt does not establish complete result coverage or a verified source. Social snippets and copied directories were not used as verified enrichment.",
+      "discoveryCoverage": {
+        "initialNameLocationSearchAttempted": true,
+        "initialLinkedSourceCrawlAttempted": false,
+        "followupSearchQueries": [],
+        "candidateCrawlAttempted": false
+      }
+    },
+    {
+      "route": "/groomers/quebec/trois-pistoles/toilettage-coupe-o-poil-trois-pistoles-qc-80498ba9/",
+      "businessName": "toilettage coupe-ô-Poil",
+      "city": "Trois-Pistoles",
+      "originalWebsite": "",
+      "decision": "noindex",
+      "reasonCode": "no_verified_first_party_menu",
+      "reason": "Public source discovery did not establish a matching, accessible first-party grooming menu with enough useful business-specific facts.",
+      "sourcePages": [],
+      "crawlResults": [],
+      "discovery": "Actual public business-name/location search attempted. A search attempt does not establish complete result coverage or a verified source. Social snippets and copied directories were not used as verified enrichment.",
+      "discoveryCoverage": {
+        "initialNameLocationSearchAttempted": true,
+        "initialLinkedSourceCrawlAttempted": false,
+        "followupSearchQueries": [],
+        "candidateCrawlAttempted": false
+      }
+    },
+    {
+      "route": "/groomers/quebec/trois-rivieres/elegance-canine-and-feline-trois-rivieres-qc-502a624f/",
+      "businessName": "Élégance canine & féline",
+      "city": "Trois-Rivières",
+      "originalWebsite": "",
+      "decision": "noindex",
+      "reasonCode": "identity_mismatch",
+      "reason": "Discovered similarly named website uses euro pricing and does not verify the Trois-Rivières business contact/location; rejected.",
+      "sourcePages": [
+        "https://www.elegance-canine.com/a-propos-de-nous",
+        "https://www.elegance-canine.com/tarifs",
+        "https://www.elegance-canine.com/nos-services"
+      ],
+      "crawlResults": [
+        {
+          "requested_url": "https://www.elegance-canine.com/a-propos-de-nous",
+          "url": "https://www.elegance-canine.com/a-propos-de-nous",
+          "success": true,
+          "status_code": 200,
+          "error_message": ""
+        },
+        {
+          "requested_url": "https://www.elegance-canine.com/tarifs",
+          "url": "https://www.elegance-canine.com/tarifs",
+          "success": true,
+          "status_code": 200,
+          "error_message": ""
+        },
+        {
+          "requested_url": "https://www.elegance-canine.com/nos-services",
+          "url": "https://www.elegance-canine.com/nos-services",
+          "success": true,
+          "status_code": 200,
+          "error_message": ""
+        }
+      ],
+      "discovery": "Actual public business-name/location search attempted. A search attempt does not establish complete result coverage or a verified source. Social snippets and copied directories were not used as verified enrichment.",
+      "discoveryCoverage": {
+        "initialNameLocationSearchAttempted": true,
+        "initialLinkedSourceCrawlAttempted": false,
+        "followupSearchQueries": [],
+        "candidateCrawlAttempted": true
+      }
+    },
+    {
+      "route": "/groomers/quebec/trois-rivieres/toilettage-chez-emmanuelle-trois-rivieres-qc-3569c750/",
+      "businessName": "Toilettage chez Emmanuelle",
+      "city": "Trois-Rivières",
+      "originalWebsite": "https://www.facebook.com/profile.php?id=61556723807521&mibextid=ZbWKwL",
+      "decision": "noindex",
+      "reasonCode": "no_verified_first_party_menu",
+      "reason": "Only a social, directory or search link was present/discovered; no accessible matching first-party menu was verified. Snippets and copied directory records were not used to promote the profile.",
+      "sourcePages": [],
+      "crawlResults": [],
+      "discovery": "Actual public business-name/location search attempted. A search attempt does not establish complete result coverage or a verified source. Social snippets and copied directories were not used as verified enrichment.",
+      "discoveryCoverage": {
+        "initialNameLocationSearchAttempted": true,
+        "initialLinkedSourceCrawlAttempted": false,
+        "followupSearchQueries": [],
+        "candidateCrawlAttempted": false
+      }
+    },
+    {
+      "route": "/groomers/quebec/victoriaville/cath-pattes-victoriaville-qc-9a69cf9c/",
+      "businessName": "Cath pattes",
+      "city": "Victoriaville",
+      "originalWebsite": "",
+      "decision": "noindex",
+      "reasonCode": "no_verified_first_party_menu",
+      "reason": "Public source discovery did not establish a matching, accessible first-party grooming menu with enough useful business-specific facts.",
+      "sourcePages": [],
+      "crawlResults": [],
+      "discovery": "Actual public business-name/location search attempted. A search attempt does not establish complete result coverage or a verified source. Social snippets and copied directories were not used as verified enrichment.",
+      "discoveryCoverage": {
+        "initialNameLocationSearchAttempted": true,
+        "initialLinkedSourceCrawlAttempted": false,
+        "followupSearchQueries": [],
+        "candidateCrawlAttempted": false
+      }
+    },
+    {
+      "route": "/groomers/quebec/waterloo/toilettage-muzo-and-roba-waterloo-qc-5269e326/",
+      "businessName": "Toilettage MUZO & ROBA",
+      "city": "Waterloo",
+      "originalWebsite": "https://www.google.com/search?apps=ma%2Cyt&authuser=0&bih=797&biw=390&channel=iss&client=mobilesearchapp&cs=0&ctzn=America%2FToronto&gsawvi=1&hl=fr-CA&ie=UTF-8&ioshw=iPhone14%2C7&mat=Cc2ddGQl3Wj_ElYBTVDHnop9Jzc2rN7irF7Md_B8_1f_mbRaYwZfM_msy1C7HptwAZ4Xfm4RnAOiOU6NNE18gJ1w7Um4XAEX_ZnedL3HQcsgjrjmJ70q6wDVwZv6VUQZwg&ntyp=1&pbx=1&q=Toilettage+MUZO+%26+ROBA&rlz=1MDAPLA_frCA1038&source=mobilesearchapp&stick=H4sIAAAAAAAA_-NgU1IxqDBJTrZMMTcwMDM1Nk1MTTO3MqgwtUwzSUkyT000TzMyTkxexCoWkp-Zk1pSkpiequAbGuWvoKYQ5O_kCADbNaKBQQAAAA&v=399.2.845414227&ved=2ahUKEwiqlqy7usmRAxUJD1kFHXKENnIQ-MgIegQIFRAM&vpa=2&vse=1",
+      "decision": "noindex",
+      "reasonCode": "no_verified_first_party_menu",
+      "reason": "Only a social, directory or search link was present/discovered; no accessible matching first-party menu was verified. Snippets and copied directory records were not used to promote the profile.",
+      "sourcePages": [],
+      "crawlResults": [],
+      "discovery": "Actual public business-name/location search attempted. A search attempt does not establish complete result coverage or a verified source. Social snippets and copied directories were not used as verified enrichment.",
+      "discoveryCoverage": {
+        "initialNameLocationSearchAttempted": true,
+        "initialLinkedSourceCrawlAttempted": false,
+        "followupSearchQueries": [],
+        "candidateCrawlAttempted": false
+      }
+    }
+  ],
+  "crawlSummary": {
+    "profilesWithCandidateCrawls": 16,
+    "distinctRequestedUrls": 33,
+    "successfulCrawlResponses": 29,
+    "failedCrawlResponses": 4,
+    "rawCacheBytes": 14772826
+  },
+  "discoverySummary": {
+    "initialProfilesAssessed": 87,
+    "initialProfilesWithNameLocationSearches": 79,
+    "initialProfilesWithDirectLinkedSiteCrawlsWithoutSearch": 6,
+    "initialProfilesWithLocalIdentityAssessmentOnly": 2,
+    "initialUncrawledProfiles": 73,
+    "initialUncrawledProfilesWithNameLocationSearches": 71,
+    "initialUncrawledProfilesWithIdentityAssessmentOnly": 2,
+    "followupProfilesWithPhoneSearches": 8,
+    "followupAdditionalSearchQueries": 16,
+    "finalProfilesWithSomePublicWebSearch": 81,
+    "finalProfilesWithDirectCrawlWithoutSearch": 6,
+    "finalProfilesWithExternalDiscoveryAttempt": 87,
+    "finalProfilesWithCandidateCrawls": 16,
+    "interpretation": "Searches were bounded discovery attempts, not exhaustive investigations. A name/location query can produce sparse or irrelevant results; absence of a verified source is not proof that no useful source exists. Only verified matching source content can support a promotion."
+  },
+  "remainingDiscoveryOpportunities": [
+    "Verify the possible ManJo identity behind Inactif using current owner-provided or accessible first-party evidence.",
+    "Verify current identity, location and a detailed service menu for The Cat’s Tail; directory contact details alone are insufficient.",
+    "Seek an accessible current grooming menu for Cally’s Clippers and Kennels; the municipal description is broad and its website link is Facebook.",
+    "Revisit two failed linked-site crawls if the sources become accessible; crawler failure is not proof that the business site is permanently unavailable.",
+    "For social-only and sparse-result profiles, use accessible primary evidence or owner-submitted details through the existing correction process. No owner contact was sent."
+  ]
+}
