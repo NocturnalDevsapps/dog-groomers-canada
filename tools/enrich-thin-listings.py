@@ -30,6 +30,7 @@ from urllib.request import Request, urlopen
 
 ROOT = Path(__file__).resolve().parents[1]
 DEFAULT_OUTPUT = ROOT / "data" / "thin-listing-enrichment.json"
+EXCLUSIONS_FILE = ROOT / "data" / "listing-exclusions.json"
 USER_AGENT = "DogGroomersCanadaProfileResearch/1.0 (+https://doggroomerscanada.ca/editorial-policy/)"
 SOCIAL_OR_DIRECTORY_HOSTS = {
     "411sante.com",
@@ -499,7 +500,51 @@ def safe_url(value: str, base: str = "") -> str:
     return urlunparse((parsed.scheme, parsed.netloc, path, parsed.params, query, ""))
 
 
+def load_listing_exclusions() -> list[dict[str, Any]]:
+    # Required and fail closed, matching the publication gate in build-site.js.
+    raw = json.loads(EXCLUSIONS_FILE.read_text(encoding="utf-8"))
+    if raw.get("version") != 1 or not isinstance(raw.get("listings"), list):
+        raise ValueError("Invalid listing exclusions registry")
+    for entry in raw["listings"]:
+        fields = ("listingIds", "routes", "sourceIds", "websiteHosts", "phones", "nameAliases", "cityAliases")
+        if (not isinstance(entry, dict) or not all(entry.get(key) for key in ("name", "reason", "excludedAt"))
+            or not all(isinstance(entry.get(key), list) and all(isinstance(value, str) for value in entry[key]) for key in fields)):
+            raise ValueError("Invalid listing exclusion entry")
+    return raw["listings"]
+
+
+def listing_is_excluded(listing: dict[str, Any], exclusions: list[dict[str, Any]]) -> bool:
+    def identity(value: Any) -> str:
+        return re.sub(r"[^a-z0-9]", "", unicodedata.normalize("NFKD", str(value or "")).lower())
+
+    def phone(value: Any) -> str:
+        return re.sub(r"^1(?=\d{10}$)", "", re.sub(r"\D", "", str(value or "")))
+
+    def route(value: Any) -> str:
+        return urlparse(urljoin("https://doggroomerscanada.ca", str(value))).path.rstrip("/") + "/" if value else ""
+
+    path = route(listing.get("route") or listing.get("url"))
+    try:
+        host = (urlparse(listing.get("website", "")).hostname or "").lower().removeprefix("www.")
+    except ValueError:
+        host = ""
+    phones = [phone(listing.get(key)) for key in ("phone", "phoneRaw") if listing.get(key)]
+    source_ids = [str(value) for value in listing.get("sourceIds", [])]
+    source_ids.extend(str(listing[key]) for key in ("cid", "fid", "kgmid", "placeId") if listing.get(key))
+    return any(
+        str(listing.get("id", "")) in entry["listingIds"]
+        or (path and any(route(value) == path for value in entry["routes"]))
+        or any(value in entry["sourceIds"] for value in source_ids)
+        or (host and any(host == value or host.endswith("." + value) for value in entry["websiteHosts"]))
+        or any(value == phone(other) for value in phones for other in entry["phones"])
+        or (any(identity(value) == identity(listing.get("title") or listing.get("name")) for value in entry["nameAliases"])
+            and any(identity(value) == identity(listing.get("city")) for value in entry["cityAliases"]))
+        for entry in exclusions
+    )
+
+
 def load_existing(output: Path) -> dict[str, Any]:
+    exclusions = load_listing_exclusions()
     if not output.exists():
         return {}
     try:
@@ -511,7 +556,7 @@ def load_existing(output: Path) -> dict[str, Any]:
         return {}
     sanitized: dict[str, Any] = {}
     for route, entry in listings.items():
-        if not isinstance(entry, dict):
+        if not isinstance(entry, dict) or listing_is_excluded({**entry, "route": route}, exclusions):
             continue
         normalized = dict(entry)
         normalized["website"] = safe_url(normalized.get("website", ""))
@@ -549,6 +594,7 @@ def discover_targets(
     refresh_existing: bool = False,
 ) -> list[Target]:
     candidates: list[Target] = []
+    exclusions = load_listing_exclusions()
     for file in sorted((ROOT / "groomers").rglob("index.html")):
         html = file.read_text(encoding="utf-8")
         if scope == "sparse" and re.search(r'<meta\s+name="robots"\s+content="[^"]*noindex', html, re.I):
@@ -577,6 +623,8 @@ def discover_targets(
         address = normalize_text(re.sub(r"<[^>]+>", " ", address_match.group(1))) if address_match else ""
         category_match = re.search(r"<dt>Category</dt><dd>([\s\S]*?)</dd>", html, re.I)
         category = normalize_text(re.sub(r"<[^>]+>", " ", category_match.group(1))) if category_match else ""
+        if listing_is_excluded({"route": route, "name": parser.name, "website": website, "city": city}, exclusions):
+            continue
         candidates.append(Target(route=route, name=parser.name, website=website, city=city, address=address, category=category))
 
     host_counts = Counter(normalized_host(target.website) for target in candidates)
@@ -1007,6 +1055,9 @@ def parse_args() -> argparse.Namespace:
 
 
 def write_output(output: Path, enriched: dict[str, Any]) -> None:
+    exclusions = load_listing_exclusions()
+    enriched = {route: entry for route, entry in enriched.items()
+                if not listing_is_excluded({**entry, "route": route}, exclusions)}
     payload = {
         "generatedAt": date.today().isoformat(),
         "method": "Normalized factual signals from official business websites using direct HTML and Crawl4AI browser fallback; no marketing prose or price amounts are stored.",

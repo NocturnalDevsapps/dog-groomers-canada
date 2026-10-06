@@ -31,7 +31,7 @@ Generated profiles are visibly labelled as directory records. Profiles with norm
 
 Business-specific images render only when `imageRights` records owner permission, a reusable licence, or a public-domain basis. Public availability, attribution, and source links are not treated as permission. The current build displays the approved GroomArts Academy gallery and uses a site-owned placeholder elsewhere, with an authorization flow for businesses that want to submit photos.
 
-The current generated build includes 7,248 sitemap URLs and 5,646 indexable business profiles. Another 84 business profiles remain accessible on quality hold, and 3 legacy profile redirects remain noindex. The build also includes 1,807 profiles with rendered first-party website enrichment, 6 manually reviewed profiles, 133 dog grooming cost pages, and 8 grooming-tool pages. The cost pages use planning ranges and quote questions instead of fixed price claims, because real prices depend on dog size, coat condition, matting, handling, add-ons, mobile route needs, and local availability.
+The current generated build includes 7,247 sitemap URLs and 5,645 indexable business profiles. Another 84 business profiles remain accessible on quality hold, and 3 legacy profile redirects remain noindex. The build also includes 1,807 profiles with rendered first-party website enrichment, 6 manually reviewed profiles, 133 dog grooming cost pages, and 8 grooming-tool pages. The cost pages use planning ranges and quote questions instead of fixed price claims, because real prices depend on dog size, coat condition, matting, handling, add-ons, mobile route needs, and local availability.
 
 Before any major release, inspect Search Console indexing for the homepage, guide hub, tools hub, several city pages, and several guide articles. Preserve established URLs, canonicals, titles, and sitemap membership while improving original value and reader trust.
 
@@ -50,6 +50,14 @@ Apify Google Maps Scraper jJzJjRpnTviQKBwns - dog grooming only.csv
 ```
 
 Generated pages are written directly into this folder so GitHub Pages can serve the site without a build step.
+
+## Permanent listing exclusions
+
+`data/listing-exclusions.json` records businesses that must not appear in the directory. The build filters both CSV imports and manual submissions before enrichment and again after corrections. Matches use a listing ID, original route, source identifier, dedicated website domain (including subdomains), Canadian phone number, or an exact normalized business-name alias plus city. A changed scraper ID or URL does not bypass these other identities. Only record domains and phone numbers dedicated to the excluded business, not shared chain or booking-platform identities.
+
+The enrichment pipeline reads the same registry, skips excluded targets, and removes excluded cached records when loading or writing results. Missing or malformed exclusion data stops the build and enrichment. Keep the registry across future dataset replacements, and check new ingestion tools against it before publication. Record public business identities, the exclusion date and a concise reason; do not publish private request emails. Removing an exclusion requires an explicit decision to reinstate the business.
+
+Run `node --test tools/tests/listing-exclusions.test.js` and the Python regression suite after changing these safeguards.
 
 ## First-party profile enrichment
 

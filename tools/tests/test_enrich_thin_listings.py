@@ -3,6 +3,8 @@ import importlib.util
 import json
 import sys
 import unittest
+import tempfile
+from unittest.mock import patch
 from pathlib import Path
 
 
@@ -14,6 +16,51 @@ SPEC.loader.exec_module(MODULE)
 
 
 class EnrichmentSafeguardTests(unittest.TestCase):
+    def test_permanent_exclusions_share_import_identity_rules(self):
+        exclusions = MODULE.load_listing_exclusions()
+        cases = json.loads((Path(__file__).parent / "listing-exclusion-cases.json").read_text())
+        for case in cases:
+            with self.subTest(case=case["label"]):
+                self.assertEqual(MODULE.listing_is_excluded(case["listing"], exclusions), case["excluded"])
+
+    def test_excluded_cache_entries_cannot_be_loaded_or_written(self):
+        route = "/groomers/saskatchewan/regina/house-of-paws-pet-boutique-regina-sk-cb35cd80/"
+        entries = {route: {"website": "https://houseofpawsboutique.com/"},
+                   "/groomers/new-id/": {"website": "https://www.houseofpawsboutique.com/"},
+                   "/groomers/allowed/": {"website": "https://example.ca/", "sourcePages": ["https://example.ca/"]}}
+        with tempfile.TemporaryDirectory() as directory:
+            output = Path(directory) / "enrichment.json"
+            output.write_text(json.dumps({"listings": entries}))
+            self.assertEqual(set(MODULE.load_existing(output)), {"/groomers/allowed/"})
+            MODULE.write_output(output, entries)
+            self.assertEqual(set(json.loads(output.read_text())["listings"]), {"/groomers/allowed/"})
+
+    def test_exclusion_registry_missing_or_malformed_stops_enrichment(self):
+        with tempfile.TemporaryDirectory() as directory:
+            registry = Path(directory) / "registry.json"
+            with patch.object(MODULE, "EXCLUSIONS_FILE", registry):
+                with self.assertRaises(FileNotFoundError):
+                    MODULE.load_listing_exclusions()
+                registry.write_text('{"version":1,"listings":[{"name":"Invalid"}]}')
+                with self.assertRaises(ValueError):
+                    MODULE.load_listing_exclusions()
+
+    def test_discovery_skips_excluded_business_even_with_a_new_route(self):
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            fixtures = [
+                ("new-import", "New import title", "https://houseofpawsboutique.com/"),
+                ("renamed-route", "House of Paws Pet Boutique Inc.", "https://new-domain.ca/"),
+                ("allowed", "House of Hounds Dog Grooming", "https://example.ca/"),
+            ]
+            for slug, name, website in fixtures:
+                file = root / "groomers" / slug / "index.html"
+                file.parent.mkdir(parents=True)
+                file.write_text(f'<h1>{name}</h1><span>Regina, SK</span><a href="{website}">Visit Website</a>')
+            with patch.object(MODULE, "ROOT", root):
+                targets = MODULE.discover_targets({}, scope="all", refresh_existing=True)
+            self.assertEqual([target.route for target in targets], ["/groomers/allowed/"])
+
     def page(self, url, text, json_ld=None):
         return MODULE.Page(url=url, text=text, links=[], json_ld=json_ld or [])
 

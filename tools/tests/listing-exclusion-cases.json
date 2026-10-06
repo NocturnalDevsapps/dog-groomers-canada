@@ -1,0 +1,16 @@
+[
+  {"label":"original listing ID", "listing":{"id":"cb35cd80"}, "excluded":true},
+  {"label":"original URL with query", "listing":{"url":"https://doggroomerscanada.ca/groomers/saskatchewan/regina/house-of-paws-pet-boutique-regina-sk-cb35cd80/?ref=search"}, "excluded":true},
+  {"label":"new route with original Maps identity", "listing":{"url":"/groomers/new-import/", "placeId":"ChIJ0RJcWTqhHlMRrbdM6L9hfyc"}, "excluded":true},
+  {"label":"original CSV source identity", "listing":{"sourceIds":["2846100966385432493"]}, "excluded":true},
+  {"label":"renamed business on its official domain", "listing":{"title":"New import name", "website":"https://www.houseofpawsboutique.com/contact"}, "excluded":true},
+  {"label":"official domain subdomain", "listing":{"website":"https://shop.houseofpawsboutique.com/"}, "excluded":true},
+  {"label":"Canadian phone formatting", "listing":{"phone":"+1 (306) 537-7297"}, "excluded":true},
+  {"label":"changed ID and no contact fields", "listing":{"id":"new-id", "title":"HOUSE OF PAWS PET BOUTIQUE INC.", "city":"Régina"}, "excluded":true},
+  {"label":"short name alias", "listing":{"name":"House of Paws", "city":"Regina"}, "excluded":true},
+  {"label":"similar unrelated business", "listing":{"title":"House of Hounds Dog Grooming", "city":"Regina", "website":"https://example.ca"}, "excluded":false},
+  {"label":"same name in another city", "listing":{"title":"House of Paws", "city":"Toronto"}, "excluded":false},
+  {"label":"domain suffix collision", "listing":{"website":"https://otherhouseofpawsboutique.com/"}, "excluded":false},
+  {"label":"domain prefix collision", "listing":{"website":"https://houseofpawsboutique.com.example.ca/"}, "excluded":false},
+  {"label":"absent identity", "listing":{}, "excluded":false}
+]

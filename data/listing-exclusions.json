@@ -1,0 +1,18 @@
+{
+  "version": 1,
+  "listings": [
+    {
+      "name": "House of Paws Pet Boutique",
+      "city": "Regina",
+      "excludedAt": "2026-10-05",
+      "reason": "Business requested entire listing removal; pet retailer that does not provide grooming services.",
+      "listingIds": ["cb35cd80"],
+      "routes": ["/groomers/saskatchewan/regina/house-of-paws-pet-boutique-regina-sk-cb35cd80/"],
+      "sourceIds": ["2846100966385432493", "0x531ea13a595c12d1:0x277f61bfe84cb7ad", "/g/11h77lw85z", "ChIJ0RJcWTqhHlMRrbdM6L9hfyc"],
+      "websiteHosts": ["houseofpawsboutique.com"],
+      "phones": ["3065377297"],
+      "nameAliases": ["House of Paws Pet Boutique", "House of Paws Pet Boutique Inc", "House of Paws"],
+      "cityAliases": ["Regina"]
+    }
+  ]
+}

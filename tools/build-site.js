@@ -8,6 +8,7 @@ const { guideCategories, guideArticles } = require("./grooming-guides");
 const { validateUpdates, lastmodTag } = require("./sitemap-dates");
 const { validateReviews, cityComparison, profileReview } = require("./local-comparisons");
 const { shopping, guideShoppingDisclosure, guideShoppingSection, guideShoppingText } = require("./guide-shopping");
+const { loadExclusions, isExcludedListing } = require("./listing-exclusions");
 
 const ROOT = path.resolve(__dirname, "..");
 const SITE_URL = "https://doggroomerscanada.ca";
@@ -267,10 +268,15 @@ function main() {
   }
 
   const contentUpdates = validateUpdates(JSON.parse(fs.readFileSync(path.join(ROOT, "data/page-content-updates.json"), "utf8")), BUILD_DATE);
+  const exclusions = loadExclusions();
+  const rawListings = buildListingUrls([...loadListings(CSV_FILE), ...loadManualListings()]);
+  const allowedListings = rawListings.filter((listing) => !isExcludedListing(listing, exclusions));
+  const correctedListings = applyListingCorrections(allowedListings, loadListingCorrections());
+  correctedListings.listings = correctedListings.listings.filter((listing) => !isExcludedListing(listing, exclusions));
+  const allowedRoutes = new Set(correctedListings.listings.map((listing) => listing.url));
+  correctedListings.redirects = correctedListings.redirects.filter((redirect) =>
+    allowedRoutes.has(redirect.to) && !isExcludedListing({ url: redirect.from }, exclusions));
   cleanGeneratedFiles();
-
-  const rawListings = [...loadListings(CSV_FILE), ...loadManualListings()];
-  const correctedListings = applyListingCorrections(buildListingUrls(rawListings), loadListingCorrections());
   const enrichedListings = applyThinListingEnrichment(correctedListings.listings, loadThinListingEnrichment());
   const reviewedListings = applyEditorialProfileReviews(enrichedListings, loadEditorialProfileReviews());
   const imageSafeListings = enforceListingImageRights(applyImageOverrides(reviewedListings, loadImageOverrides()));
@@ -380,6 +386,7 @@ function loadListings(file) {
       `${title}-${address}-${rowNumber}`;
     const listing = {
       id: shortHash(idSeed),
+      sourceIds: [get("cid"), get("fid"), get("kgmid"), get("placeId")].map(clean).filter(Boolean),
       title,
       category,
       address,
