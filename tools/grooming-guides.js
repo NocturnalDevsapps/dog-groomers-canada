@@ -32,6 +32,7 @@ const guideCategories = [
 ];
 
 const guideSpecs = [
+  require("./between-grooms-guide"),
   techniqueGuide({
     slug: "line-brushing-curly-coated-dogs",
     title: "Line Brushing Curly-Coated Dogs: Poodles, Doodles, Bichons and Shih Tzus",
@@ -141,6 +142,8 @@ const guideSpecs = [
       "Not every appointment needs a haircut. Bath and brush visits can remove dirt, loose coat, odor, and debris while maintaining nails, paws, ears, and skin checks.",
     home:
       "Brush before bathing if the dog has tangles. Water can tighten mats, especially on curly, drop, and friction-prone coats.",
+    homeLinks: [{ url: "/guides/dog-coat-care-between-grooming-appointments/", label: "Build a coat-care routine between grooming appointments" }],
+    reviewedAt: "2026-10-07",
     pro:
       "Ask what shampoo and conditioner are used, how the dog is dried, whether nails and ears are included, and whether de-shedding is part of the package.",
     safety:
@@ -435,7 +438,7 @@ function techniqueGuide(spec) {
     ...spec,
     sections: [
       section("Why this grooming technique matters", [spec.need, "Good technique protects the dog's comfort while making the appointment easier to plan. The goal is not speed; it is a routine that keeps coat, skin, nails, and paws in a safer condition between professional visits."], spec.bullets),
-      section("At-home steps", [spec.home, "Keep sessions short, use calm rewards, and stop before the dog becomes overwhelmed. A small amount of consistent maintenance is usually more useful than a stressful marathon."], ["Work on a non-slip surface.", "Support sensitive areas with your fingers.", "Ask a groomer to demonstrate tools if you are unsure."]),
+      section("At-home steps", [spec.home, "Keep sessions short, use calm rewards, and stop before the dog becomes overwhelmed. A small amount of consistent maintenance is usually more useful than a stressful marathon."], ["Work on a non-slip surface.", "Support sensitive areas with your fingers.", "Ask a groomer to demonstrate tools if you are unsure."], spec.homeLinks),
       section("What to ask a groomer", [spec.pro, "Specific questions help the groomer estimate time, choose tools, and explain what is realistic for the coat or handling needs."], ["Share photos of the current coat.", "Mention health, behavior, age, and past grooming issues.", "Ask for a prevention plan before leaving."]),
       section("Safety notes", [spec.safety, "Grooming advice is not a substitute for veterinary care. When pain, infection, injury, or sudden coat changes are present, contact a veterinarian."], ["Do not force painful handling.", "Do not hide behavior or health concerns.", "Choose comfort over appearance when the two conflict."]),
     ],
@@ -482,8 +485,8 @@ function costGuide(spec) {
   };
 }
 
-function section(heading, paragraphs, bullets) {
-  return { heading, paragraphs, bullets };
+function section(heading, paragraphs, bullets, links) {
+  return { heading, paragraphs, bullets, ...(links ? { links } : {}) };
 }
 
 function defaultFaqs(spec) {

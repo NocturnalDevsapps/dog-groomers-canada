@@ -2272,7 +2272,7 @@ function writeGuidePages(context) {
       context,
       guideArticleRoute(article),
       article.metaTitle || article.title,
-      article.description,
+      article.metaDescription || article.description,
       guideArticleBody(article, context),
       [
         breadcrumbSchema([
@@ -2284,6 +2284,7 @@ function writeGuidePages(context) {
         guideArticleSchema(article),
         guideFaqSchema(article),
       ],
+      article.socialImage ? { socialImage: article.socialImage, openGraphType: "article", articleDates: { published: article.publishedAt, modified: guideUpdatedDate(article) } } : {},
     );
   }
 }
@@ -2770,7 +2771,8 @@ function writeUtilityPages(context) {
       <h2 id="affiliate-links" style="scroll-margin-top:94px">Affiliate links in grooming guides</h2>
       <p>As an Amazon Associate I earn from qualifying purchases.</p>
       <p>Some guides include clearly labelled paid links to Amazon.ca. We choose shopping categories to support the task explained in the article and include practical selection criteria, limitations and alternatives to buying. These links do not change directory rankings or business facts. Our current shopping links open search results, not a list of products we have personally tested. Amazon determines the products displayed, sellers, prices and availability; check the individual listing before purchasing.</p>
-      <p>The site does not currently serve display ads or reserve blank spaces for them.</p>
+      <h2 id="publisher-books" style="scroll-margin-top:94px">Books by our publisher</h2>
+      <p>A guide may recommend a relevant book written by Omar Bernard, the publisher of Dog Groomers Canada. We identify this relationship beside the recommendation and disclose that he earns royalties from book sales. These are optional paid resources; our articles still provide practical guidance without a purchase. Book recommendations are separate from Google advertisements and do not represent independent product reviews or professional endorsements.</p>
     </section>
     <section class="section">
       <h2>Images and copyrighted material</h2>
@@ -3034,6 +3036,7 @@ function pageHtml(route, title, description, body, schema = [], options = {}) {
   const renderedBody = includeAdsense ? adsenseSidebarPlacements(body) : body;
   const schemaItems = Array.isArray(schema) ? schema.filter(Boolean) : [schema].filter(Boolean);
   const pageContainerTag = /<main(?:\s|>)/i.test(body) ? "div" : "main";
+  const socialImage = options.socialImage || { path: OG_IMAGE_PATH, type: "image/svg+xml", width: 1200, height: 630, alt: `${BRAND_NAME}: find dog grooming near me across Canada` };
   return `<!doctype html>
 <html lang="en-CA">
 <head>
@@ -3046,21 +3049,21 @@ function pageHtml(route, title, description, body, schema = [], options = {}) {
   <meta name="description" content="${escAttr(meta)}">
   <link rel="canonical" href="${escAttr(canonical)}">
   <meta name="robots" content="${escAttr(robotsContent)}">
-  <meta property="og:type" content="website">
+  <meta property="og:type" content="${escAttr(options.openGraphType || "website")}">${options.articleDates ? `\n  <meta property="article:published_time" content="${escAttr(options.articleDates.published)}">\n  <meta property="article:modified_time" content="${escAttr(options.articleDates.modified)}">` : ""}
   <meta property="og:locale" content="en_CA">
   <meta property="og:site_name" content="${BRAND_NAME}">
   <meta property="og:title" content="${escAttr(title)}">
   <meta property="og:description" content="${escAttr(meta)}">
   <meta property="og:url" content="${escAttr(canonical)}">
-  <meta property="og:image" content="${SITE_URL}${OG_IMAGE_PATH}">
-  <meta property="og:image:secure_url" content="${SITE_URL}${OG_IMAGE_PATH}">
-  <meta property="og:image:type" content="image/svg+xml">
-  <meta property="og:image:width" content="1200">
-  <meta property="og:image:height" content="630">
-  <meta property="og:image:alt" content="${BRAND_NAME}: find dog grooming near me across Canada">
+  <meta property="og:image" content="${SITE_URL}${escAttr(socialImage.path)}">
+  <meta property="og:image:secure_url" content="${SITE_URL}${escAttr(socialImage.path)}">
+  <meta property="og:image:type" content="${escAttr(socialImage.type)}">
+  <meta property="og:image:width" content="${escAttr(socialImage.width)}">
+  <meta property="og:image:height" content="${escAttr(socialImage.height)}">
+  <meta property="og:image:alt" content="${escAttr(socialImage.alt)}">
   <meta name="twitter:card" content="summary_large_image">
-  <meta name="twitter:image" content="${SITE_URL}${OG_IMAGE_PATH}">
-  <meta name="twitter:image:alt" content="${BRAND_NAME}: find dog grooming near me across Canada">
+  <meta name="twitter:image" content="${SITE_URL}${escAttr(socialImage.path)}">
+  <meta name="twitter:image:alt" content="${escAttr(socialImage.alt)}">
   <link rel="icon" href="${FAVICON_PATH}" type="image/png">
   <link rel="manifest" href="/assets/site.webmanifest">
   ${routePath === "/" ? `<link rel="preload" href="${PHOTO_HERO_PATH}" as="image">` : ""}
@@ -3273,6 +3276,7 @@ function guideReadTime(article) {
     article.description,
     article.summary,
     ...guideShoppingText(article),
+    ...guideBookText(article),
     ...(article.keywords || []),
     ...article.sections.flatMap((section) => [section.heading, ...(section.paragraphs || []), ...(section.bullets || [])]),
     ...(article.faqs || []).flatMap((faq) => [faq.question, faq.answer]),
@@ -3303,7 +3307,9 @@ function guideArticleBody(article, context) {
   const inlineToolIndex = Math.min(2, articleSections.length);
   const toc = article.sections
     .map((section, index) => `<a href="#${escAttr(guideSectionId(section, index))}">${esc(section.heading)}</a>`)
-    .join("") + (shopping.guides[article.slug] ? `<a href="#choosing-grooming-tools">${esc(shopping.guides[article.slug].heading)}</a>` : "");
+    .join("") + (shopping.guides[article.slug] ? `<a href="#choosing-grooming-tools">${esc(shopping.guides[article.slug].heading)}</a>` : "")
+    + (article.book ? `<a href="#optional-coat-care-book">${esc(article.book.heading)}</a>` : "")
+    + (article.sources ? `<a href="#care-sources">Care sources</a>` : "");
   return `
     <section class="page-intro article-intro">
       <div class="wrap">
@@ -3330,7 +3336,7 @@ function guideArticleBody(article, context) {
             ${adsenseAd("inContent", "in-content")}
             ${guideRelevantToolCard(relevantTool)}
             ${articleSections.slice(inlineToolIndex).join("")}
-            ${guideShoppingSection(article)}
+            ${guideShoppingSection(article)}${guideBookSection(article)}${guideSourcesSection(article)}
             ${guideFaqSection(article)}
             <section class="article-section">
               <h2>Find a groomer for this need</h2>
@@ -3368,6 +3374,7 @@ function guideArticleBody(article, context) {
 }
 
 function guideRelevantTool(article) {
+  if (article.toolRoute) return ownerToolPages().find((tool) => tool.url === article.toolRoute);
   const subject = normalizeKey(`${article.slug} ${article.title}`);
   const text = normalizeKey(`${article.slug} ${article.title} ${(article.keywords || []).join(" ")}`);
   let route = "/grooming-tools/coat-maintenance-planner/";
@@ -3400,6 +3407,35 @@ function guideAuthorBox(article) {
     </aside>`;
 }
 
+function guideBookSection(article) {
+  const book = article.book;
+  if (!book) return "";
+  return `<section class="article-section" id="optional-coat-care-book" aria-label="Optional book by our publisher" style="scroll-margin-top:94px">
+      <p class="guide-card-meta">Publisher's book · Optional paid resource</p>
+      <h2>${esc(book.heading)}</h2>
+      <p>${esc(book.intro)}</p>
+      <ul class="check-list">${book.bullets.map((item) => `<li>${esc(item)}</li>`).join("")}</ul>
+      <p><strong>Publisher disclosure:</strong> ${esc(book.author)}, the publisher of Dog Groomers Canada, wrote this book and earns royalties from its sales.</p>
+      <p><a class="btn btn-primary" href="${escAttr(book.url)}" target="_blank" rel="sponsored nofollow noopener">${esc(book.linkLabel)}</a></p>
+      <p>${esc(book.limits)}</p>
+      <p>${esc(book.alternative)}</p>
+    </section>`;
+}
+
+function guideBookText(article) {
+  const book = article.book;
+  return book ? [book.heading, book.intro, ...book.bullets, book.limits, book.alternative] : [];
+}
+
+function guideSourcesSection(article) {
+  if (!article.sources?.length) return "";
+  return `<section class="article-section" id="care-sources" style="scroll-margin-top:94px">
+      <h2>Care sources and further reading</h2>
+      <p>The planning examples in this article are editorial suggestions. These independent care resources provide background on the grooming and welfare points; they do not endorse this site or the book.</p>
+      <ul class="check-list">${article.sources.map((source) => `<li><a href="${escAttr(source.url)}" target="_blank" rel="noopener">${esc(source.label)}</a></li>`).join("")}</ul>
+    </section>`;
+}
+
 function guideArticleSection(section, index) {
   return `<section class="article-section" id="${escAttr(guideSectionId(section, index))}">
       <h2>${esc(section.heading)}</h2>
@@ -3408,7 +3444,7 @@ function guideArticleSection(section, index) {
         section.bullets && section.bullets.length
           ? `<ul class="check-list">${section.bullets.map((item) => `<li>${esc(item)}</li>`).join("")}</ul>`
           : ""
-      }
+      }${section.links?.length ? `<p>${section.links.map((link) => `<a href="${escAttr(link.url)}">${esc(link.label)}</a>`).join(" · ")}</p>` : ""}
     </section>`;
 }
 
@@ -4894,7 +4930,7 @@ function mobileGroomingFaqSchema(service) {
 }
 
 function guideUpdatedDate(article) {
-  return shopping.guides[article.slug]?.reviewedAt || CONTENT_UPDATED_DATE;
+  return article.reviewedAt || shopping.guides[article.slug]?.reviewedAt || CONTENT_UPDATED_DATE;
 }
 
 function guideArticleSchema(article) {
@@ -4904,7 +4940,7 @@ function guideArticleSchema(article) {
     "@type": "Article",
     headline: article.title,
     description: article.description,
-    datePublished: CONTENT_UPDATED_DATE,
+    datePublished: article.publishedAt || CONTENT_UPDATED_DATE,
     dateModified: guideUpdatedDate(article),
     author: {
       "@type": "Organization",
@@ -4913,6 +4949,7 @@ function guideArticleSchema(article) {
     },
     publisher: organizationSchema(),
     mainEntityOfPage: absoluteUrl(guideArticleRoute(article)),
+    ...(article.socialImage ? { image: absoluteUrl(article.socialImage.path) } : {}),
     articleSection: category.name,
     keywords: (article.keywords || []).join(", "),
     wordCount: articleWordCount(article),
@@ -4953,6 +4990,7 @@ function articleWordCount(article) {
     article.description,
     article.summary,
     ...guideShoppingText(article),
+    ...guideBookText(article),
     ...article.sections.flatMap((section) => [section.heading, ...(section.paragraphs || []), ...(section.bullets || [])]),
     ...(article.faqs || []).flatMap((faq) => [faq.question, faq.answer]),
   ]

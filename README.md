@@ -31,7 +31,7 @@ Generated profiles are visibly labelled as directory records. Profiles with norm
 
 Business-specific images render only when `imageRights` records owner permission, a reusable licence, or a public-domain basis. Public availability, attribution, and source links are not treated as permission. The current build displays the approved GroomArts Academy gallery and uses a site-owned placeholder elsewhere, with an authorization flow for businesses that want to submit photos.
 
-The current generated build includes 7,247 sitemap URLs and 5,645 indexable business profiles. Another 84 business profiles remain accessible on quality hold, and 3 legacy profile redirects remain noindex. The build also includes 1,807 profiles with rendered first-party website enrichment, 6 manually reviewed profiles, 133 dog grooming cost pages, and 8 grooming-tool pages. The cost pages use planning ranges and quote questions instead of fixed price claims, because real prices depend on dog size, coat condition, matting, handling, add-ons, mobile route needs, and local availability.
+The current generated build includes 7,248 sitemap URLs and 5,645 indexable business profiles. Another 84 business profiles remain accessible on quality hold, and 3 legacy profile redirects remain noindex. The build also includes 1,807 profiles with rendered first-party website enrichment, 6 manually reviewed profiles, 133 dog grooming cost pages, and 8 grooming-tool pages. The cost pages use planning ranges and quote questions instead of fixed price claims, because real prices depend on dog size, coat condition, matting, handling, add-ons, mobile route needs, and local availability.
 
 Before any major release, inspect Search Console indexing for the homepage, guide hub, tools hub, several city pages, and several guide articles. Preserve established URLs, canonicals, titles, and sitemap membership while improving original value and reader trust.
 
@@ -128,6 +128,16 @@ node tools/audit-monetization.js
 Use a local preview that blocks external analytics/ad requests for browser QA. Private Search Console exports, the individual excluded-page review and account analytics reports are kept outside this public repository.
 
 ## Amazon Associates links
+
+### Publisher-authored book
+
+`tools/between-grooms-guide.js` supplies the original `/guides/dog-coat-care-between-grooming-appointments/` article and one optional recommendation for Omar Bernard's *The Between-Grooms Coat Care System*. The article contains a usable home-care plan and notebook log, independent care sources, and professional-help boundaries before the book recommendation. Its Amazon.ca paperback URL and contents were checked against the public listing and KDP bookshelf on October 7, 2026.
+
+The recommendation discloses the publisher/author relationship and royalty earnings beside the link. It uses `rel="sponsored nofollow noopener"` and a direct product URL without an Associate tag. It does not claim independent professional review, include price/availability claims, copy Amazon images, or add product/review schema. The paperback's separate digital workbook exclusion is explicit. Keep this recommendation distinct from AdSense units and optional affiliate shopping comparisons. The homepage and guide collections link to the useful article, rather than placing purchase links across the directory.
+
+The guide has a dedicated search title and meta description, a self-referencing canonical, Article/Breadcrumb/FAQ markup, its actual publication/update dates, a crawlable sitemap entry, and a contextual link from the bath-and-brush guide. Its social metadata and Article image use the site's existing grooming JPEG with explicit dimensions and descriptive alternate text. The useful article targets between-appointment care; the bath-and-brush article keeps its separate service focus. SEO checks establish technical readiness, not Google indexing, rankings, rich results, or sales.
+
+### Affiliate shopping categories
 
 Amazon Canada affiliate search links use this site's verified Associate ID, `doggroomersca-20`. The website is registered in that account. Do not reuse its tag on another site.
 
