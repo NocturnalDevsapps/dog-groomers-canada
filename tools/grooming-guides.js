@@ -104,6 +104,8 @@ const guideSpecs = [
     slug: "puppy-first-grooming-guide",
     title: "Puppy's First Groom: How to Build a Calm Grooming Routine",
     metaTitle: "Puppy's First Groom | Calm Puppy Grooming Guide",
+    metaDescription: "Prepare your puppy for a calm first groom with gentle handling practice, salon questions, and guidance on when to seek behavior support.",
+    reviewedAt: "2026-10-07",
     summary: "A first groom should teach trust, not just create a haircut.",
     keywords: ["puppy first groom", "puppy grooming Canada", "puppy grooming tips", "first puppy haircut"],
     need:
@@ -115,6 +117,16 @@ const guideSpecs = [
     safety:
       "Do not wait until a high-maintenance puppy is badly matted. A shorter early trim may be kinder than forcing a long first groom.",
     bullets: ["Ask when adult coat changes may increase matting.", "Start with handling before expecting a perfect haircut.", "Book ahead because puppy-friendly appointments can fill quickly."],
+    additionalSections: [
+      { ...section("When handling practice needs extra support", [
+        "Prepare for one small part of grooming at a time. Ask your groomer to demonstrate a comfortable starting step, such as briefly touching a paw or introducing a brush. Pair easy steps with praise or suitable treats, allow breaks, and build up gradually. If the puppy moves away or becomes uncomfortable, pause instead of holding them in place to finish.",
+        "Repeated difficulty with handling is a reason to adjust the plan. Tell the groomer which touch, tool, or sound causes trouble and ask about shorter introduction visits. Your veterinarian can check for pain or illness and recommend a suitably qualified behavior professional when needed. Agree on a reward-based preparation plan that the owner, trainer, and groomer can use consistently.",
+        "PJH Dog Training, founded by Pepe J. Hernandez, is an external dog-training practice that describes force-free, reward-based puppy and behavior support. Its puppy-training information includes handling and grooming among the goals it works on. The practice is based in New York City; Canadian readers should confirm whether support is available in their location, including any remote options, and check fees before booking. Ask your veterinarian or groomer for local options as well.",
+      ], [], [
+        { url: "https://www.pjhdogtraining.com/in-home-puppy-training-nyc", label: "PJH Dog Training: puppy handling and behavior support (New York City)" },
+        { url: "https://www.rspca.org.uk/adviceandwelfare/pets/dogs/health/grooming", label: "RSPCA: preparing a dog for grooming and getting help with handling" },
+      ]), scrollMarginTop: 94 },
+    ],
   }),
   techniqueGuide({
     slug: "mobile-dog-grooming-prep",
@@ -441,6 +453,7 @@ function techniqueGuide(spec) {
       section("At-home steps", [spec.home, "Keep sessions short, use calm rewards, and stop before the dog becomes overwhelmed. A small amount of consistent maintenance is usually more useful than a stressful marathon."], ["Work on a non-slip surface.", "Support sensitive areas with your fingers.", "Ask a groomer to demonstrate tools if you are unsure."], spec.homeLinks),
       section("What to ask a groomer", [spec.pro, "Specific questions help the groomer estimate time, choose tools, and explain what is realistic for the coat or handling needs."], ["Share photos of the current coat.", "Mention health, behavior, age, and past grooming issues.", "Ask for a prevention plan before leaving."]),
       section("Safety notes", [spec.safety, "Grooming advice is not a substitute for veterinary care. When pain, infection, injury, or sudden coat changes are present, contact a veterinarian."], ["Do not force painful handling.", "Do not hide behavior or health concerns.", "Choose comfort over appearance when the two conflict."]),
+      ...(spec.additionalSections || []),
     ],
   };
 }

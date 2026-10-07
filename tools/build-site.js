@@ -3437,7 +3437,7 @@ function guideSourcesSection(article) {
 }
 
 function guideArticleSection(section, index) {
-  return `<section class="article-section" id="${escAttr(guideSectionId(section, index))}">
+  return `<section class="article-section" id="${escAttr(guideSectionId(section, index))}"${Number.isFinite(section.scrollMarginTop) ? ` style="scroll-margin-top:${section.scrollMarginTop}px"` : ""}>
       <h2>${esc(section.heading)}</h2>
       ${(section.paragraphs || []).map((paragraph) => `<p>${esc(paragraph)}</p>`).join("")}
       ${

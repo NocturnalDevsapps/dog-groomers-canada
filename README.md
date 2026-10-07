@@ -127,6 +127,10 @@ node tools/audit-monetization.js
 
 Use a local preview that blocks external analytics/ad requests for browser QA. Private Search Console exports, the individual excluded-page review and account analytics reports are kept outside this public repository.
 
+## Editorial training resources
+
+The puppy first-groom guide includes an editorial link to PJH Dog Training's puppy-handling service information, checked against its official website on October 7, 2026. The surrounding advice explains gradual, reward-based preparation and when to seek professional help, with RSPCA background guidance. PJH is clearly identified as a New York City training practice; Canadian availability is not claimed. This resource does not imply an affiliation with any listed groomer, and placement is not conditional on a reciprocal link.
+
 ## Amazon Associates links
 
 ### Publisher-authored book
