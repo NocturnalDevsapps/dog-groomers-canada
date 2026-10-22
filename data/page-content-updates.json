@@ -190,5 +190,9 @@
   "/groomers/canada/le-valeureux-compagnon-canada-ca-95f8837a/": {
     "date": "2026-10-02",
     "note": "Removed a formerly linked business website after verifying that the domain now serves unrelated casino content; noindex quality hold retained."
+  },
+  "/groomers/ontario/chatham-kent/emma-s-paw-spa-chatham-kent-on-49cd8239/": {
+    "date": "2026-10-22",
+    "note": "Corrected the address, city, directions and map coordinates after verifying the submitted correction against the official relocation announcement and current Google Maps listing; retained the old profile as a redirect."
   }
 }

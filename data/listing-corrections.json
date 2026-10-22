@@ -235,6 +235,31 @@
       "fields": {
         "website": ""
       }
+    },
+    {
+      "url": "/groomers/ontario/blenheim/emma-s-paw-spa-blenheim-on-49cd8239/",
+      "note": "Address correction received October 22, 2026 from the owner's sister. Independently verified against the business's August 21 relocation announcement on its official Facebook page and the current Google Maps listing, which matches the existing phone and Facebook identity. Google Maps supplied the corrected coordinates. The old profile redirects to the Chatham-Kent profile.",
+      "relocate": true,
+      "businessSubmission": {
+        "receivedAt": "2026-10-22",
+        "label": "Verified address correction",
+        "source": "Address correction supplied by the owner's sister and corroborated by the business's public relocation announcement",
+        "contactCheck": {
+          "sourceUrl": "https://www.google.com/maps/search/?api=1&query=Emma%27s%20Paw%20Spa%2C%2010238%20Fairview%20Line%2C%20Chatham-Kent%2C%20ON%20N7M%205J4&query_place_id=ChIJzXZT05H3L4gR8fOq1WmEfUI",
+          "sourceLabel": "Google Maps business listing",
+          "checkedAt": "2026-10-22",
+          "summary": "The current map listing confirms 10238 Fairview Line, Chatham-Kent, ON N7M 5J4 and the existing 519-809-4211 phone number. The business also announced the Fairview Line move on its official Facebook page on August 21, 2026."
+        }
+      },
+      "fields": {
+        "address": "10238 Fairview Line, Chatham-Kent, ON N7M 5J4, Canada",
+        "street": "10238 Fairview Line",
+        "city": "Chatham-Kent",
+        "postalCode": "N7M 5J4",
+        "mapsUrl": "https://www.google.com/maps/search/?api=1&query=Emma%27s%20Paw%20Spa%2C%2010238%20Fairview%20Line%2C%20Chatham-Kent%2C%20ON%20N7M%205J4&query_place_id=ChIJzXZT05H3L4gR8fOq1WmEfUI",
+        "lat": 42.4416437,
+        "lng": -82.0974245
+      }
     }
   ]
 }
