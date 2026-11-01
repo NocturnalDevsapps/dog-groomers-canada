@@ -148,6 +148,163 @@
         "source": "Business details and five authorized grooming collages supplied directly by Tanice"
       },
       "updatedAt": "2026-09-06"
+    },
+    {
+      "id": "the-blissful-dog-whitchurch-stouffville",
+      "title": "The Blissful Dog",
+      "category": "Dog groomer",
+      "address": "6385 Main Street, Whitchurch-Stouffville, ON L4A 1G4, Canada",
+      "street": "6385 Main Street",
+      "postalCode": "L4A 1G4",
+      "city": "Whitchurch-Stouffville",
+      "province": "Ontario",
+      "provinceCode": "ON",
+      "countryCode": "CA",
+      "phone": "+1 365-552-0494",
+      "phoneRaw": "+13655520494",
+      "email": "hello@theblissfuldog.ca",
+      "website": "https://theblissfuldog.ca/",
+      "mapsUrl": "https://www.google.com/maps/search/?api=1&query=The%20Blissful%20Dog%2C%206385%20Main%20Street%2C%20Whitchurch-Stouffville%2C%20ON&query_place_id=ChIJYUM4CTgv1YkRvmRYizFn-LU",
+      "lat": 43.9717191,
+      "lng": -79.2443236,
+      "description": "The Blissful Dog is a women-owned dog grooming salon at 6385 Main Street in Whitchurch-Stouffville, Ontario, run by co-owners and groomers Annelise and Caitlin. Its October 2026 submission confirms full grooms, bath-and-brush appointments and nail trims. The official website also lists bath-and-tidy visits, breed clips, puppy grooming, deshedding and a self-serve dog wash. Owners can book online through Groomore or call the salon to discuss their dog's coat, preferred finish and handling needs. The website describes appointments that begin with a coat check and a discussion of the requested haircut; it asks clients to mention nervousness, senior-dog needs or a first groom when booking. Published hours are Monday to Friday, 9 AM to 5 PM, and Saturday, 9 AM to 3 PM; Sunday is closed. Confirm the package inclusions, appointment length and current quote directly. The seven salon and grooming photos were supplied by the business with permission to display them.",
+      "services": [
+        "Full dog grooming",
+        "Bath and brush",
+        "Bath, brush and tidy",
+        "Breed clips",
+        "Nail trimming",
+        "Puppy grooming",
+        "Deshedding",
+        "Self-serve dog wash"
+      ],
+      "hours": [
+        {
+          "day": "Monday",
+          "hours": "9 AM to 5 PM"
+        },
+        {
+          "day": "Tuesday",
+          "hours": "9 AM to 5 PM"
+        },
+        {
+          "day": "Wednesday",
+          "hours": "9 AM to 5 PM"
+        },
+        {
+          "day": "Thursday",
+          "hours": "9 AM to 5 PM"
+        },
+        {
+          "day": "Friday",
+          "hours": "9 AM to 5 PM"
+        },
+        {
+          "day": "Saturday",
+          "hours": "9 AM to 3 PM"
+        },
+        {
+          "day": "Sunday",
+          "hours": "Closed"
+        }
+      ],
+      "bookingLinks": [
+        {
+          "name": "Book a grooming appointment",
+          "url": "https://theblissfuldog.groomore.com"
+        }
+      ],
+      "image": "/assets/listings/the-blissful-dog/salon-entrance.webp",
+      "photos": [
+        "/assets/listings/the-blissful-dog/salon-entrance.webp",
+        "/assets/listings/the-blissful-dog/reception.webp",
+        "/assets/listings/the-blissful-dog/dogs-in-salon.webp",
+        "/assets/listings/the-blissful-dog/bathing-area.webp",
+        "/assets/listings/the-blissful-dog/grooming-station.webp",
+        "/assets/listings/the-blissful-dog/tricolour-dog.webp",
+        "/assets/listings/the-blissful-dog/dog-grooming.webp"
+      ],
+      "photoAlts": [
+        "Entrance to The Blissful Dog at 6385 Main Street, with the salon sign beside the door",
+        "Reception counter and interior at The Blissful Dog",
+        "Two dogs sitting beside The Blissful Dog salon sign",
+        "Professional bathing tubs inside The Blissful Dog",
+        "Grooming table and equipment at The Blissful Dog",
+        "Tricolour dog standing on a grooming table at The Blissful Dog",
+        "Brown-and-white dog being groomed at The Blissful Dog"
+      ],
+      "imageCredit": "Photos supplied by The Blissful Dog and used with permission.",
+      "imageRights": {
+        "status": "owner_permission",
+        "grantedAt": "2026-10-30",
+        "credit": "Photos supplied by The Blissful Dog and used with permission."
+      },
+      "permissionReference": "Business submission dated 2026-10-30 with seven attached original images and explicit authorization for display on the business profile and related directory cards.",
+      "authorizedPhotoFiles": [
+        {
+          "originalFilename": "IMG_0182.JPG",
+          "originalSha256": "13e87796ac31b3569b9e4e03cf1427c5983509c88628c2235e7ceacd0fff2081",
+          "publishedFile": "/assets/listings/the-blissful-dog/salon-entrance.webp"
+        },
+        {
+          "originalFilename": "IMG_0183.JPG",
+          "originalSha256": "fdbddb2c3526e20b547f6c0df8d61748fbd20e67aa66901837621a55229ab1a5",
+          "publishedFile": "/assets/listings/the-blissful-dog/reception.webp"
+        },
+        {
+          "originalFilename": "IMG_0184.JPG",
+          "originalSha256": "72b7c18923ffacb87b4cb9c323aecf9c0ff76521d8126fd0f86c873e9e3e41d4",
+          "publishedFile": "/assets/listings/the-blissful-dog/dogs-in-salon.webp"
+        },
+        {
+          "originalFilename": "IMG_0185.JPG",
+          "originalSha256": "70fed6877fc6a5a6269ffdaa503c5b0a05353604f5a798721311eb2400f21db4",
+          "publishedFile": "/assets/listings/the-blissful-dog/bathing-area.webp"
+        },
+        {
+          "originalFilename": "IMG_0186.JPG",
+          "originalSha256": "5babd3f83bd4d2560a660491fc500cf453bf2d4dbed041e53125a343f2875d84",
+          "publishedFile": "/assets/listings/the-blissful-dog/grooming-station.webp"
+        },
+        {
+          "originalFilename": "IMG_0187.JPG",
+          "originalSha256": "ae0e4733dcc1eff8daa7699a844d224cf2b4778ee70b2b5715d03a920e984a4d",
+          "publishedFile": "/assets/listings/the-blissful-dog/tricolour-dog.webp"
+        },
+        {
+          "originalFilename": "IMG_8089 2.JPG",
+          "originalSha256": "f77167fbe88dd31df1d19bf804dad53d1d38e57e03769cb3b765a3d8d343abf6",
+          "publishedFile": "/assets/listings/the-blissful-dog/dog-grooming.webp"
+        }
+      ],
+      "businessSubmission": {
+        "receivedAt": "2026-10-30",
+        "label": "Business-submitted listing",
+        "source": "Business name, contact details, hours, service description and seven authorized photos supplied directly by the business",
+        "services": [
+          "Full dog grooming",
+          "Bath and brush",
+          "Nail trimming"
+        ],
+        "contactCheck": {
+          "sourceUrl": "https://theblissfuldog.ca/",
+          "sourceLabel": "The Blissful Dog official website",
+          "checkedAt": "2026-11-01",
+          "summary": "The official website confirms co-owners Annelise and Caitlin, the Main Street address, phone number, weekday and Saturday hours, services and online booking link. Sunday closure and map coordinates also come from the official website."
+        }
+      },
+      "updatedAt": "2026-11-01",
+      "websiteServices": [
+        "Full dog grooming",
+        "Bath and brush",
+        "Bath, brush and tidy",
+        "Breed clips",
+        "Nail trimming",
+        "Puppy grooming",
+        "Deshedding",
+        "Self-serve dog wash"
+      ],
+      "websiteCrawlSource": "https://theblissfuldog.ca/"
     }
   ]
 }
