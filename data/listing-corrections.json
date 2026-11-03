@@ -260,6 +260,25 @@
         "lat": 42.4416437,
         "lng": -82.0974245
       }
+    },
+    {
+      "url": "/groomers/ontario/mississauga/petaza-dog-grooming-mississauga-on-88e20821/",
+      "note": "Website and email correction received from Ana at the new business-domain email on November 3, 2026. Gmail reports passing SPF, DKIM and DMARC for the new domain. The new HTTPS website loads and matches Petaza branding and the existing 647-979-4364 phone number. Its contact section still shows the former email, so the current email comes from the authenticated direct business submission. Physical address and existing profile route retained.",
+      "businessSubmission": {
+        "receivedAt": "2026-11-03",
+        "label": "Business-submitted contact correction",
+        "source": "Website and email supplied directly by the business; new website checked against the existing business name and phone number",
+        "contactCheck": {
+          "sourceUrl": "https://petazadogrooming.com/",
+          "sourceLabel": "Petaza Dog Grooming website",
+          "checkedAt": "2026-11-03",
+          "summary": "The new website matches the business name and existing 647-979-4364 phone number. The current email address was supplied directly by the business."
+        }
+      },
+      "fields": {
+        "website": "https://petazadogrooming.com/",
+        "email": "hello@petazadogrooming.com"
+      }
     }
   ]
 }
