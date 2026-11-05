@@ -13,6 +13,32 @@
       "phones": ["3065377297"],
       "nameAliases": ["House of Paws Pet Boutique", "House of Paws Pet Boutique Inc", "House of Paws"],
       "cityAliases": ["Regina"]
+    },
+    {
+      "name": "Pooch Palace",
+      "city": "Uxbridge",
+      "excludedAt": "2026-11-05",
+      "reason": "Listing withdrawn following a correction and removal request. Manual identity review and an explicit reinstatement decision are required before republication.",
+      "listingIds": [
+        "446f3bb1"
+      ],
+      "routes": [
+        "/groomers/ontario/uxbridge/pooch-palace-uxbridge-on-446f3bb1/"
+      ],
+      "sourceIds": [
+        "17229606093833725391",
+        "0x89d53946d1f85583:0xef1bdb74badd65cf",
+        "/g/11h7s3x86p",
+        "ChIJg1X40UY51YkRz2XdunTbG-8"
+      ],
+      "websiteHosts": [
+        "poochpalaceinc.ca"
+      ],
+      "phones": [
+        "9059040039"
+      ],
+      "nameAliases": [],
+      "cityAliases": []
     }
   ]
 }
