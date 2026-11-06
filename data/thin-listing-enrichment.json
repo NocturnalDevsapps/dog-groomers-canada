@@ -30540,13 +30540,13 @@
       "researchMethod": "direct_html",
       "crawledAt": "2026-07-28"
     },
-    "/groomers/ontario/newmarket/shani-s-puppy-spa-newmarket-on-6294ba87/": {
+    "/groomers/ontario/aurora/shani-s-puppy-spa-aurora-on-6294ba87/": {
       "businessName": "Shani's Puppy Spa",
       "website": "https://shanispuppyspa.ca/",
       "sourcePages": [
         "https://shanispuppyspa.ca/",
-        "https://shanispuppyspa.ca/top-rated-dog-groomer-in-newmarket/",
-        "https://shanispuppyspa.ca/about-us/"
+        "https://shanispuppyspa.ca/services/",
+        "https://shanispuppyspa.ca/services/full-grooming/"
       ],
       "services": [
         "Full groom or haircut",
@@ -30566,7 +30566,7 @@
       "websiteLocation": "",
       "crawlStatus": "official_website_enriched",
       "researchMethod": "direct_html",
-      "crawledAt": "2026-07-28"
+      "crawledAt": "2026-11-06"
     },
     "/groomers/ontario/newmarket/wag-awhile-doggy-daycare-hotel-and-spa-newmarket-on-0941550f/": {
       "businessName": "Wag Awhile Doggy Daycare, Hotel and Spa",

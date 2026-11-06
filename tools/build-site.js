@@ -677,6 +677,11 @@ function applyListingCorrections(listings, corrections) {
       updates.serviceAreas = unique(cleanSignalArray(fields.serviceAreas)).slice(0, 12);
     }
     if (Object.hasOwn(fields, "services")) updates.services = cleanSignalArray(fields.services);
+    if (Array.isArray(fields.hours)) {
+      updates.hours = fields.hours
+        .map((entry) => ({ day: clean(entry.day), hours: clean(entry.hours) }))
+        .filter((entry) => entry.day && entry.hours);
+    }
     if (Object.hasOwn(fields, "addressHidden")) updates.addressHidden = fields.addressHidden === true;
 
     let updated = { ...listing, ...updates };

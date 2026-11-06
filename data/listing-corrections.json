@@ -279,6 +279,64 @@
         "website": "https://petazadogrooming.com/",
         "email": "hello@petazadogrooming.com"
       }
+    },
+    {
+      "url": "/groomers/ontario/newmarket/shani-s-puppy-spa-newmarket-on-6294ba87/",
+      "relocate": true,
+      "note": "Relocation requested November 6, 2026 from info@shanispuppyspa.ca; Gmail reports SPF pass. The official website matches the existing phone and confirms 15228 Yonge Street, Unit B, Aurora, ON L4G 1L9, with parking and entrance on Temperance Street. Coordinates come from the official website map link to the Temperance Street entrance. Current published hours were also checked. Preserve the old URL as a redirect.",
+      "businessSubmission": {
+        "receivedAt": "2026-11-06",
+        "label": "Verified relocation update",
+        "source": "Relocation supplied directly by the business and checked against its official website",
+        "contactCheck": {
+          "sourceUrl": "https://shanispuppyspa.ca/",
+          "sourceLabel": "Shani’s Puppy Spa official website",
+          "checkedAt": "2026-11-06",
+          "summary": "The website confirms the Aurora address, existing 289-338-6443 phone number, business email and current published hours. Parking and entrance are on Temperance Street."
+        },
+        "bookingNotes": [
+          {
+            "title": "Arriving at the Aurora salon",
+            "text": "The salon lists 15228 Yonge Street, Unit B, Aurora, ON L4G 1L9. Use Temperance Street for parking and the entrance; the map link follows the directions supplied on the business website."
+          }
+        ]
+      },
+      "fields": {
+        "address": "15228 Yonge Street, Unit B, Aurora, ON L4G 1L9, Canada",
+        "street": "15228 Yonge Street, Unit B",
+        "city": "Aurora",
+        "postalCode": "L4G 1L9",
+        "email": "info@shanispuppyspa.ca",
+        "mapsUrl": "https://maps.app.goo.gl/AHPxCa3QJym5bYFG6",
+        "lat": 43.9992625,
+        "lng": -79.4684844,
+        "hours": [
+          {
+            "day": "Monday",
+            "hours": "10 AM to 6 PM"
+          },
+          {
+            "day": "Tuesday",
+            "hours": "10 AM to 6 PM"
+          },
+          {
+            "day": "Wednesday",
+            "hours": "10 AM to 7 PM"
+          },
+          {
+            "day": "Thursday",
+            "hours": "10 AM to 7 PM"
+          },
+          {
+            "day": "Friday",
+            "hours": "10 AM to 6 PM"
+          },
+          {
+            "day": "Saturday",
+            "hours": "11 AM to 3 PM"
+          }
+        ]
+      }
     }
   ]
 }

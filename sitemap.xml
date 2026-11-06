@@ -60,12 +60,12 @@
   <url><loc>https://doggroomerscanada.ca/provinces/british-columbia/kamloops/</loc></url>
   <url><loc>https://doggroomerscanada.ca/provinces/ontario/kingston/</loc></url>
   <url><loc>https://doggroomerscanada.ca/provinces/british-columbia/langley/</loc></url>
-  <url><loc>https://doggroomerscanada.ca/provinces/ontario/newmarket/</loc></url>
   <url><loc>https://doggroomerscanada.ca/provinces/ontario/niagara-falls/</loc></url>
   <url><loc>https://doggroomerscanada.ca/provinces/alberta/red-deer/</loc></url>
   <url><loc>https://doggroomerscanada.ca/provinces/alberta/sherwood-park/</loc></url>
   <url><loc>https://doggroomerscanada.ca/provinces/alberta/fort-mcmurray/</loc></url>
   <url><loc>https://doggroomerscanada.ca/provinces/ontario/guelph/</loc></url>
+  <url><loc>https://doggroomerscanada.ca/provinces/ontario/newmarket/</loc><lastmod>2026-11-06</lastmod></url>
   <url><loc>https://doggroomerscanada.ca/provinces/ontario/welland/</loc></url>
   <url><loc>https://doggroomerscanada.ca/provinces/british-columbia/duncan/</loc></url>
   <url><loc>https://doggroomerscanada.ca/provinces/alberta/medicine-hat/</loc></url>
@@ -98,6 +98,7 @@
   <url><loc>https://doggroomerscanada.ca/provinces/new-brunswick/fredericton/</loc></url>
   <url><loc>https://doggroomerscanada.ca/provinces/british-columbia/maple-ridge/</loc></url>
   <url><loc>https://doggroomerscanada.ca/provinces/new-brunswick/saint-john/</loc></url>
+  <url><loc>https://doggroomerscanada.ca/provinces/ontario/aurora/</loc><lastmod>2026-11-06</lastmod></url>
   <url><loc>https://doggroomerscanada.ca/provinces/prince-edward-island/charlottetown/</loc></url>
   <url><loc>https://doggroomerscanada.ca/provinces/new-brunswick/dieppe/</loc></url>
   <url><loc>https://doggroomerscanada.ca/provinces/quebec/longueuil/</loc></url>
@@ -106,7 +107,6 @@
   <url><loc>https://doggroomerscanada.ca/provinces/ontario/port-colborne/</loc></url>
   <url><loc>https://doggroomerscanada.ca/provinces/quebec/repentigny/</loc></url>
   <url><loc>https://doggroomerscanada.ca/provinces/nova-scotia/truro/</loc></url>
-  <url><loc>https://doggroomerscanada.ca/provinces/ontario/aurora/</loc></url>
   <url><loc>https://doggroomerscanada.ca/provinces/british-columbia/coquitlam/</loc></url>
   <url><loc>https://doggroomerscanada.ca/provinces/quebec/drummondville/</loc></url>
   <url><loc>https://doggroomerscanada.ca/provinces/quebec/mascouche/</loc></url>
@@ -1666,7 +1666,7 @@
   <url><loc>https://doggroomerscanada.ca/groomers/ontario/york/patito-and-tokio-pet-grooming-salon-york-on-ad0967da/</loc></url>
   <url><loc>https://doggroomerscanada.ca/groomers/quebec/montreal/toilettage-spa-poilu-montreal-qc-95d5e10e/</loc></url>
   <url><loc>https://doggroomerscanada.ca/groomers/british-columbia/vancouver/ez-dog-grooming-and-pet-supplies-vancouver-bc-8ac24c6a/</loc></url>
-  <url><loc>https://doggroomerscanada.ca/groomers/ontario/newmarket/shani-s-puppy-spa-newmarket-on-6294ba87/</loc></url>
+  <url><loc>https://doggroomerscanada.ca/groomers/ontario/aurora/shani-s-puppy-spa-aurora-on-6294ba87/</loc><lastmod>2026-11-06</lastmod></url>
   <url><loc>https://doggroomerscanada.ca/groomers/british-columbia/vancouver/paw-prints-grooming-salon-vancouver-bc-87ac2393/</loc></url>
   <url><loc>https://doggroomerscanada.ca/groomers/alberta/edmonton/warm-hearts-and-wet-noses-edmonton-ab-b24a68b4/</loc></url>
   <url><loc>https://doggroomerscanada.ca/groomers/quebec/repentigny/lilo-boutique-pour-animaux-et-toilettage-repentigny-qc-0028edad/</loc></url>
@@ -7120,12 +7120,12 @@
   <url><loc>https://doggroomerscanada.ca/dog-grooming-cost/british-columbia/kamloops/</loc></url>
   <url><loc>https://doggroomerscanada.ca/dog-grooming-cost/ontario/kingston/</loc></url>
   <url><loc>https://doggroomerscanada.ca/dog-grooming-cost/british-columbia/langley/</loc></url>
-  <url><loc>https://doggroomerscanada.ca/dog-grooming-cost/ontario/newmarket/</loc></url>
   <url><loc>https://doggroomerscanada.ca/dog-grooming-cost/ontario/niagara-falls/</loc></url>
   <url><loc>https://doggroomerscanada.ca/dog-grooming-cost/alberta/red-deer/</loc></url>
   <url><loc>https://doggroomerscanada.ca/dog-grooming-cost/alberta/sherwood-park/</loc></url>
   <url><loc>https://doggroomerscanada.ca/dog-grooming-cost/alberta/fort-mcmurray/</loc></url>
   <url><loc>https://doggroomerscanada.ca/dog-grooming-cost/ontario/guelph/</loc></url>
+  <url><loc>https://doggroomerscanada.ca/dog-grooming-cost/ontario/newmarket/</loc></url>
   <url><loc>https://doggroomerscanada.ca/dog-grooming-cost/ontario/welland/</loc></url>
   <url><loc>https://doggroomerscanada.ca/dog-grooming-cost/british-columbia/duncan/</loc></url>
   <url><loc>https://doggroomerscanada.ca/dog-grooming-cost/alberta/medicine-hat/</loc></url>
@@ -7158,6 +7158,7 @@
   <url><loc>https://doggroomerscanada.ca/dog-grooming-cost/new-brunswick/fredericton/</loc></url>
   <url><loc>https://doggroomerscanada.ca/dog-grooming-cost/british-columbia/maple-ridge/</loc></url>
   <url><loc>https://doggroomerscanada.ca/dog-grooming-cost/new-brunswick/saint-john/</loc></url>
+  <url><loc>https://doggroomerscanada.ca/dog-grooming-cost/ontario/aurora/</loc></url>
   <url><loc>https://doggroomerscanada.ca/dog-grooming-cost/prince-edward-island/charlottetown/</loc></url>
   <url><loc>https://doggroomerscanada.ca/dog-grooming-cost/new-brunswick/dieppe/</loc></url>
   <url><loc>https://doggroomerscanada.ca/dog-grooming-cost/quebec/longueuil/</loc></url>
@@ -7166,7 +7167,6 @@
   <url><loc>https://doggroomerscanada.ca/dog-grooming-cost/ontario/port-colborne/</loc></url>
   <url><loc>https://doggroomerscanada.ca/dog-grooming-cost/quebec/repentigny/</loc></url>
   <url><loc>https://doggroomerscanada.ca/dog-grooming-cost/nova-scotia/truro/</loc></url>
-  <url><loc>https://doggroomerscanada.ca/dog-grooming-cost/ontario/aurora/</loc></url>
   <url><loc>https://doggroomerscanada.ca/dog-grooming-cost/british-columbia/coquitlam/</loc></url>
   <url><loc>https://doggroomerscanada.ca/dog-grooming-cost/quebec/drummondville/</loc></url>
   <url><loc>https://doggroomerscanada.ca/dog-grooming-cost/quebec/mascouche/</loc></url>

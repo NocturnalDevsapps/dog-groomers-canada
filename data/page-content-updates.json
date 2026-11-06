@@ -206,5 +206,17 @@
   "/provinces/ontario/uxbridge/": {
     "date": "2026-11-05",
     "note": "Removed the withdrawn Pooch Palace directory record and refreshed the remaining local listings."
+  },
+  "/groomers/ontario/aurora/shani-s-puppy-spa-aurora-on-6294ba87/": {
+    "date": "2026-11-06",
+    "note": "Verified business relocation to Aurora; corrected address, map coordinates, email and published hours, and retained old profile as a redirect."
+  },
+  "/provinces/ontario/newmarket/": {
+    "date": "2026-11-06",
+    "note": "Moved Shani’s Puppy Spa from the Newmarket directory to Aurora after verifying its relocation."
+  },
+  "/provinces/ontario/aurora/": {
+    "date": "2026-11-06",
+    "note": "Added the relocated Shani’s Puppy Spa listing with verified Aurora contact and location details."
   }
 }
