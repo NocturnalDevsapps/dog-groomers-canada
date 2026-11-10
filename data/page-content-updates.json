@@ -218,5 +218,13 @@
   "/provinces/ontario/aurora/": {
     "date": "2026-11-06",
     "note": "Added the relocated Shani’s Puppy Spa listing with verified Aurora contact and location details."
+  },
+  "/groomers/saskatchewan/melville/dee-s-grooming-melville-sk-0611a7f8/": {
+    "date": "2026-11-10",
+    "note": "Removed the disputed street address and map details for Dee's Grooming after a business correction request. Replacement address awaits business confirmation; existing profile URL and phone are preserved."
+  },
+  "/provinces/saskatchewan/melville/": {
+    "date": "2026-11-10",
+    "note": "Removed the disputed street address and map details for Dee's Grooming after a business correction request. Replacement address awaits business confirmation; existing profile URL and phone are preserved."
   }
 }

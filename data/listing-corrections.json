@@ -337,6 +337,24 @@
           }
         ]
       }
+    },
+    {
+      "url": "/groomers/saskatchewan/melville/dee-s-grooming-melville-sk-0611a7f8/",
+      "note": "Business correction received November 9, 2026 from Deanna Gray. Sender authentication passed and the supplied phone matches the existing listing and BBB owner record. The owner reports the physical address is wrong but supplies no replacement. Research on November 10 found conflicting third-party addresses; the linked business Facebook page was unavailable. Remove the disputed street address, postal code, coordinates and map link pending direct confirmation; preserve the Melville listing URL and phone. Public identity source: https://www.bbb.org/ca/sk/melville/profile/pet-grooming/dees-grooming-services-0057-29042 . Do not treat any researched alternative as verified.",
+      "description": "Dee's Grooming is listed in Melville, Saskatchewan. The business has reported that the previous street address was incorrect; a replacement address is awaiting confirmation. Call 306-720-0665 to confirm the current appointment location before travelling. The phone number was reconfirmed in the business's November 9, 2026 correction request. Ask about current grooming services, appointment availability and arrival instructions when calling.",
+      "businessSubmission": {
+        "receivedAt": "2026-11-09",
+        "label": "Address correction pending",
+        "source": "The business reported an incorrect street address; the replacement location is awaiting confirmation."
+      },
+      "fields": {
+        "address": "",
+        "street": "",
+        "postalCode": "",
+        "mapsUrl": "",
+        "lat": null,
+        "lng": null
+      }
     }
   ]
 }
