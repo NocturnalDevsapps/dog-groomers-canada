@@ -12639,39 +12639,6 @@
       "researchMethod": "direct_html",
       "crawledAt": "2026-07-28"
     },
-    "/groomers/british-columbia/victoria/jurassic-bark-victoria-bc-a1641a3d/": {
-      "businessName": "Jurassic Bark",
-      "website": "http://www.jurassic-bark.ca/",
-      "sourcePages": [
-        "https://www.jurassic-bark.ca/",
-        "https://www.jurassic-bark.ca/services-1",
-        "https://www.jurassic-bark.ca/grooming-course"
-      ],
-      "services": [
-        "Full groom or haircut",
-        "Nail trim or grinding",
-        "Ear cleaning",
-        "De-shedding",
-        "De-matting",
-        "Cat grooming",
-        "Hand stripping",
-        "Teeth cleaning"
-      ],
-      "convenience": [
-        "One-on-one appointments"
-      ],
-      "credentials": [],
-      "breedExperience": [
-        "Terriers",
-        "Double-coated breeds"
-      ],
-      "pricingAvailable": true,
-      "bookingLinks": [],
-      "websiteLocation": "#106 - 4342 West Shore Parkway, Victoria, BC, V9B 5Z1",
-      "crawlStatus": "official_website_enriched",
-      "researchMethod": "direct_html",
-      "crawledAt": "2026-07-28"
-    },
     "/groomers/british-columbia/victoria/k9-sk8-park-parkway-grooming-victoria-bc-91dcbe5d/": {
       "businessName": "K9 SK8 Park Parkway Grooming",
       "website": "https://k9sk8park.weebly.com/",

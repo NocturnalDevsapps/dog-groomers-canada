@@ -29,7 +29,7 @@
   <url><loc>https://doggroomerscanada.ca/provinces/ontario/ottawa/</loc></url>
   <url><loc>https://doggroomerscanada.ca/provinces/ontario/north-york/</loc></url>
   <url><loc>https://doggroomerscanada.ca/provinces/quebec/quebec-city/</loc></url>
-  <url><loc>https://doggroomerscanada.ca/provinces/british-columbia/victoria/</loc></url>
+  <url><loc>https://doggroomerscanada.ca/provinces/british-columbia/victoria/</loc><lastmod>2026-11-10</lastmod></url>
   <url><loc>https://doggroomerscanada.ca/provinces/saskatchewan/regina/</loc></url>
   <url><loc>https://doggroomerscanada.ca/provinces/ontario/scarborough/</loc></url>
   <url><loc>https://doggroomerscanada.ca/provinces/saskatchewan/saskatoon/</loc></url>
@@ -192,6 +192,7 @@
   <url><loc>https://doggroomerscanada.ca/provinces/quebec/jonquiere/</loc></url>
   <url><loc>https://doggroomerscanada.ca/provinces/ontario/kingsville/</loc></url>
   <url><loc>https://doggroomerscanada.ca/provinces/quebec/la-prairie/</loc></url>
+  <url><loc>https://doggroomerscanada.ca/provinces/british-columbia/langford/</loc><lastmod>2026-11-10</lastmod></url>
   <url><loc>https://doggroomerscanada.ca/provinces/nova-scotia/lower-sackville/</loc></url>
   <url><loc>https://doggroomerscanada.ca/provinces/british-columbia/mission/</loc></url>
   <url><loc>https://doggroomerscanada.ca/provinces/alberta/morinville/</loc></url>
@@ -221,7 +222,6 @@
   <url><loc>https://doggroomerscanada.ca/provinces/newfoundland-and-labrador/grand-falls-windsor/</loc></url>
   <url><loc>https://doggroomerscanada.ca/provinces/ontario/kemptville/</loc></url>
   <url><loc>https://doggroomerscanada.ca/provinces/ontario/kenora/</loc></url>
-  <url><loc>https://doggroomerscanada.ca/provinces/british-columbia/langford/</loc></url>
   <url><loc>https://doggroomerscanada.ca/provinces/british-columbia/langley-twp/</loc></url>
   <url><loc>https://doggroomerscanada.ca/provinces/quebec/lasalle/</loc></url>
   <url><loc>https://doggroomerscanada.ca/provinces/alberta/leduc-county/</loc></url>
@@ -6216,7 +6216,7 @@
   <url><loc>https://doggroomerscanada.ca/groomers/quebec/laval/global-pet-foods-laval-qc-95403fb5/</loc></url>
   <url><loc>https://doggroomerscanada.ca/groomers/british-columbia/cranbrook/clip-joint-cranbrook-bc-f402cb3a/</loc></url>
   <url><loc>https://doggroomerscanada.ca/groomers/ontario/garson/the-barker-shop-garson-on-bccf62cf/</loc></url>
-  <url><loc>https://doggroomerscanada.ca/groomers/british-columbia/victoria/jurassic-bark-victoria-bc-a1641a3d/</loc></url>
+  <url><loc>https://doggroomerscanada.ca/groomers/british-columbia/langford/jurassic-bark-langford-bc-a1641a3d/</loc><lastmod>2026-11-10</lastmod></url>
   <url><loc>https://doggroomerscanada.ca/groomers/ontario/vaughan/woofur-holistic-pet-care-centre-vaughan-on-7aa82af7/</loc></url>
   <url><loc>https://doggroomerscanada.ca/groomers/alberta/calgary/calgary-dog-house-calgary-ab-c5ca4255/</loc></url>
   <url><loc>https://doggroomerscanada.ca/groomers/manitoba/winnipeg/pet-valu-winnipeg-mb-5762d545/</loc></url>
@@ -7244,7 +7244,7 @@
   <url><loc>https://doggroomerscanada.ca/about/</loc></url>
   <url><loc>https://doggroomerscanada.ca/contact/</loc></url>
   <url><loc>https://doggroomerscanada.ca/editorial-policy/</loc><lastmod>2026-10-07</lastmod></url>
-  <url><loc>https://doggroomerscanada.ca/add-your-business/</loc></url>
+  <url><loc>https://doggroomerscanada.ca/add-your-business/</loc><lastmod>2026-11-10</lastmod></url>
   <url><loc>https://doggroomerscanada.ca/for-businesses/</loc></url>
   <url><loc>https://doggroomerscanada.ca/privacy/</loc><lastmod>2026-10-01</lastmod></url>
   <url><loc>https://doggroomerscanada.ca/terms/</loc></url>

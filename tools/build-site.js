@@ -643,6 +643,7 @@ function applyListingCorrections(listings, corrections) {
   const usedUrls = new Set(listings.map((listing) => listing.url));
   const allowedFields = [
     "title",
+    "category",
     "address",
     "street",
     "postalCode",
@@ -657,6 +658,7 @@ function applyListingCorrections(listings, corrections) {
     "lat",
     "lng",
     "serviceText",
+    "convenienceText",
     "temporarilyClosed",
   ];
 
@@ -2799,16 +2801,46 @@ function writeUtilityPages(context) {
       <label style="display:block;margin-top:12px">Business email<input type="email" name="email" class="input-shell" style="width:100%;margin-top:6px;padding:12px" placeholder="name@business.ca"></label>
       <label style="display:block;margin-top:12px">Details<textarea name="details" class="input-shell" style="width:100%;min-height:120px;margin-top:6px;padding:12px" placeholder="Website, phone, services, hours, notes"></textarea></label>
       <label class="check-option" style="margin-top:12px"><input type="checkbox" name="photoRights" value="yes"><span>I plan to attach photos that I own or have permission from the rights holder to authorize for this profile.</span></label>
-      <p class="muted">After your email opens, attach the original photo files and include the photographer or requested credit. Photos are optional.</p>
+      <p class="muted">This form prepares an email for you to send; it does not submit your listing automatically. Photos are optional. Attach original files in your email and include the photographer or requested credit.</p>
       <button class="btn btn-primary" type="submit" style="margin-top:12px">Prepare Email</button>
     </form>
+    <section class="section" aria-labelledby="email-help-heading">
+      <h2 id="email-help-heading">No email app? You can still send your listing</h2>
+      <p>Email <a href="mailto:${CONTACT_EMAIL}">${CONTACT_EMAIL}</a> from your usual email service. Include your business name, city and province, public address or service area, website, phone, grooming services and hours.</p>
+      <noscript><p>The form needs JavaScript to prepare your message. You can email the details above directly.</p></noscript>
+      <div id="prepared-email" hidden>
+        <p id="prepared-email-status" role="status" aria-live="polite"></p>
+        <p><strong>To:</strong> ${CONTACT_EMAIL}<br><strong>Subject:</strong> Dog Groomers Canada listing update</p>
+        <label for="prepared-email-body">Your listing details</label>
+        <textarea id="prepared-email-body" class="input-shell" readonly rows="12" style="display:block;width:100%;margin:6px 0 12px;padding:12px"></textarea>
+        <div class="hero-actions"><button class="btn btn-primary" type="button" id="copy-listing-email">Copy listing details</button><a class="btn btn-light" id="open-listing-email" href="mailto:${CONTACT_EMAIL}">Open email app</a></div>
+        <p class="muted">Paste the details into a new email, attach any optional authorized photos, and send it to us. We review submissions before publishing.</p>
+      </div>
+    </section>
     <script>
       document.getElementById("add-business-form").addEventListener("submit", function (event) {
         event.preventDefault();
         var data = new FormData(event.currentTarget);
         var photoStatement = data.get("photoRights") ? "\\n\\nPhoto authorization: I confirm that I own the attached images or have permission from the rights holder, and I authorize Dog Groomers Canada to display them on this business profile and related directory cards.\\nPhoto credit / source:" : "";
         var body = "Business: " + (data.get("business") || "") + "\\nLocation: " + (data.get("location") || "") + "\\nBusiness email: " + (data.get("email") || "") + "\\nDetails: " + (data.get("details") || "") + photoStatement;
-        window.location.href = "mailto:${CONTACT_EMAIL}?subject=Dog%20Groomers%20Canada%20listing%20update&body=" + encodeURIComponent(body);
+        var emailLink = "mailto:${CONTACT_EMAIL}?subject=Dog%20Groomers%20Canada%20listing%20update&body=" + encodeURIComponent(body);
+        document.getElementById("prepared-email-body").value = body;
+        document.getElementById("open-listing-email").href = emailLink;
+        document.getElementById("prepared-email").hidden = false;
+        document.getElementById("prepared-email-status").textContent = "Your email is prepared, but has not been sent. Copy the details below or choose Open email app, then send the email.";
+        document.getElementById("copy-listing-email").focus();
+      });
+      document.getElementById("copy-listing-email").addEventListener("click", async function () {
+        var message = document.getElementById("prepared-email-body");
+        var status = document.getElementById("prepared-email-status");
+        try {
+          await navigator.clipboard.writeText(message.value);
+          status.textContent = "Listing details copied. Paste them into an email to ${CONTACT_EMAIL} and send it.";
+        } catch (_) {
+          message.focus();
+          message.select();
+          status.textContent = "Automatic copying is unavailable. Your details are selected; use your device's Copy command, then paste them into an email.";
+        }
       });
     </script>`,
   );

@@ -283,6 +283,45 @@
       ],
       "breedExperience": [],
       "pricingAvailable": true
+    },
+    "/groomers/british-columbia/langford/jurassic-bark-langford-bc-a1641a3d/": {
+      "reviewedAt": "2026-11-10",
+      "sourcePages": [
+        "https://www.jurassic-bark.ca/",
+        "https://www.jurassic-bark.ca/services-1"
+      ],
+      "lead": "Jurassic Bark provides dog grooming at Unit 106, 4342 West Shore Parkway in Langford, British Columbia. Its official grooming menu describes full grooms with bathing, drying, brush-out or de-shedding, nail trimming and ear cleaning, with haircut options and hand-stripping discussed for the dog's coat. Selected maintenance services are offered on a drop-in basis from 9 AM to 4 PM; nail grinding and face, feet or sanitary trims require an appointment. The website lists general opening hours of 7 AM to 7 PM daily, closed statutory holidays; confirm grooming availability separately. Call or email for a coat-specific quote. The business supplied its logo with permission to display it.",
+      "summary": "The official grooming menu helps owners choose between a full groom and a short maintenance visit. Nail clipping is offered during the published drop-in window, while grinding and tidy-up trims need an appointment. Full-groom prices are starting amounts grouped by dog size, so request a quote for the individual coat and requested finish. General shop hours should not be assumed to be the groomer’s appointment schedule. The location and contact details were cross-checked with the business submission.",
+      "facts": [
+        {
+          "label": "Full-groom inclusions",
+          "value": "The menu lists a bath, blow-dry, brush-out or de-shed, nail trim and ear cleaning. Discuss the appropriate haircut or hand-stripping option for the coat.",
+          "sourceUrl": "https://www.jurassic-bark.ca/services-1"
+        },
+        {
+          "label": "Short maintenance visits",
+          "value": "Selected services, including nail clipping, ear cleaning and teeth brushing, are advertised for drop-in visits from 9 AM to 4 PM. Outside this window, arrange an appointment.",
+          "sourceUrl": "https://www.jurassic-bark.ca/services-1"
+        },
+        {
+          "label": "Appointment-only tidy-ups",
+          "value": "Nail grinding and face, feet or sanitary trims require an appointment. The business asks that coats be clean and dry for clipper or shear work.",
+          "sourceUrl": "https://www.jurassic-bark.ca/services-1"
+        }
+      ],
+      "services": [
+        "Full dog grooming",
+        "Bath and brush",
+        "Deshedding",
+        "Hand-stripping",
+        "Nail trimming and grinding",
+        "Ear cleaning",
+        "Cat grooming"
+      ],
+      "convenience": [
+        "Selected drop-in maintenance services, 9 AM to 4 PM"
+      ],
+      "pricingAvailable": true
     }
   }
 }

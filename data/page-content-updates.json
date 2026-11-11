@@ -226,5 +226,21 @@
   "/provinces/saskatchewan/melville/": {
     "date": "2026-11-10",
     "note": "Removed the disputed street address and map details for Dee's Grooming after a business correction request. Replacement address awaits business confirmation; existing profile URL and phone are preserved."
+  },
+  "/groomers/british-columbia/langford/jurassic-bark-langford-bc-a1641a3d/": {
+    "date": "2026-11-10",
+    "note": "Verified Jurassic Bark contact and grooming details, corrected city placement to Langford with a legacy redirect, and added the business-authorized logo."
+  },
+  "/add-your-business/": {
+    "date": "2026-11-10",
+    "note": "Added a visible copyable email fallback and clear send instructions when a visitor has no configured email app."
+  },
+  "/provinces/british-columbia/langford/": {
+    "date": "2026-11-10",
+    "note": "Corrected Jurassic Bark city classification from Victoria to Langford without adding a duplicate business."
+  },
+  "/provinces/british-columbia/victoria/": {
+    "date": "2026-11-10",
+    "note": "Corrected Jurassic Bark city classification from Victoria to Langford without adding a duplicate business."
   }
 }

@@ -355,6 +355,76 @@
         "lat": null,
         "lng": null
       }
+    },
+    {
+      "url": "/groomers/british-columbia/victoria/jurassic-bark-victoria-bc-a1641a3d/",
+      "relocate": true,
+      "note": "Business update received November 2, 2026. Sender matches the official website email and supplied phone. Verified November 10 against https://www.jurassic-bark.ca/ and https://www.jurassic-bark.ca/services-1 . Langford city placement matches the business submission and City of Langford planning report TUP24-0007 for Unit 106, 4342 West Shore Parkway. This corrects city classification, not a physical move. Keep the existing listing ID, coordinates and map place ID; redirect the former Victoria route. Replace inferred puppy/mobile service hints with verified grooming details. Only the attached logo is authorized.",
+      "description": "Jurassic Bark provides dog grooming at Unit 106, 4342 West Shore Parkway in Langford, British Columbia. Its official grooming menu describes full grooms with bathing, drying, brush-out or de-shedding, nail trimming and ear cleaning, with haircut options and hand-stripping discussed for the dog's coat. Selected maintenance services are offered on a drop-in basis from 9 AM to 4 PM; nail grinding and face, feet or sanitary trims require an appointment. The website lists general opening hours of 7 AM to 7 PM daily, closed statutory holidays; confirm grooming availability separately. Call or email for a coat-specific quote. The business supplied its logo with permission to display it.",
+      "businessSubmission": {
+        "receivedAt": "2026-11-02",
+        "label": "Business-submitted update",
+        "source": "Business contact details, Langford location and an authorized logo supplied directly by Jurassic Bark Holistic Pet Care Ltd",
+        "contactCheck": {
+          "sourceUrl": "https://www.jurassic-bark.ca/",
+          "sourceLabel": "Jurassic Bark official website",
+          "checkedAt": "2026-11-10",
+          "summary": "The website matches Unit 106 at 4342 West Shore Parkway, 250-523-2273 and the business email. General opening hours are 7 AM to 7 PM daily, closed statutory holidays; confirm grooming appointment times directly."
+        }
+      },
+      "fields": {
+        "category": "Pet groomer and pet supply store",
+        "city": "Langford",
+        "address": "Unit 106, 4342 West Shore Parkway, Langford, BC V9B 5Z1, Canada",
+        "street": "Unit 106, 4342 West Shore Parkway",
+        "website": "https://www.jurassic-bark.ca/",
+        "email": "jurassic_bark@outlook.com",
+        "phone": "+1 250-523-2273",
+        "phoneRaw": "+12505232273",
+        "services": [
+          "Full dog grooming",
+          "Bath and brush",
+          "Haircuts and styling",
+          "Deshedding",
+          "Hand-stripping",
+          "Nail trimming and grinding",
+          "Ear cleaning",
+          "Teeth brushing",
+          "Cat grooming"
+        ],
+        "serviceText": "Full dog grooming; bath and brush; haircuts; de-shedding; hand-stripping; nail trimming and grinding; ear cleaning; teeth brushing; cat grooming",
+        "convenienceText": "Salon at Unit 106, 4342 West Shore Parkway. Selected drop-in maintenance services from 9 AM to 4 PM; other grooming services by appointment. Closed statutory holidays.",
+        "hours": [
+          {
+            "day": "Monday",
+            "hours": "7 AM to 7 PM (closed statutory holidays)"
+          },
+          {
+            "day": "Tuesday",
+            "hours": "7 AM to 7 PM (closed statutory holidays)"
+          },
+          {
+            "day": "Wednesday",
+            "hours": "7 AM to 7 PM (closed statutory holidays)"
+          },
+          {
+            "day": "Thursday",
+            "hours": "7 AM to 7 PM (closed statutory holidays)"
+          },
+          {
+            "day": "Friday",
+            "hours": "7 AM to 7 PM (closed statutory holidays)"
+          },
+          {
+            "day": "Saturday",
+            "hours": "7 AM to 7 PM (closed statutory holidays)"
+          },
+          {
+            "day": "Sunday",
+            "hours": "7 AM to 7 PM (closed statutory holidays)"
+          }
+        ]
+      }
     }
   ]
 }

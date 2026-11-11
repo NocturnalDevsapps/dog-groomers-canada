@@ -6532,6 +6532,23 @@
         "credit": "Image supplied by R6 Grooming and used with permission."
       },
       "permissionReference": "Business email dated 2026-09-25 with attached 6896.jpg collage and explicit display authorization."
+    },
+    {
+      "title": "Jurassic Bark",
+      "url": "/groomers/british-columbia/langford/jurassic-bark-langford-bc-a1641a3d/",
+      "image": "/assets/listings/jurassic-bark/logo.jpg",
+      "photos": [
+        "/assets/listings/jurassic-bark/logo.jpg"
+      ],
+      "photoAlts": [
+        "Jurassic Bark Holistic Pet Care Ltd business logo"
+      ],
+      "imageRights": {
+        "status": "owner_permission",
+        "grantedAt": "2026-11-02",
+        "credit": "Logo supplied by Jurassic Bark Holistic Pet Care Ltd and used with permission."
+      },
+      "permissionReference": "Business email received November 2, 2026 with logo.jpg and explicit authorization for the business profile and related directory cards."
     }
   ]
 }
