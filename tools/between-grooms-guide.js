@@ -108,7 +108,7 @@ module.exports = {
     ],
     limits: "The paperback contains the care method and copyable checklists; the separate digital workbook is not included. The book has not received independent veterinary or professional groomer review. Adapt its starting plans with your groomer or veterinarian.",
     alternative: "You can also start today with the care log above and an ordinary notebook. The book is optional if that is all you need.",
-    url: "https://www.amazon.ca/dp/B0HLXZVCVK",
+    url: "https://www.amazon.ca/dp/B0HLXZVCVK?maas=maas_adg_4D6295ADA9BC29E5000CCC1B67864FC6_afap_abs&ref_=aa_maas&tag=maas",
     linkLabel: "See the paperback and read a sample on Amazon.ca",
   },
   sources: [
